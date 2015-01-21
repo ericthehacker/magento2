@@ -26,6 +26,8 @@ class Encryptor implements EncryptorInterface
 
     const HASH_VERSION_LATEST = 1;
 
+    const HASH_VERSION_NATIVE_API = 2;
+
     const CIPHER_BLOWFISH = 0;
 
     const CIPHER_RIJNDAEL_128 = 1;
@@ -111,20 +113,40 @@ class Encryptor implements EncryptorInterface
      *
      * @param string $password
      * @param bool|int|string $salt
+     * @param bool $secureHash - use secure hash algorithm? Set to false for fast, unsecure hash
      * @return string
      */
-    public function getHash($password, $salt = false)
+    public function getHash($password, $salt = false, $secureHash = false)
     {
-        if ($salt === false) {
-            return $this->hash($password);
+        if ($secureHash) {
+            // using native API, so adjust config array while being aware of native API salt capabilities
+
+            // native API uses option array to configure hash parameters
+            $hashOptions = array(
+                'cost' => '10' //@TODO: system config node for this value?
+            );
+
+            if (is_string($salt)) {
+                $hashOptions['salt'] = $salt; // use provided salt directly
+            }
+            if ($salt === false) {
+                $hashOptions['salt'] = ''; // intentionally use constant salt //@todo: constant for value?
+            }
+
+            return $this->hash($password, self::HASH_VERSION_NATIVE_API, $hashOptions);
+        } else { // use legacy / fast hash behavior
+            if ($salt === false) {
+                return $this->hash($password);
+            }
+            if ($salt === true) {
+                $salt = self::DEFAULT_SALT_LENGTH;
+            }
+            if (is_integer($salt)) {
+                $salt = $this->randomGenerator->getRandomString($salt);
+            }
+
+            return $this->hash($salt . $password) . ':' . $salt;
         }
-        if ($salt === true) {
-            $salt = self::DEFAULT_SALT_LENGTH;
-        }
-        if (is_integer($salt)) {
-            $salt = $this->randomGenerator->getRandomString($salt);
-        }
-        return $this->hash($salt . $password) . ':' . $salt;
     }
 
     /**
@@ -132,10 +154,15 @@ class Encryptor implements EncryptorInterface
      *
      * @param string $data
      * @param int $version
+     * @param array $hashConfigOptions - hash options array, if required by hash implementation
      * @return string
      */
-    public function hash($data, $version = self::HASH_VERSION_LATEST)
+    public function hash($data, $version = self::HASH_VERSION_LATEST, array $hashConfigOptions = array())
     {
+        if (self::HASH_VERSION_NATIVE_API === $version) {
+            return password_hash($data, PASSWORD_DEFAULT, $hashConfigOptions);
+        }
+
         if (self::HASH_VERSION_MD5 === $version) {
             return md5($data);
         }
@@ -159,6 +186,10 @@ class Encryptor implements EncryptorInterface
             $password,
             $hash,
             self::HASH_VERSION_MD5
+        ) || $this->validateHashByVersion(
+            $password,
+            $hash,
+            self::HASH_VERSION_NATIVE_API
         );
     }
 
@@ -172,6 +203,11 @@ class Encryptor implements EncryptorInterface
      */
     public function validateHashByVersion($password, $hash, $version = self::HASH_VERSION_LATEST)
     {
+        if(self::HASH_VERSION_NATIVE_API === $version) {
+            // verify using native API -- no need to extract salt
+            return password_verify($password, $hash);
+        }
+
         // look for salt
         $hashArr = explode(':', $hash, 2);
         if (1 === count($hashArr)) {
