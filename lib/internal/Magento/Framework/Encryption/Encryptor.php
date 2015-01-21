@@ -17,6 +17,16 @@ class Encryptor implements EncryptorInterface
      */
     const PARAM_CRYPT_KEY = 'crypt/key';
 
+    /**
+     * For use if a non-empty constant salt is needed by hash implementation
+     */
+    const CONSTANT_SALT = 'constant-salt-12345678';
+
+    /**
+     * PHP native API expects salts to be of this length
+     */
+    const HASH_NATIVE_API_SALT_LENGTH = 22;
+
     /**#@+
      * Hash and Cipher versions
      */
@@ -127,10 +137,10 @@ class Encryptor implements EncryptorInterface
             );
 
             if (is_string($salt)) {
-                $hashOptions['salt'] = $salt; // use provided salt directly
+                $hashOptions['salt'] = str_pad($salt, self::HASH_NATIVE_API_SALT_LENGTH); // use provided salt directly
             }
             if ($salt === false) {
-                $hashOptions['salt'] = ''; // intentionally use constant salt //@todo: constant for value?
+                $hashOptions['salt'] = self::CONSTANT_SALT; // intentionally use constant salt
             }
 
             return $this->hash($password, self::HASH_VERSION_NATIVE_API, $hashOptions);
