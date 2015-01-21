@@ -588,7 +588,7 @@ class Customer extends \Magento\Framework\Model\AbstractExtensibleModel
      */
     public function hashPassword($password, $salt = true)
     {
-        return $this->_encryptor->getHash($password, $salt);
+        return $this->_encryptor->getHash($password, $salt, true);
     }
 
     /**

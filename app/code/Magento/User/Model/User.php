@@ -657,7 +657,7 @@ class User extends AbstractModel implements StorageInterface
      */
     protected function _getEncodedPassword($password)
     {
-        return $this->_encryptor->getHash($password, true);
+        return $this->_encryptor->getHash($password, true, true);
     }
 
     /**

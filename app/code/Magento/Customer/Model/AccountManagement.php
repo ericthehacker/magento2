@@ -674,7 +674,7 @@ class AccountManagement implements AccountManagementInterface
      */
     protected function createPasswordHash($password)
     {
-        return $this->encryptor->getHash($password, true);
+        return $this->encryptor->getHash($password, true, true);
     }
 
     /**
@@ -1145,6 +1145,6 @@ class AccountManagement implements AccountManagementInterface
      */
     public function getPasswordHash($password)
     {
-        return $this->encryptor->getHash($password);
+        return $this->encryptor->getHash($password, false, true);
     }
 }
