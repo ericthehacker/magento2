@@ -23,6 +23,12 @@ class Encryptor implements EncryptorInterface
     const CONSTANT_SALT = 'constant-salt-12345678';
 
     /**
+     * When using native API, use this default cost from
+     * http://php.net/manual/en/function.crypt.php#function.crypt
+     */
+    const HASH_NATIVE_API_COST_DEFAULT = 10;
+
+    /**
      * PHP native API expects salts to be of this length
      */
     const HASH_NATIVE_API_SALT_LENGTH = 22;
@@ -34,9 +40,9 @@ class Encryptor implements EncryptorInterface
 
     const HASH_VERSION_SHA256 = 1;
 
-    const HASH_VERSION_LATEST = 1;
-
     const HASH_VERSION_NATIVE_API = 2;
+
+    const HASH_VERSION_LATEST = 1;
 
     const CIPHER_BLOWFISH = 0;
 
@@ -133,7 +139,7 @@ class Encryptor implements EncryptorInterface
 
             // native API uses option array to configure hash parameters
             $hashOptions = array(
-                'cost' => '10' //@TODO: system config node for this value?
+                'cost' => self::HASH_NATIVE_API_COST_DEFAULT
             );
 
             if (is_string($salt)) {
