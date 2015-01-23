@@ -219,7 +219,7 @@ class Encryptor implements EncryptorInterface
      */
     public function validateHashByVersion($password, $hash, $version = self::HASH_VERSION_LATEST)
     {
-        if(self::HASH_VERSION_NATIVE_API === $version) {
+        if (self::HASH_VERSION_NATIVE_API === $version) {
             // verify using native API -- no need to extract salt
             return password_verify($password, $hash);
         }
