@@ -149,6 +149,9 @@ class Encryptor implements EncryptorInterface
                 $hashOptions['salt'] = self::CONSTANT_SALT; // intentionally use constant salt
             }
 
+            // NOTE: if salt is neither false nor a string, the value is omitted from the hash option array.
+            // Omitting the value will cause the native API to generate its own random salt.
+
             return $this->hash($password, self::HASH_VERSION_NATIVE_API, $hashOptions);
         } else { // use legacy / fast hash behavior
             if ($salt === false) {
