@@ -40,11 +40,27 @@ class EncryptorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $actual);
     }
 
+    public function testGetHashNoSaltSecure()
+    {
+        $this->_randomGenerator->expects($this->never())->method('getRandomString');
+        $expected = '$2y$10$Y29uc3RhbnQtc2FsdC0xMeM/PUwkL45vpQGKk1pzH7TjTkCKkDZ/a';
+        $actual = $this->_model->getHash('password', false, true);
+        $this->assertEquals($expected, $actual);
+    }
+
     public function testGetHashSpecifiedSalt()
     {
         $this->_randomGenerator->expects($this->never())->method('getRandomString');
         $expected = '13601bda4ea78e55a07b98866d2be6be0744e3866f13c00c811cab608a28f322:salt';
         $actual = $this->_model->getHash('password', 'salt');
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testGetHashSpecifiedSaltSecure()
+    {
+        $this->_randomGenerator->expects($this->never())->method('getRandomString');
+        $expected = '$2y$10$c2FsdCAgICAgICAgICAgI.k6qii5ZjN0H8QtyKNq29.T/7SiObMzW';
+        $actual = $this->_model->getHash('password', 'salt', true);
         $this->assertEquals($expected, $actual);
     }
 
@@ -92,6 +108,8 @@ class EncryptorTest extends \PHPUnit_Framework_TestCase
             ['password', 'hash:salt', false],
             ['password', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', true],
             ['password', '67a1e09bb1f83f5007dc119c14d663aa:salt', true],
+            ['password', '$2y$10$c2FsdCAgICAgICAgICAgI.k6qii5ZjN0H8QtyKNq29.T/7SiObMzW', true],
+            ['password', '$2y$10$Y29uc3RhbnQtc2FsdC0xMeM/PUwkL45vpQGKk1pzH7TjTkCKkDZ/a', true],
         ];
     }
 
