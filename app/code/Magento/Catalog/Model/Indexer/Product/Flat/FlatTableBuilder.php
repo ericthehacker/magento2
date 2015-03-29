@@ -97,7 +97,9 @@ class FlatTableBuilder
      *
      * @param int|string $storeId
      * @return void
-     * @throws \Magento\Framework\Model\Exception
+     * @throws \Magento\Framework\Exception\LocalizedException
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     protected function _createTemporaryFlatTable($storeId)
     {
@@ -109,11 +111,11 @@ class FlatTableBuilder
             self::XML_NODE_MAX_INDEX_COUNT
         );
         if ($maxIndex && count($indexesNeed) > $maxIndex) {
-            throw new \Magento\Framework\Model\Exception(
+            throw new \Magento\Framework\Exception\LocalizedException(
                 __(
-                    "The Flat Catalog module has a limit of %2\$d filterable and/or sortable attributes." .
-                    "Currently there are %1\$d of them." .
-                    "Please reduce the number of filterable/sortable attributes in order to use this module",
+                    'The Flat Catalog module has a limit of %2$d filterable and/or sortable attributes.'
+                    . 'Currently there are %1$d of them.'
+                    . 'Please reduce the number of filterable/sortable attributes in order to use this module',
                     count($indexesNeed),
                     $maxIndex
                 )
@@ -209,7 +211,6 @@ class FlatTableBuilder
         $statusTable = $this->_getTemporaryTableName($status->getBackendTable());
         $statusConditions = [
             'e.entity_id = dstatus.entity_id',
-            'dstatus.entity_type_id = ' . (int)$status->getEntityTypeId(),
             'dstatus.store_id = ' . (int)$storeId,
             'dstatus.attribute_id = ' . (int)$status->getId(),
         ];
@@ -291,8 +292,6 @@ class FlatTableBuilder
                 $attributeCode = $attribute->getAttributeCode();
                 if ($attribute->getBackend()->getType() != 'static') {
                     $joinCondition = 't.entity_id = e.entity_id' .
-                        ' AND t.entity_type_id = ' .
-                        $attribute->getEntityTypeId() .
                         ' AND t.attribute_id=' .
                         $attribute->getId() .
                         ' AND t.store_id = ' .

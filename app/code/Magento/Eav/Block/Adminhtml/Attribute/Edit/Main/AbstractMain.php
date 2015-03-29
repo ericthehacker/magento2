@@ -4,6 +4,8 @@
  * See COPYING.txt for license details.
  */
 
+// @codingStandardsIgnoreFile
+
 /**
  * Product attribute add/edit form main tab
  *
@@ -35,7 +37,7 @@ abstract class AbstractMain extends \Magento\Backend\Block\Widget\Form\Generic
     protected $_attributeConfig;
 
     /**
-     * @var \Magento\Backend\Model\Config\Source\YesnoFactory
+     * @var \Magento\Config\Model\Config\Source\YesnoFactory
      */
     protected $_yesnoFactory;
 
@@ -49,7 +51,7 @@ abstract class AbstractMain extends \Magento\Backend\Block\Widget\Form\Generic
      * @param \Magento\Framework\Registry $registry
      * @param \Magento\Framework\Data\FormFactory $formFactory
      * @param \Magento\Eav\Helper\Data $eavData
-     * @param \Magento\Backend\Model\Config\Source\YesnoFactory $yesnoFactory
+     * @param \Magento\Config\Model\Config\Source\YesnoFactory $yesnoFactory
      * @param \Magento\Eav\Model\Adminhtml\System\Config\Source\InputtypeFactory $inputTypeFactory
      * @param \Magento\Eav\Model\Entity\Attribute\Config $attributeConfig
      * @param array $data
@@ -59,7 +61,7 @@ abstract class AbstractMain extends \Magento\Backend\Block\Widget\Form\Generic
         \Magento\Framework\Registry $registry,
         \Magento\Framework\Data\FormFactory $formFactory,
         \Magento\Eav\Helper\Data $eavData,
-        \Magento\Backend\Model\Config\Source\YesnoFactory $yesnoFactory,
+        \Magento\Config\Model\Config\Source\YesnoFactory $yesnoFactory,
         \Magento\Eav\Model\Adminhtml\System\Config\Source\InputtypeFactory $inputTypeFactory,
         \Magento\Eav\Model\Entity\Attribute\Config $attributeConfig,
         array $data = []
@@ -100,6 +102,7 @@ abstract class AbstractMain extends \Magento\Backend\Block\Widget\Form\Generic
      * Preparing default form elements for editing attribute
      *
      * @return $this
+     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     protected function _prepareForm()
     {
@@ -199,7 +202,7 @@ abstract class AbstractMain extends \Magento\Backend\Block\Widget\Form\Generic
             ]
         );
 
-        $dateFormat = $this->_localeDate->getDateFormat(\Magento\Framework\Stdlib\DateTime\TimezoneInterface::FORMAT_TYPE_SHORT);
+        $dateFormat = $this->_localeDate->getDateFormat(\IntlDateFormatter::SHORT);
         $fieldset->addField(
             'default_value_date',
             'date',
@@ -207,7 +210,7 @@ abstract class AbstractMain extends \Magento\Backend\Block\Widget\Form\Generic
                 'name' => 'default_value_date',
                 'label' => __('Default Value'),
                 'title' => __('Default Value'),
-                'image' => $this->getViewFileUrl('images/grid-cal.gif'),
+                'image' => $this->getViewFileUrl('images/grid-cal.png'),
                 'value' => $attributeObject->getDefaultValue(),
                 'date_format' => $dateFormat
             ]

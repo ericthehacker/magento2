@@ -3,6 +3,9 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
+
+// @codingStandardsIgnoreFile
+
 namespace Magento\CatalogImportExport\Model\Import\Product;
 
 /**
@@ -14,7 +17,6 @@ namespace Magento\CatalogImportExport\Model\Import\Product;
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @todo Need to explode this class because of several responsibilities
- * @todo Refactor in the scope of https://wiki.magento.com/display/MAGE2/Technical+Debt+%28Team-Donetsk-B%29
  */
 class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
 {
@@ -450,7 +452,7 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
      *
      * @param array $data
      * @return $this
-     * @throws \Magento\Framework\Model\Exception
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     protected function _initSourceEntities(array $data)
     {
@@ -470,7 +472,9 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
         if (isset($data['product_entity'])) {
             $this->_productEntity = $data['product_entity'];
         } else {
-            throw new \Magento\Framework\Model\Exception(__('Option entity must have a parent product entity.'));
+            throw new \Magento\Framework\Exception\LocalizedException(
+                __('Option entity must have a parent product entity.')
+            );
         }
         if (isset($data['collection_by_pages_iterator'])) {
             $this->_byPagesIterator = $data['collection_by_pages_iterator'];
@@ -1169,6 +1173,7 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
      * @param array &$parentCount
      * @param array &$childCount
      * @return void
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     protected function _collectOptionTypeData(
         array $rowData,
@@ -1345,7 +1350,7 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
             'entity_id' => $productId,
             'has_options' => 1,
             'required_options' => 0,
-            'updated_at' => $this->dateTime->now(),
+            'updated_at' => (new \DateTime())->format(\Magento\Framework\Stdlib\DateTime::DATETIME_PHP_FORMAT),
         ];
 
         if (!empty($rowData[self::COLUMN_IS_REQUIRED])) {
@@ -1438,6 +1443,7 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
      * @param int $optionTypeId
      * @param bool $defaultStore
      * @return array|false
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     protected function _getSpecificTypeData(array $rowData, $optionTypeId, $defaultStore = true)
     {

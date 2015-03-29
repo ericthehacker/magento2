@@ -18,6 +18,7 @@ use Magento\Framework\Exception\NoSuchEntityException;
 
 /**
  * Class StockRepository
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class StockRepository implements StockRepositoryInterface
 {
@@ -77,7 +78,7 @@ class StockRepository implements StockRepositoryInterface
         try {
             $this->resource->save($stock);
         } catch (\Exception $exception) {
-            throw new CouldNotSaveException($exception->getMessage());
+            throw new CouldNotSaveException(__($exception->getMessage()));
         }
         return $stock;
     }
@@ -92,7 +93,7 @@ class StockRepository implements StockRepositoryInterface
         $stock = $this->stockFactory->create();
         $this->resource->load($stock, $stockId);
         if (!$stock->getId()) {
-            throw new NoSuchEntityException(sprintf('Stock with id "%s" does not exist.', $stockId));
+            throw new NoSuchEntityException(__('Stock with id "%1" does not exist.', $stockId));
         }
         return $stock;
     }
@@ -121,7 +122,7 @@ class StockRepository implements StockRepositoryInterface
         try {
             $this->resource->delete($stock);
         } catch (\Exception $exception) {
-            throw new CouldNotDeleteException($exception->getMessage());
+            throw new CouldNotDeleteException(__($exception->getMessage()));
         }
         return true;
     }
@@ -137,7 +138,7 @@ class StockRepository implements StockRepositoryInterface
             $stock = $this->get($id);
             $this->delete($stock);
         } catch (\Exception $exception) {
-            throw new CouldNotDeleteException($exception->getMessage());
+            throw new CouldNotDeleteException(__($exception->getMessage()));
         }
         return true;
     }

@@ -10,14 +10,11 @@ use Magento\Catalog\Test\Fixture\CatalogProductSimple;
 use Magento\Catalog\Test\Page\Product\CatalogProductView;
 use Magento\Checkout\Test\Fixture\Cart;
 use Magento\Checkout\Test\Page\CheckoutCart;
-use Mtf\Client\Browser;
-use Mtf\Fixture\FixtureFactory;
-use Mtf\TestCase\Injectable;
+use Magento\Mtf\Client\BrowserInterface;
+use Magento\Mtf\Fixture\FixtureFactory;
+use Magento\Mtf\TestCase\Injectable;
 
 /**
- * Test Creation for Update ShoppingCart
- *
- * Test Flow:
  * Precondition:
  * 1. Simple product is created
  * 2. Clear shopping cart
@@ -34,10 +31,15 @@ use Mtf\TestCase\Injectable;
  */
 class UpdateShoppingCartTest extends Injectable
 {
+    /* tags */
+    const MVP = 'yes';
+    const DOMAIN = 'CS';
+    /* end tags */
+
     /**
      * Browser interface
      *
-     * @var Browser
+     * @var BrowserInterface
      */
     protected $browser;
 
@@ -65,11 +67,11 @@ class UpdateShoppingCartTest extends Injectable
     /**
      * Prepare test data
      *
-     * @param Browser $browser
+     * @param BrowserInterface $browser
      * @param FixtureFactory $fixtureFactory
      * @return void
      */
-    public function __prepare(Browser $browser, FixtureFactory $fixtureFactory)
+    public function __prepare(BrowserInterface $browser, FixtureFactory $fixtureFactory)
     {
         $this->browser = $browser;
         $this->fixtureFactory = $fixtureFactory;
@@ -108,6 +110,7 @@ class UpdateShoppingCartTest extends Injectable
         $productView->fillOptions($product);
         $productView->setQty(1);
         $productView->clickAddToCart();
+        $this->catalogProductView->getMessagesBlock()->waitSuccessMessage();
 
         $qty = $product->getCheckoutData()['qty'];
         $this->checkoutCart->open();

@@ -8,17 +8,13 @@ namespace Magento\Tax\Test\Constraint;
 
 use Magento\Tax\Test\Fixture\TaxRate;
 use Magento\Tax\Test\Page\Adminhtml\TaxRateIndex;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertTaxRateInGrid
  */
 class AssertTaxRateInGrid extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'high';
-    /* end tags */
-
     /**
      * Assert tax rule availability in Tax Rate grid
      *

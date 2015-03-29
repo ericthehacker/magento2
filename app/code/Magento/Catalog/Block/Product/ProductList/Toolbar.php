@@ -12,6 +12,8 @@ use Magento\Catalog\Model\Product\ProductList\Toolbar as ToolbarModel;
  * Product list toolbar
  *
  * @author      Magento Core Team <core@magentocommerce.com>
+ * @SuppressWarnings(PHPMD.TooManyFields)
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Toolbar extends \Magento\Framework\View\Element\Template
 {
@@ -111,7 +113,7 @@ class Toolbar extends \Magento\Framework\View\Element\Template
     protected $urlEncoder;
 
     /**
-     * @var \Magento\Core\Helper\PostData
+     * @var \Magento\Framework\Data\Helper\PostHelper
      */
     protected $_postDataHelper;
 
@@ -122,7 +124,7 @@ class Toolbar extends \Magento\Framework\View\Element\Template
      * @param ToolbarModel $toolbarModel
      * @param \Magento\Framework\Url\EncoderInterface $urlEncoder
      * @param \Magento\Catalog\Helper\Product\ProductList $productListHelper
-     * @param \Magento\Core\Helper\PostData $postDataHelper
+     * @param \Magento\Framework\Data\Helper\PostHelper $postDataHelper
      * @param array $data
      */
     public function __construct(
@@ -132,7 +134,7 @@ class Toolbar extends \Magento\Framework\View\Element\Template
         ToolbarModel $toolbarModel,
         \Magento\Framework\Url\EncoderInterface $urlEncoder,
         \Magento\Catalog\Helper\Product\ProductList $productListHelper,
-        \Magento\Core\Helper\PostData $postDataHelper,
+        \Magento\Framework\Data\Helper\PostHelper $postDataHelper,
         array $data = []
     ) {
         $this->_catalogSession = $catalogSession;

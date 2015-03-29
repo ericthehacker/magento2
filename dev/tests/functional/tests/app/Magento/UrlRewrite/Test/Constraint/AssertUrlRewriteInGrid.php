@@ -8,7 +8,7 @@ namespace Magento\UrlRewrite\Test\Constraint;
 
 use Magento\UrlRewrite\Test\Fixture\UrlRewrite;
 use Magento\UrlRewrite\Test\Page\Adminhtml\UrlRewriteIndex;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertUrlRewriteInGrid
@@ -16,10 +16,6 @@ use Mtf\Constraint\AbstractConstraint;
  */
 class AssertUrlRewriteInGrid extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Assert that url rewrite category in grid
      *

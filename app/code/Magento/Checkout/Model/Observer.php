@@ -48,7 +48,7 @@ class Observer
     {
         try {
             $this->_checkoutSession->loadCustomerQuote();
-        } catch (\Magento\Framework\Model\Exception $e) {
+        } catch (\Magento\Framework\Exception\LocalizedException $e) {
             $this->messageManager->addError($e->getMessage());
         } catch (\Exception $e) {
             $this->messageManager->addException($e, __('Load customer quote error'));
@@ -62,7 +62,7 @@ class Observer
     public function salesQuoteSaveAfter($observer)
     {
         $quote = $observer->getEvent()->getQuote();
-        /* @var $quote \Magento\Sales\Model\Quote */
+        /* @var $quote \Magento\Quote\Model\Quote */
         if ($quote->getIsCheckoutCart()) {
             $this->_checkoutSession->getQuoteId($quote->getId());
         }

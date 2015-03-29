@@ -4,6 +4,8 @@
  * See COPYING.txt for license details.
  */
 
+// @codingStandardsIgnoreFile
+
 /**
  * One page checkout processing model
  */
@@ -13,13 +15,17 @@ use Magento\Customer\Api\AccountManagementInterface;
 use Magento\Customer\Api\AddressMetadataInterface as AddressMetadata;
 use Magento\Customer\Api\AddressRepositoryInterface;
 use Magento\Customer\Api\CustomerRepositoryInterface;
-use Magento\Customer\Api\Data\AddressDataBuilder as AddressBuilder;
-use Magento\Customer\Api\Data\CustomerDataBuilder as CustomerBuilder;
+use Magento\Customer\Api\Data\CustomerInterfaceFactory as CustomerDataFactory;
 use Magento\Customer\Api\Data\GroupInterface;
 use Magento\Customer\Model\Metadata\Form;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Sales\Model\Order\Email\Sender\OrderSender;
 
+/**
+ * @SuppressWarnings(PHPMD.TooManyFields)
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class Onepage
 {
     /**
@@ -42,7 +48,7 @@ class Onepage
     protected $_checkoutSession;
 
     /**
-     * @var \Magento\Sales\Model\Quote
+     * @var \Magento\Quote\Model\Quote
      */
     protected $_quote = null;
 
@@ -96,11 +102,6 @@ class Onepage
     protected $_customerFactory;
 
     /**
-     * @var \Magento\Sales\Model\Service\QuoteFactory
-     */
-    protected $_serviceQuoteFactory;
-
-    /**
      * @var \Magento\Sales\Model\OrderFactory
      */
     protected $_orderFactory;
@@ -121,14 +122,9 @@ class Onepage
     protected $_formFactory;
 
     /**
-     * @var CustomerBuilder
+     * @var CustomerDataFactory
      */
-    protected $_customerBuilder;
-
-    /**
-     * @var AddressBuilder
-     */
-    protected $_addressBuilder;
+    protected $customerDataFactory;
 
     /**
      * @var \Magento\Framework\Math\Random
@@ -151,7 +147,7 @@ class Onepage
     protected $orderSender;
 
     /**
-     * @var \Magento\Sales\Model\QuoteRepository
+     * @var \Magento\Quote\Model\QuoteRepository
      */
     protected $quoteRepository;
 
@@ -166,6 +162,16 @@ class Onepage
     protected $extensibleDataObjectConverter;
 
     /**
+     * @var \Magento\Quote\Model\QuoteManagement
+     */
+    protected $quoteManagement;
+
+    /**
+     * @var \Magento\Framework\Api\DataObjectHelper
+     */
+    protected $dataObjectHelper;
+
+    /**
      * @param \Magento\Framework\Event\ManagerInterface $eventManager
      * @param \Magento\Checkout\Helper\Data $helper
      * @param \Magento\Customer\Model\Url $customerUrl
@@ -177,21 +183,23 @@ class Onepage
      * @param \Magento\Customer\Model\AddressFactory $customrAddrFactory
      * @param \Magento\Customer\Model\FormFactory $customerFormFactory
      * @param \Magento\Customer\Model\CustomerFactory $customerFactory
-     * @param \Magento\Sales\Model\Service\QuoteFactory $serviceQuoteFactory
      * @param \Magento\Sales\Model\OrderFactory $orderFactory
      * @param \Magento\Framework\Object\Copy $objectCopyService
      * @param \Magento\Framework\Message\ManagerInterface $messageManager
      * @param \Magento\Customer\Model\Metadata\FormFactory $formFactory
-     * @param CustomerBuilder $customerBuilder
-     * @param AddressBuilder $addressBuilder
+     * @param CustomerDataFactory $customerDataFactory
      * @param \Magento\Framework\Math\Random $mathRandom
      * @param \Magento\Framework\Encryption\EncryptorInterface $encryptor
      * @param AddressRepositoryInterface $addressRepository
      * @param AccountManagementInterface $accountManagement
      * @param OrderSender $orderSender
      * @param CustomerRepositoryInterface $customerRepository
-     * @param \Magento\Sales\Model\QuoteRepository $quoteRepository
+     * @param \Magento\Quote\Model\QuoteRepository $quoteRepository
      * @param \Magento\Framework\Api\ExtensibleDataObjectConverter $extensibleDataObjectConverter
+     * @param \Magento\Quote\Model\QuoteManagement $quoteManagement
+     * @param \Magento\Framework\Api\DataObjectHelper $dataObjectHelper
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
+     *
      */
     public function __construct(
         \Magento\Framework\Event\ManagerInterface $eventManager,
@@ -205,21 +213,21 @@ class Onepage
         \Magento\Customer\Model\AddressFactory $customrAddrFactory,
         \Magento\Customer\Model\FormFactory $customerFormFactory,
         \Magento\Customer\Model\CustomerFactory $customerFactory,
-        \Magento\Sales\Model\Service\QuoteFactory $serviceQuoteFactory,
         \Magento\Sales\Model\OrderFactory $orderFactory,
         \Magento\Framework\Object\Copy $objectCopyService,
         \Magento\Framework\Message\ManagerInterface $messageManager,
         \Magento\Customer\Model\Metadata\FormFactory $formFactory,
-        CustomerBuilder $customerBuilder,
-        AddressBuilder $addressBuilder,
+        CustomerDataFactory $customerDataFactory,
         \Magento\Framework\Math\Random $mathRandom,
         \Magento\Framework\Encryption\EncryptorInterface $encryptor,
         AddressRepositoryInterface $addressRepository,
         AccountManagementInterface $accountManagement,
         OrderSender $orderSender,
         CustomerRepositoryInterface $customerRepository,
-        \Magento\Sales\Model\QuoteRepository $quoteRepository,
-        \Magento\Framework\Api\ExtensibleDataObjectConverter $extensibleDataObjectConverter
+        \Magento\Quote\Model\QuoteRepository $quoteRepository,
+        \Magento\Framework\Api\ExtensibleDataObjectConverter $extensibleDataObjectConverter,
+        \Magento\Quote\Model\QuoteManagement $quoteManagement,
+        \Magento\Framework\Api\DataObjectHelper $dataObjectHelper
     ) {
         $this->_eventManager = $eventManager;
         $this->_customerUrl = $customerUrl;
@@ -232,13 +240,11 @@ class Onepage
         $this->_customrAddrFactory = $customrAddrFactory;
         $this->_customerFormFactory = $customerFormFactory;
         $this->_customerFactory = $customerFactory;
-        $this->_serviceQuoteFactory = $serviceQuoteFactory;
         $this->_orderFactory = $orderFactory;
         $this->_objectCopyService = $objectCopyService;
         $this->messageManager = $messageManager;
         $this->_formFactory = $formFactory;
-        $this->_customerBuilder = $customerBuilder;
-        $this->_addressBuilder = $addressBuilder;
+        $this->customerDataFactory = $customerDataFactory;
         $this->mathRandom = $mathRandom;
         $this->_encryptor = $encryptor;
         $this->addressRepository = $addressRepository;
@@ -247,6 +253,8 @@ class Onepage
         $this->customerRepository = $customerRepository;
         $this->quoteRepository = $quoteRepository;
         $this->extensibleDataObjectConverter = $extensibleDataObjectConverter;
+        $this->quoteManagement = $quoteManagement;
+        $this->dataObjectHelper = $dataObjectHelper;
     }
 
     /**
@@ -262,7 +270,7 @@ class Onepage
     /**
      * Quote object getter
      *
-     * @return \Magento\Sales\Model\Quote
+     * @return \Magento\Quote\Model\Quote
      */
     public function getQuote()
     {
@@ -275,10 +283,10 @@ class Onepage
     /**
      * Declare checkout quote instance
      *
-     * @param \Magento\Sales\Model\Quote $quote
+     * @param \Magento\Quote\Model\Quote $quote
      * @return $this
      */
-    public function setQuote(\Magento\Sales\Model\Quote $quote)
+    public function setQuote(\Magento\Quote\Model\Quote $quote)
     {
         $this->_quote = $quote;
         return $this;
@@ -298,6 +306,7 @@ class Onepage
      * Initialize quote state to be valid for one page checkout
      *
      * @return $this
+     * @SuppressWarnings(PHPMD.UnusedLocalVariable)
      */
     public function initCheckout()
     {
@@ -372,6 +381,9 @@ class Onepage
      * @param   array $data
      * @param   int $customerAddressId
      * @return  array
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
+     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     public function saveBilling($data, $customerAddressId)
     {
@@ -572,8 +584,12 @@ class Onepage
             return true;
         }
 
-        $this->_customerBuilder->populateWithArray($customerData);
-        $customer = $this->_customerBuilder->create();
+        $customer = $this->customerDataFactory->create();
+        $this->dataObjectHelper->populateWithArray(
+            $customer,
+            $customerData,
+            '\Magento\Customer\Api\Data\CustomerInterface'
+        );
 
         if ($quote->getCheckoutMethod() == self::METHOD_REGISTER) {
             // We always have $customerRequest here, otherwise we would have been kicked off the function several
@@ -589,9 +605,7 @@ class Onepage
         } else {
             // set NOT LOGGED IN group id explicitly,
             // otherwise copyFieldsetToTarget('customer_account', 'to_quote') will fill it with default group id value
-            $this->_customerBuilder->populate($customer);
-            $this->_customerBuilder->setGroupId(GroupInterface::NOT_LOGGED_IN_ID);
-            $customer = $this->_customerBuilder->create();
+            $customer->setGroupId(GroupInterface::NOT_LOGGED_IN_ID);
         }
 
         //validate customer
@@ -623,6 +637,8 @@ class Onepage
      * @param   array $data
      * @param   int $customerAddressId
      * @return  array
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     public function saveShipping($data, $customerAddressId)
     {
@@ -760,18 +776,18 @@ class Onepage
      * Validate quote state to be integrated with one page checkout process
      *
      * @return void
-     * @throws \Magento\Framework\Model\Exception
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     protected function validate()
     {
         $quote = $this->getQuote();
 
         if ($quote->isMultipleShippingAddresses()) {
-            throw new \Magento\Framework\Model\Exception(__('There are more than one shipping address.'));
+            throw new \Magento\Framework\Exception\LocalizedException(__('There are more than one shipping address.'));
         }
 
         if ($quote->getCheckoutMethod() == self::METHOD_GUEST && !$this->_helper->isAllowedGuestCheckout($quote)) {
-            throw new \Magento\Framework\Model\Exception(__('Sorry, guest checkout is not enabled.'));
+            throw new \Magento\Framework\Exception\LocalizedException(__('Sorry, guest checkout is not enabled.'));
         }
     }
 
@@ -804,34 +820,28 @@ class Onepage
         $customer = $quote->getCustomer();
         $customerBillingData = $billing->exportCustomerAddress();
         $dataArray = $this->_objectCopyService->getDataFromFieldset('checkout_onepage_quote', 'to_customer', $quote);
-        $customer = $this->_customerBuilder->mergeDataObjectWithArray($customer, $dataArray);
-        $quote->setCustomer($customer->create())->setCustomerId(true);
+        $this->dataObjectHelper->populateWithArray(
+            $customer,
+            $dataArray,
+            '\Magento\Customer\Api\Data\CustomerInterface'
+        );
+        $quote->setCustomer($customer)->setCustomerId(true);
 
-        $customerBillingData = $this->_addressBuilder->populate(
-            $customerBillingData
-        )->setDefaultBilling(
-            true
-        )->create();
+        $customerBillingData->setIsDefaultBilling(true);
 
         if ($shipping) {
             if (!$shipping->getSameAsBilling()) {
                 $customerShippingData = $shipping->exportCustomerAddress();
-                $customerShippingData = $this->_addressBuilder->populate($customerShippingData)
-                    ->setDefaultShipping(true)
-                    ->create();
+                $customerShippingData->setIsDefaultShipping(true);
                 $shipping->setCustomerAddressData($customerShippingData);
                 // Add shipping address to quote since customer Data Object does not hold address information
                 $quote->addCustomerAddress($customerShippingData);
             } else {
                 $shipping->setCustomerAddressData($customerBillingData);
-                $customerBillingData = $this->_addressBuilder->populate($customerBillingData)
-                    ->setDefaultShipping(true)
-                    ->create();
+                $customerBillingData->setIsDefaultShipping(true);
             }
         } else {
-            $customerBillingData = $this->_addressBuilder->populate($customerBillingData)
-                ->setDefaultShipping(true)
-                ->create();
+            $customerBillingData->setIsDefaultShipping(true);
         }
         $billing->setCustomerAddressData($customerBillingData);
         // TODO : Eventually need to remove this legacy hack
@@ -843,6 +853,7 @@ class Onepage
      * Prepare quote for customer order submit
      *
      * @return void
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     protected function _prepareCustomerQuote()
     {
@@ -860,10 +871,7 @@ class Onepage
             $shippingAddress = $shipping->exportCustomerAddress();
             if (!$hasDefaultShipping) {
                 //Make provided address as default shipping address
-                $shippingAddress = $this->_addressBuilder
-                    ->populate($shippingAddress)
-                    ->setDefaultShipping(true)
-                    ->create();
+                $shippingAddress->setIsDefaultShipping(true);
                 $hasDefaultShipping = true;
             }
             $quote->addCustomerAddress($shippingAddress);
@@ -874,13 +882,11 @@ class Onepage
             $billingAddress = $billing->exportCustomerAddress();
             if (!$hasDefaultBilling) {
                 //Make provided address as default shipping address
-                $this->_addressBuilder->populate($billingAddress);
                 if (!$hasDefaultShipping) {
                     //Make provided address as default shipping address
-                    $this->_addressBuilder->setDefaultShipping(true);
+                    $billingAddress->setIsDefaultShipping(true);
                 }
-                $this->_addressBuilder->setDefaultBilling(true);
-                $billingAddress = $this->_addressBuilder->create();
+                $billingAddress->setIsDefaultBilling(true);
             }
             $quote->addCustomerAddress($billingAddress);
             $billing->setCustomerAddressData($billingAddress);
@@ -933,11 +939,7 @@ class Onepage
                 $this->_prepareCustomerQuote();
                 break;
         }
-
-        /** @var \Magento\Sales\Model\Service\Quote $quoteService */
-        $quoteService = $this->_serviceQuoteFactory->create(['quote' => $this->getQuote()]);
-        $quoteService->submitAllWithDataObject();
-
+        $order = $this->quoteManagement->submit($this->getQuote());
         if ($isNewCustomer) {
             try {
                 $this->_involveNewCustomer();
@@ -945,14 +947,14 @@ class Onepage
                 $this->_logger->critical($e);
             }
         }
-
         $this->_checkoutSession->setLastQuoteId(
             $this->getQuote()->getId()
         )->setLastSuccessQuoteId(
             $this->getQuote()->getId()
+        )->setLastOrderId(
+            $order->getIncrementId()
         )->clearHelperData();
 
-        $order = $quoteService->getOrder();
         if ($order) {
             $this->_eventManager->dispatch(
                 'checkout_type_onepage_save_order_after',

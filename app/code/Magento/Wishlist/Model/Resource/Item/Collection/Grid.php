@@ -11,6 +11,9 @@ namespace Magento\Wishlist\Model\Resource\Item\Collection;
 
 use Magento\Customer\Controller\RegistryConstants as RegistryConstants;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class Grid extends \Magento\Wishlist\Model\Resource\Item\Collection
 {
     /**
@@ -19,7 +22,7 @@ class Grid extends \Magento\Wishlist\Model\Resource\Item\Collection
     protected $_registryManager;
 
     /**
-     * @param \Magento\Core\Model\EntityFactory $entityFactory
+     * @param \Magento\Framework\Data\Collection\EntityFactory $entityFactory
      * @param \Psr\Log\LoggerInterface $logger
      * @param \Magento\Framework\Data\Collection\Db\FetchStrategyInterface $fetchStrategy
      * @param \Magento\Framework\Event\ManagerInterface $eventManager
@@ -42,7 +45,7 @@ class Grid extends \Magento\Wishlist\Model\Resource\Item\Collection
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
-        \Magento\Core\Model\EntityFactory $entityFactory,
+        \Magento\Framework\Data\Collection\EntityFactory $entityFactory,
         \Psr\Log\LoggerInterface $logger,
         \Magento\Framework\Data\Collection\Db\FetchStrategyInterface $fetchStrategy,
         \Magento\Framework\Event\ManagerInterface $eventManager,

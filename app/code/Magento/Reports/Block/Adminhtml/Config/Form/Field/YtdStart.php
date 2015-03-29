@@ -12,17 +12,18 @@ use Magento\Framework\Data\Form\Element\AbstractElement;
  *
  * @author     Magento Core Team <core@magentocommerce.com>
  */
-class YtdStart extends \Magento\Backend\Block\System\Config\Form\Field
+class YtdStart extends \Magento\Config\Block\System\Config\Form\Field
 {
     /**
      * @param AbstractElement $element
      * @return string
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     protected function _getElementHtml(AbstractElement $element)
     {
         $_months = [];
         for ($i = 1; $i <= 12; $i++) {
-            $_months[$i] = $this->_localeDate->date(mktime(null, null, null, $i))->get(\Zend_Date::MONTH_NAME);
+            $_months[$i] = $this->_localeDate->date(mktime(null, null, null, $i))->format('m');
         }
 
         $_days = [];

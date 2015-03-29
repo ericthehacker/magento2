@@ -11,6 +11,7 @@ use Magento\CatalogUrlRewrite\Model\ProductUrlRewriteGenerator;
  * Sitemap resource product collection model
  *
  * @author      Magento Core Team <core@magentocommerce.com>
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Product extends \Magento\Framework\Model\Resource\Db\AbstractDb
 {
@@ -82,7 +83,7 @@ class Product extends \Magento\Framework\Model\Resource\Db\AbstractDb
     protected $_mediaConfig;
 
     /**
-     * @param \Magento\Framework\App\Resource $resource
+     * @param \Magento\Framework\Model\Resource\Db\Context $context
      * @param \Magento\Sitemap\Helper\Data $sitemapData
      * @param \Magento\Catalog\Model\Resource\Product $productResource
      * @param \Magento\Store\Model\StoreManagerInterface $storeManager
@@ -91,9 +92,11 @@ class Product extends \Magento\Framework\Model\Resource\Db\AbstractDb
      * @param \Magento\Catalog\Model\Resource\Product\Attribute\Backend\Media $mediaAttribute
      * @param \Magento\Eav\Model\ConfigFactory $eavConfigFactory
      * @param \Magento\Catalog\Model\Product\Media\Config $mediaConfig
+     * @param string|null $resourcePrefix
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
-        \Magento\Framework\App\Resource $resource,
+        \Magento\Framework\Model\Resource\Db\Context $context,
         \Magento\Sitemap\Helper\Data $sitemapData,
         \Magento\Catalog\Model\Resource\Product $productResource,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
@@ -101,7 +104,8 @@ class Product extends \Magento\Framework\Model\Resource\Db\AbstractDb
         \Magento\Catalog\Model\Product\Attribute\Source\Status $productStatus,
         \Magento\Catalog\Model\Resource\Product\Attribute\Backend\Media $mediaAttribute,
         \Magento\Eav\Model\ConfigFactory $eavConfigFactory,
-        \Magento\Catalog\Model\Product\Media\Config $mediaConfig
+        \Magento\Catalog\Model\Product\Media\Config $mediaConfig,
+        $resourcePrefix = null
     ) {
         $this->_productResource = $productResource;
         $this->_storeManager = $storeManager;
@@ -111,7 +115,7 @@ class Product extends \Magento\Framework\Model\Resource\Db\AbstractDb
         $this->_eavConfigFactory = $eavConfigFactory;
         $this->_mediaConfig = $mediaConfig;
         $this->_sitemapData = $sitemapData;
-        parent::__construct($resource);
+        parent::__construct($context, $resourcePrefix);
     }
 
     /**
@@ -412,7 +416,7 @@ class Product extends \Magento\Framework\Model\Resource\Db\AbstractDb
      */
     protected function _getMediaGalleryModel()
     {
-        if (is_null($this->_mediaGalleryModel)) {
+        if ($this->_mediaGalleryModel === null) {
             /** @var $eavConfig \Magento\Eav\Model\Config */
             $eavConfig = $this->_eavConfigFactory->create();
             /** @var $eavConfig \Magento\Eav\Model\Attribute */

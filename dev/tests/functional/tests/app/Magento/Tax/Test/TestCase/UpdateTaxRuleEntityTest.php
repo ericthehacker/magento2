@@ -9,13 +9,10 @@ namespace Magento\Tax\Test\TestCase;
 use Magento\Tax\Test\Fixture\TaxRule;
 use Magento\Tax\Test\Page\Adminhtml\TaxRuleIndex;
 use Magento\Tax\Test\Page\Adminhtml\TaxRuleNew;
-use Mtf\Fixture\FixtureFactory;
-use Mtf\ObjectManager;
-use Mtf\TestCase\Injectable;
+use Magento\Mtf\Fixture\FixtureFactory;
+use Magento\Mtf\TestCase\Injectable;
 
 /**
- * Test Flow:
- *
  * Preconditions:
  * 1. 1 simple product is created.
  * 2. Tax Rule is created.
@@ -33,6 +30,11 @@ use Mtf\TestCase\Injectable;
  */
 class UpdateTaxRuleEntityTest extends Injectable
 {
+    /* tags */
+    const MVP = 'yes';
+    const DOMAIN = 'CS';
+    /* end tags */
+
     /**
      * Tax Rule grid page.
      *
@@ -55,7 +57,7 @@ class UpdateTaxRuleEntityTest extends Injectable
      */
     public function __prepare(FixtureFactory $fixtureFactory)
     {
-        $customer = $fixtureFactory->createByCode('customerInjectable', ['dataSet' => 'johndoe_retailer']);
+        $customer = $fixtureFactory->createByCode('customer', ['dataSet' => 'johndoe_retailer']);
         $customer->persist();
 
         return ['customer' => $customer];
@@ -100,8 +102,8 @@ class UpdateTaxRuleEntityTest extends Injectable
      *
      * @return void
      */
-    public static function tearDownAfterClass()
+    public function tearDown()
     {
-        ObjectManager::getInstance()->create('Magento\Tax\Test\TestStep\DeleteAllTaxRulesStep', [])->run();
+        $this->objectManager->create('Magento\Tax\Test\TestStep\DeleteAllTaxRulesStep', [])->run();
     }
 }

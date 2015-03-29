@@ -6,17 +6,13 @@
 
 namespace Magento\Tax\Test\Constraint;
 
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertTaxRateInTaxRule
  */
 class AssertTaxRateInTaxRule extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * @return void
      */

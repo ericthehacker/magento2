@@ -8,7 +8,7 @@ namespace Magento\Integration\Test\Constraint;
 
 use Magento\Integration\Test\Fixture\Integration;
 use Magento\Integration\Test\Page\Adminhtml\IntegrationIndex;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertIntegrationSuccessReauthorizeMessage
@@ -16,10 +16,6 @@ use Mtf\Constraint\AbstractConstraint;
  */
 class AssertIntegrationSuccessReauthorizeMessage extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'high';
-    /* end tags */
-
     /**
      * Integration success reauthorize message.
      */

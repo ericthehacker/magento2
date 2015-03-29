@@ -6,17 +6,13 @@
 
 namespace Magento\Catalog\Test\Constraint;
 
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertAttributeSearchableByLabel
  */
 class AssertAttributeSearchableByLabel extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * @return void
      */

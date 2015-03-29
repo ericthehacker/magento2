@@ -7,17 +7,13 @@
 namespace Magento\Sitemap\Test\Constraint;
 
 use Magento\Sitemap\Test\Page\Adminhtml\SitemapIndex;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertSitemapSuccessSaveMessage
  */
 class AssertSitemapSuccessSaveMessage extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     const SUCCESS_MESSAGE = 'The sitemap has been saved.';
 
     /**

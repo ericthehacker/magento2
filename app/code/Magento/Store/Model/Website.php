@@ -26,6 +26,8 @@ use Magento\Store\Model\StoreManagerInterface;
  * @method \Magento\Store\Model\Website setDefaultGroupId(int $value)
  * @method int getIsDefault()
  * @method \Magento\Store\Model\Website setIsDefault(int $value)
+ * @SuppressWarnings(PHPMD.TooManyFields)
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Website extends \Magento\Framework\Model\AbstractModel implements
     \Magento\Framework\Object\IdentityInterface,
@@ -133,7 +135,7 @@ class Website extends \Magento\Framework\Model\AbstractModel implements
     private $_isReadOnly = false;
 
     /**
-     * @var \Magento\Core\Model\Resource\Config\Data
+     * @var \Magento\Config\Model\Resource\Config\Data
      */
     protected $_configDataResource;
 
@@ -165,7 +167,7 @@ class Website extends \Magento\Framework\Model\AbstractModel implements
     /**
      * @param \Magento\Framework\Model\Context $context
      * @param \Magento\Framework\Registry $registry
-     * @param \Magento\Core\Model\Resource\Config\Data $configDataResource
+     * @param \Magento\Config\Model\Resource\Config\Data $configDataResource
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $coreConfig
      * @param \Magento\Store\Model\StoreFactory $storeFactory
      * @param \Magento\Store\Model\GroupFactory $storeGroupFactory
@@ -175,11 +177,12 @@ class Website extends \Magento\Framework\Model\AbstractModel implements
      * @param \Magento\Framework\Model\Resource\AbstractResource $resource
      * @param \Magento\Framework\Data\Collection\Db $resourceCollection
      * @param array $data
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         \Magento\Framework\Model\Context $context,
         \Magento\Framework\Registry $registry,
-        \Magento\Core\Model\Resource\Config\Data $configDataResource,
+        \Magento\Config\Model\Resource\Config\Data $configDataResource,
         \Magento\Framework\App\Config\ScopeConfigInterface $coreConfig,
         \Magento\Store\Model\StoreFactory $storeFactory,
         \Magento\Store\Model\GroupFactory $storeGroupFactory,
@@ -219,7 +222,7 @@ class Website extends \Magento\Framework\Model\AbstractModel implements
      */
     public function load($id, $field = null)
     {
-        if (!is_numeric($id) && is_null($field)) {
+        if (!is_numeric($id) && $field === null) {
             $this->_getResource()->load($this, $id, 'code');
             return $this;
         }
@@ -305,7 +308,7 @@ class Website extends \Magento\Framework\Model\AbstractModel implements
      */
     public function getGroups()
     {
-        if (is_null($this->_groups)) {
+        if ($this->_groups === null) {
             $this->_loadGroups();
         }
         return $this->_groups;
@@ -318,7 +321,7 @@ class Website extends \Magento\Framework\Model\AbstractModel implements
      */
     public function getGroupIds()
     {
-        if (is_null($this->_groups)) {
+        if ($this->_groups === null) {
             $this->_loadGroups();
         }
         return $this->_groupIds;
@@ -331,7 +334,7 @@ class Website extends \Magento\Framework\Model\AbstractModel implements
      */
     public function getGroupsCount()
     {
-        if (is_null($this->_groups)) {
+        if ($this->_groups === null) {
             $this->_loadGroups();
         }
         return $this->_groupsCount;
@@ -347,7 +350,7 @@ class Website extends \Magento\Framework\Model\AbstractModel implements
         if (!$this->hasDefaultGroupId()) {
             return false;
         }
-        if (is_null($this->_groups)) {
+        if ($this->_groups === null) {
             $this->_loadGroups();
         }
         return $this->_defaultGroup;
@@ -411,7 +414,7 @@ class Website extends \Magento\Framework\Model\AbstractModel implements
      */
     public function getStores()
     {
-        if (is_null($this->_stores)) {
+        if ($this->_stores === null) {
             $this->_loadStores();
         }
         return $this->_stores;
@@ -424,7 +427,7 @@ class Website extends \Magento\Framework\Model\AbstractModel implements
      */
     public function getStoreIds()
     {
-        if (is_null($this->_stores)) {
+        if ($this->_stores === null) {
             $this->_loadStores();
         }
         return $this->_storeIds;
@@ -437,7 +440,7 @@ class Website extends \Magento\Framework\Model\AbstractModel implements
      */
     public function getStoreCodes()
     {
-        if (is_null($this->_stores)) {
+        if ($this->_stores === null) {
             $this->_loadStores();
         }
         return $this->_storeCodes;
@@ -450,7 +453,7 @@ class Website extends \Magento\Framework\Model\AbstractModel implements
      */
     public function getStoresCount()
     {
-        if (is_null($this->_stores)) {
+        if ($this->_stores === null) {
             $this->_loadStores();
         }
         return $this->_storesCount;
@@ -466,7 +469,7 @@ class Website extends \Magento\Framework\Model\AbstractModel implements
         if ($this->_isReadOnly || !$this->getId()) {
             return false;
         }
-        if (is_null($this->_isCanDelete)) {
+        if ($this->_isCanDelete === null) {
             $this->_isCanDelete = $this->_websiteFactory->create()->getCollection()->getSize() > 1 &&
                 !$this->getIsDefault();
         }
@@ -557,7 +560,7 @@ class Website extends \Magento\Framework\Model\AbstractModel implements
     public function getBaseCurrency()
     {
         $currency = $this->getData('base_currency');
-        if (is_null($currency)) {
+        if ($currency === null) {
             $currency = $this->_currencyFactory->create()->load($this->getBaseCurrencyCode());
             $this->setData('base_currency', $currency);
         }

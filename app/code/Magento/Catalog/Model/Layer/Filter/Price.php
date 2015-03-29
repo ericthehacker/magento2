@@ -3,12 +3,16 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
+
+// @codingStandardsIgnoreFile
+
 namespace Magento\Catalog\Model\Layer\Filter;
 
 /**
  * Layer price filter
  *
  * @author      Magento Core Team <core@magentocommerce.com>
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Price extends \Magento\Catalog\Model\Layer\Filter\AbstractFilter
 {
@@ -70,6 +74,7 @@ class Price extends \Magento\Catalog\Model\Layer\Filter\AbstractFilter
      * @param Dynamic\AlgorithmFactory $algorithmFactory
      * @param DataProvider\PriceFactory $dataProviderFactory
      * @param array $data
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         \Magento\Catalog\Model\Layer\Filter\ItemFactory $filterItemFactory,
@@ -205,7 +210,7 @@ class Price extends \Magento\Catalog\Model\Layer\Filter\AbstractFilter
     /**
      * Get 'clear price' link text
      *
-     * @return false|string
+     * @return \Magento\Framework\Phrase|bool
      */
     public function getClearLinkText()
     {
@@ -222,7 +227,7 @@ class Price extends \Magento\Catalog\Model\Layer\Filter\AbstractFilter
      *
      * @param float|string $fromPrice
      * @param float|string $toPrice
-     * @return string
+     * @return float|\Magento\Framework\Phrase
      */
     protected function _renderRangeLabel($fromPrice, $toPrice)
     {
@@ -264,7 +269,7 @@ class Price extends \Magento\Catalog\Model\Layer\Filter\AbstractFilter
     /**
      * Get data for build price filter items
      * @return array
-     * @throws \Magento\Framework\Model\Exception
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     protected function _getItemsData()
     {

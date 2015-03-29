@@ -8,7 +8,7 @@ namespace Magento\CatalogSearch\Test\Constraint;
 
 use Magento\CatalogSearch\Test\Fixture\CatalogSearchQuery;
 use Magento\CatalogSearch\Test\Page\Adminhtml\CatalogSearchIndex;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertSearchTermMassActionsNotInGrid
@@ -16,10 +16,6 @@ use Mtf\Constraint\AbstractConstraint;
  */
 class AssertSearchTermMassActionsNotInGrid extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'high';
-    /* end tags */
-
     /**
      * Assert that after mass delete search terms on grid page are not displayed
      *

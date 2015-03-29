@@ -5,10 +5,11 @@
  * See COPYING.txt for license details.
  */
 
+// @codingStandardsIgnoreFile
+
 namespace Magento\Catalog\Api;
 
 use Magento\TestFramework\TestCase\WebapiAbstract;
-use Magento\Webapi\Model\Rest\Config as RestConfig;
 
 class ProductTierPriceManagementTest extends WebapiAbstract
 {
@@ -26,7 +27,7 @@ class ProductTierPriceManagementTest extends WebapiAbstract
         $serviceInfo = [
             'rest' => [
                 'resourcePath' => self::RESOURCE_PATH . $productSku . '/group-prices/' . $customerGroupId . '/tiers',
-                'httpMethod' => RestConfig::HTTP_METHOD_GET,
+                'httpMethod' => \Magento\Framework\Webapi\Rest\Request::HTTP_METHOD_GET,
             ],
             'soap' => [
                 'service' => self::SERVICE_NAME,
@@ -36,9 +37,9 @@ class ProductTierPriceManagementTest extends WebapiAbstract
         ];
 
         $groupPriceList = $this->_webApiCall(
-                $serviceInfo,
-                ['productSku' => $productSku, 'customerGroupId' => $customerGroupId]
-            );
+            $serviceInfo,
+            ['sku' => $productSku, 'customerGroupId' => $customerGroupId]
+        );
 
         $this->assertCount($count, $groupPriceList);
         if ($count) {
@@ -69,7 +70,7 @@ class ProductTierPriceManagementTest extends WebapiAbstract
             'rest' => [
                 'resourcePath' =>   self::RESOURCE_PATH
                     . $productSku . "/group-prices/" . $customerGroupId . "/tiers/" . $qty,
-                'httpMethod' => RestConfig::HTTP_METHOD_DELETE,
+                'httpMethod' => \Magento\Framework\Webapi\Rest\Request::HTTP_METHOD_DELETE,
             ],
             'soap' => [
                 'service' => self::SERVICE_NAME,
@@ -77,7 +78,7 @@ class ProductTierPriceManagementTest extends WebapiAbstract
                 'operation' => self::SERVICE_NAME . 'Remove',
             ],
         ];
-        $requestData = ['productSku' => $productSku, 'customerGroupId' => $customerGroupId, 'qty' => $qty];
+        $requestData = ['sku' => $productSku, 'customerGroupId' => $customerGroupId, 'qty' => $qty];
         $this->assertTrue($this->_webApiCall($serviceInfo, $requestData));
     }
 
@@ -103,7 +104,7 @@ class ProductTierPriceManagementTest extends WebapiAbstract
             'rest' => [
                 'resourcePath' => '/V1/products/' . $productSku
                     . '/group-prices/' . $customerGroupId . '/tiers/' . $qty . '/price/' . $price,
-                'httpMethod' => RestConfig::HTTP_METHOD_POST,
+                'httpMethod' => \Magento\Framework\Webapi\Rest\Request::HTTP_METHOD_POST,
             ],
             'soap' => [
                 'service' => self::SERVICE_NAME,
@@ -113,7 +114,7 @@ class ProductTierPriceManagementTest extends WebapiAbstract
         ];
 
         $requestData = [
-            'productSku' => $productSku,
+            'sku' => $productSku,
             'customerGroupId' => $customerGroupId,
             'qty' => $qty,
             'price' => $price,
@@ -142,7 +143,7 @@ class ProductTierPriceManagementTest extends WebapiAbstract
             'rest' => [
                 'resourcePath' => '/V1/products/' . $productSku
                     . '/group-prices/' . $customerGroupId . '/tiers/' . $qty . '/price/' . $price,
-                'httpMethod' => RestConfig::HTTP_METHOD_POST,
+                'httpMethod' => \Magento\Framework\Webapi\Rest\Request::HTTP_METHOD_POST,
             ],
             'soap' => [
                 'service' => self::SERVICE_NAME,
@@ -151,7 +152,7 @@ class ProductTierPriceManagementTest extends WebapiAbstract
             ],
         ];
         $requestData = [
-            'productSku' => $productSku,
+            'sku' => $productSku,
             'customerGroupId' => $customerGroupId,
             'qty' => $qty,
             'price' => $price,
@@ -180,7 +181,7 @@ class ProductTierPriceManagementTest extends WebapiAbstract
             'rest' => [
                 'resourcePath' => '/V1/products/' . $productSku
                     . '/group-prices/' . $customerGroupId . '/tiers/' . $qty . '/price/' . $price,
-                'httpMethod' => RestConfig::HTTP_METHOD_POST,
+                'httpMethod' => \Magento\Framework\Webapi\Rest\Request::HTTP_METHOD_POST,
             ],
             'soap' => [
                 'service' => self::SERVICE_NAME,
@@ -189,7 +190,7 @@ class ProductTierPriceManagementTest extends WebapiAbstract
             ],
         ];
         $requestData = [
-            'productSku' => $productSku,
+            'sku' => $productSku,
             'customerGroupId' => $customerGroupId,
             'qty' => $qty,
             'price' => $price,

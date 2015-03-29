@@ -5,14 +5,14 @@
  */
 ?>
 
-<script type="text/javascript">
+<script>
 require([
 	'Magento_DesignEditor/js/tools-files'
 ], function(){
 
 //<![CDATA[
-MediabrowserInstance = new Mediabrowser(<?php echo $this->getFilebrowserSetupObject() ?>);
-MediabrowserInstance.storeId = '<?php echo $this->getStoreId() ?>';
+MediabrowserInstance = new Mediabrowser(<?php echo $block->getFilebrowserSetupObject() ?>);
+MediabrowserInstance.storeId = '<?php echo $block->getStoreId() ?>';
 //]]>
 
 });

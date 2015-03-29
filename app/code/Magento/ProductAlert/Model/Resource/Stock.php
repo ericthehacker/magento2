@@ -3,6 +3,9 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
+
+// @codingStandardsIgnoreFile
+
 namespace Magento\ProductAlert\Model\Resource;
 
 /**
@@ -16,13 +19,17 @@ class Stock extends \Magento\ProductAlert\Model\Resource\AbstractResource
     protected $_dateFactory;
 
     /**
-     * @param \Magento\Framework\App\Resource $resource
+     * @param \Magento\Framework\Model\Resource\Db\Context $context
      * @param \Magento\Framework\Stdlib\DateTime\DateTimeFactory $dateFactory
+     * @param string|null $resourcePrefix
      */
-    public function __construct(\Magento\Framework\App\Resource $resource, \Magento\Framework\Stdlib\DateTime\DateTimeFactory $dateFactory)
-    {
+    public function __construct(
+        \Magento\Framework\Model\Resource\Db\Context $context,
+        \Magento\Framework\Stdlib\DateTime\DateTimeFactory $dateFactory,
+        $resourcePrefix = null
+    ) {
         $this->_dateFactory = $dateFactory;
-        parent::__construct($resource);
+        parent::__construct($context, $resourcePrefix);
     }
 
     /**

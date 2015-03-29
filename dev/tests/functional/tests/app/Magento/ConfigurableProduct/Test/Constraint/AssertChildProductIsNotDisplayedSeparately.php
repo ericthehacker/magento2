@@ -8,8 +8,8 @@ namespace Magento\ConfigurableProduct\Test\Constraint;
 
 use Magento\CatalogSearch\Test\Page\CatalogsearchResult;
 use Magento\Cms\Test\Page\CmsIndex;
-use Magento\ConfigurableProduct\Test\Fixture\ConfigurableProductInjectable;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\ConfigurableProduct\Test\Fixture\ConfigurableProduct;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertChildProductIsNotDisplayedSeparately
@@ -26,13 +26,13 @@ class AssertChildProductIsNotDisplayedSeparately extends AbstractConstraint
      *
      * @param CatalogSearchResult $catalogSearchResult
      * @param CmsIndex $cmsIndex
-     * @param ConfigurableProductInjectable $product
+     * @param ConfigurableProduct $product
      * @return void
      */
     public function processAssert(
         CatalogsearchResult $catalogSearchResult,
         CmsIndex $cmsIndex,
-        ConfigurableProductInjectable $product
+        ConfigurableProduct $product
     ) {
         $configurableAttributesData = $product->getConfigurableAttributesData();
         $errors = [];

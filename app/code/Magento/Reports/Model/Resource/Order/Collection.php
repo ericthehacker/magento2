@@ -3,6 +3,9 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
+
+// @codingStandardsIgnoreFile
+
 namespace Magento\Reports\Model\Resource\Order;
 
 use Magento\Framework\DB\Select;
@@ -11,6 +14,7 @@ use Magento\Framework\DB\Select;
  * Reports orders collection
  *
  * @author      Magento Core Team <core@magentocommerce.com>
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Collection extends \Magento\Sales\Model\Resource\Order\Collection
 {
@@ -56,7 +60,7 @@ class Collection extends \Magento\Sales\Model\Resource\Order\Collection
     protected $_reportOrderFactory;
 
     /**
-     * @param \Magento\Core\Model\EntityFactory $entityFactory
+     * @param \Magento\Framework\Data\Collection\EntityFactory $entityFactory
      * @param \Psr\Log\LoggerInterface $logger
      * @param \Magento\Framework\Data\Collection\Db\FetchStrategyInterface $fetchStrategy
      * @param \Magento\Framework\Event\ManagerInterface $eventManager
@@ -72,7 +76,7 @@ class Collection extends \Magento\Sales\Model\Resource\Order\Collection
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
-        \Magento\Core\Model\EntityFactory $entityFactory,
+        \Magento\Framework\Data\Collection\EntityFactory $entityFactory,
         \Psr\Log\LoggerInterface $logger,
         \Magento\Framework\Data\Collection\Db\FetchStrategyInterface $fetchStrategy,
         \Magento\Framework\Event\ManagerInterface $eventManager,
@@ -106,6 +110,7 @@ class Collection extends \Magento\Sales\Model\Resource\Order\Collection
      *
      * @param string $range
      * @return $this
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function checkIsLive($range)
     {
@@ -362,16 +367,21 @@ class Collection extends \Magento\Sales\Model\Resource\Order\Collection
      * @param string $tzFrom
      * @param string $tzTo
      * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     protected function _getTZRangeExpressionForAttribute($range, $attribute, $tzFrom = '+00:00', $tzTo = null)
     {
         if (null == $tzTo) {
-            $tzTo = $this->_localeDate->scopeDate()->toString(\Zend_Date::GMT_DIFF_SEP);
+            $tzTo = $this->_localeDate->scopeDate()->format('P');
         }
         $adapter = $this->getConnection();
         $expression = $this->_getRangeExpression($range);
         $attribute = $adapter->quoteIdentifier($attribute);
-        $periodExpr = $adapter->getDateAddSql($attribute, $tzTo, \Magento\Framework\DB\Adapter\AdapterInterface::INTERVAL_HOUR);
+        $periodExpr = $adapter->getDateAddSql(
+            $attribute,
+            $tzTo,
+            \Magento\Framework\DB\Adapter\AdapterInterface::INTERVAL_HOUR
+        );
 
         return str_replace('{{attribute}}', $periodExpr, $expression);
     }
@@ -384,37 +394,36 @@ class Collection extends \Magento\Sales\Model\Resource\Order\Collection
      * @param string $customEnd
      * @param bool $returnObjects
      * @return array
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function getDateRange($range, $customStart, $customEnd, $returnObjects = false)
     {
-        $dateEnd = $this->_localeDate->date();
-        $dateStart = clone $dateEnd;
+        $dateEnd = new \DateTime();
+        $dateStart = new \DateTime();
 
         // go to the end of a day
-        $dateEnd->setHour(23);
-        $dateEnd->setMinute(59);
-        $dateEnd->setSecond(59);
+        $dateEnd->setTime(23, 59, 59);
 
-        $dateStart->setHour(0);
-        $dateStart->setMinute(0);
-        $dateStart->setSecond(0);
+        $dateStart->setTime(0, 0, 0);
 
         switch ($range) {
             case '24h':
-                $dateEnd = $this->_localeDate->date();
-                $dateEnd->addHour(1);
+                $dateEnd = new \DateTime();
+                $dateEnd->modify('+1 hour');
                 $dateStart = clone $dateEnd;
-                $dateStart->subDay(1);
+                $dateStart->modify('-1 day');
                 break;
 
             case '7d':
                 // substract 6 days we need to include
                 // only today and not hte last one from range
-                $dateStart->subDay(6);
+                $dateStart->modify('-6 days');
                 break;
 
             case '1m':
-                $dateStart->setDay(
+                $dateStart->setDate(
+                    $dateStart->format('Y'),
+                    $dateStart->format('m'),
                     $this->_scopeConfig->getValue(
                         'reports/dashboard/mtd_start',
                         \Magento\Store\Model\ScopeInterface::SCOPE_STORE
@@ -438,16 +447,15 @@ class Collection extends \Magento\Sales\Model\Resource\Order\Collection
                 );
                 $startMonth = isset($startMonthDay[0]) ? (int)$startMonthDay[0] : 1;
                 $startDay = isset($startMonthDay[1]) ? (int)$startMonthDay[1] : 1;
-                $dateStart->setMonth($startMonth);
-                $dateStart->setDay($startDay);
+                $dateStart->setDate($dateStart->format('Y'), $startMonth, $startDay);
                 if ($range == '2y') {
-                    $dateStart->subYear(1);
+                    $dateStart->modify('-1 year');
                 }
                 break;
         }
 
-        $dateStart->setTimezone('Etc/UTC');
-        $dateEnd->setTimezone('Etc/UTC');
+        $dateStart->setTimezone(new \DateTimeZone('Etc/UTC'));
+        $dateEnd->setTimezone(new \DateTimeZone('Etc/UTC'));
 
         if ($returnObjects) {
             return [$dateStart, $dateEnd];
@@ -540,6 +548,7 @@ class Collection extends \Magento\Sales\Model\Resource\Order\Collection
      *
      * @param int $isFilter
      * @return $this
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     protected function _calculateTotalsAggregated($isFilter = 0)
     {
@@ -888,8 +897,8 @@ class Collection extends \Magento\Sales\Model\Resource\Order\Collection
         $this->addFieldToFilter(
             $fieldToFilter,
             [
-                'from' => $from->toString(\Magento\Framework\Stdlib\DateTime::DATETIME_INTERNAL_FORMAT),
-                'to' => $to->toString(\Magento\Framework\Stdlib\DateTime::DATETIME_INTERNAL_FORMAT)
+                'from' => $from->format(\Magento\Framework\Stdlib\DateTime::DATETIME_INTERNAL_FORMAT),
+                'to' => $to->format(\Magento\Framework\Stdlib\DateTime::DATETIME_INTERNAL_FORMAT)
             ]
         );
 

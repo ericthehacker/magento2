@@ -8,7 +8,7 @@ namespace Magento\Reports\Test\Constraint;
 
 use Magento\Catalog\Test\Fixture\CatalogProductSimple;
 use Magento\Reports\Test\Page\Adminhtml\ShopCartProductReport;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertProductInCartResult
@@ -16,10 +16,6 @@ use Mtf\Constraint\AbstractConstraint;
  */
 class AssertProductInCartResult extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Assert that product is present in Products in Carts report grid by name, price, carts
      *

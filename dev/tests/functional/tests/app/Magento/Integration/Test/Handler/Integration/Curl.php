@@ -6,12 +6,12 @@
 
 namespace Magento\Integration\Test\Handler\Integration;
 
-use Mtf\Fixture\FixtureInterface;
-use Mtf\Handler\Curl as AbstractCurl;
-use Mtf\System\Config;
-use Mtf\Util\Protocol\CurlInterface;
-use Mtf\Util\Protocol\CurlTransport;
-use Mtf\Util\Protocol\CurlTransport\BackendDecorator;
+use Magento\Mtf\Fixture\FixtureInterface;
+use Magento\Mtf\Handler\Curl as AbstractCurl;
+use Magento\Mtf\Config;
+use Magento\Mtf\Util\Protocol\CurlInterface;
+use Magento\Mtf\Util\Protocol\CurlTransport;
+use Magento\Mtf\Util\Protocol\CurlTransport\BackendDecorator;
 
 /**
  * Class Curl
@@ -32,7 +32,7 @@ class Curl extends AbstractCurl implements IntegrationInterface
         $data = $fixture->getData();
         $data['all_resources'] = ($data['resource_access'] === 'All') ? 1 : 0;
         /** Initialize cURL client which is authenticated to the Magento backend */
-        $curl = new BackendDecorator(new CurlTransport(), new Config());
+        $curl = new BackendDecorator(new CurlTransport(), $this->_configuration);
         /** Create new integration via cURL */
         $url = $_ENV['app_backend_url'] . 'admin/integration/save';
         $curl->write(CurlInterface::POST, $url, '1.0', [], $data);

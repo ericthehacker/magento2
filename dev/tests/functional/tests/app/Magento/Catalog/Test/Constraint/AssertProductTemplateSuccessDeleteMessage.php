@@ -7,7 +7,7 @@
 namespace Magento\Catalog\Test\Constraint;
 
 use Magento\Catalog\Test\Page\Adminhtml\CatalogProductSetIndex;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertProductTemplateSuccessDeleteMessage
@@ -15,10 +15,6 @@ use Mtf\Constraint\AbstractConstraint;
  */
 class AssertProductTemplateSuccessDeleteMessage extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'high';
-    /* end tags */
-
     /**
      * Text value to be checked
      */

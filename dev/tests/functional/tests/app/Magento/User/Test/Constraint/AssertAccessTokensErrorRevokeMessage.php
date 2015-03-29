@@ -7,7 +7,7 @@
 namespace Magento\User\Test\Constraint;
 
 use Magento\User\Test\Page\Adminhtml\UserEdit;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertAccessTokensErrorRevokeMessage
@@ -15,10 +15,6 @@ use Mtf\Constraint\AbstractConstraint;
  */
 class AssertAccessTokensErrorRevokeMessage extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * User revoke tokens error message.
      */

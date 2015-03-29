@@ -31,11 +31,12 @@ class Save extends \Magento\Search\Controller\Adminhtml\Term
      * Save search query
      *
      * @return \Magento\Backend\Model\View\Result\Redirect
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function execute()
     {
         $hasError = false;
-        $data = $this->getRequest()->getPost();
+        $data = $this->getRequest()->getPostValue();
         $queryId = $this->getRequest()->getPost('query_id', null);
         /** @var \Magento\Backend\Model\View\Result\Redirect $redirectResult */
         $redirectResult = $this->resultRedirectFactory->create();
@@ -52,7 +53,7 @@ class Save extends \Magento\Search\Controller\Adminhtml\Term
                     $model->setStoreId($storeId);
                     $model->loadByQueryText($queryText);
                     if ($model->getId() && $model->getId() != $queryId) {
-                        throw new \Magento\Framework\Model\Exception(
+                        throw new \Magento\Framework\Exception\LocalizedException(
                             __('You already have an identical search term query.')
                         );
                     } elseif (!$model->getId() && $queryId) {
@@ -66,7 +67,7 @@ class Save extends \Magento\Search\Controller\Adminhtml\Term
                 $model->setIsProcessed(0);
                 $model->save();
                 $this->messageManager->addSuccess(__('You saved the search term.'));
-            } catch (\Magento\Framework\Model\Exception $e) {
+            } catch (\Magento\Framework\Exception\LocalizedException $e) {
                 $this->messageManager->addError($e->getMessage());
                 $hasError = true;
             } catch (\Exception $e) {

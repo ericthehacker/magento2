@@ -1,14 +1,13 @@
 <?php
 /**
- * @spi
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Customer\Test\Block\Account;
 
-use Magento\Customer\Test\Fixture\AddressInjectable;
-use Mtf\Block\Block;
-use Mtf\Client\Element\Locator;
+use Magento\Customer\Test\Fixture\Address;
+use Magento\Mtf\Block\Block;
+use Magento\Mtf\Client\Locator;
 
 /**
  * Class AddressesAdditional
@@ -40,14 +39,14 @@ class AddressesAdditional extends Block
     /**
      * Delete Additional Address
      *
-     * @param AddressInjectable $address
+     * @param Address $address
      * @return void
      */
-    public function deleteAdditionalAddress(AddressInjectable $address)
+    public function deleteAdditionalAddress(Address $address)
     {
         $this->_rootElement->find(sprintf($this->addressSelector, $address->getStreet()), Locator::SELECTOR_XPATH)
             ->find($this->deleteAddressLink)->click();
-        $this->_rootElement->acceptAlert();
+        $this->browser->acceptAlert();
     }
 
     /**

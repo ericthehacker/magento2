@@ -7,8 +7,8 @@
 namespace Magento\ConfigurableProduct\Test\Constraint;
 
 use Magento\Catalog\Test\Page\Adminhtml\CatalogProductIndex;
-use Magento\ConfigurableProduct\Test\Fixture\ConfigurableProductInjectable;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\ConfigurableProduct\Test\Fixture\ConfigurableProduct;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertChildProductsInGrid
@@ -16,10 +16,6 @@ use Mtf\Constraint\AbstractConstraint;
  */
 class AssertChildProductsInGrid extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Default status visibility on child products
      */
@@ -29,10 +25,10 @@ class AssertChildProductsInGrid extends AbstractConstraint
      * Assert that child products generated during configurable product are present in products grid
      *
      * @param CatalogProductIndex $productGrid
-     * @param ConfigurableProductInjectable $product
+     * @param ConfigurableProduct $product
      * @return void
      */
-    public function processAssert(CatalogProductIndex $productGrid, ConfigurableProductInjectable $product)
+    public function processAssert(CatalogProductIndex $productGrid, ConfigurableProduct $product)
     {
         $configurableAttributesData = $product->getConfigurableAttributesData();
         $productType = $product->getIsVirtual() === "Yes" ? 'Virtual Product' : 'Simple Product';
@@ -56,7 +52,7 @@ class AssertChildProductsInGrid extends AbstractConstraint
             }
         }
 
-        \PHPUnit_Framework_Assert::assertEmpty($errors, implode($errors, ' '));
+        \PHPUnit_Framework_Assert::assertEmpty($errors, implode(' ', $errors));
     }
 
     /**

@@ -45,15 +45,17 @@ class StockItem
      * Initialize stock item
      *
      * @param \Magento\CatalogInventory\Api\Data\StockItemInterface $stockItem
-     * @param \Magento\Sales\Model\Quote\Item $quoteItem
+     * @param \Magento\Quote\Model\Quote\Item $quoteItem
      * @param int $qty
      *
      * @return \Magento\Framework\Object
-     * @throws \Magento\Framework\Model\Exception
+     * @throws \Magento\Framework\Exception\LocalizedException
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     public function initialize(
         \Magento\CatalogInventory\Api\Data\StockItemInterface $stockItem,
-        \Magento\Sales\Model\Quote\Item $quoteItem,
+        \Magento\Quote\Model\Quote\Item $quoteItem,
         $qty
     ) {
         /**
@@ -78,7 +80,7 @@ class StockItem
         }
 
         $productTypeCustomOption = $quoteItem->getProduct()->getCustomOption('product_type');
-        if (!is_null($productTypeCustomOption)) {
+        if ($productTypeCustomOption !== null) {
             // Check if product related to current item is a part of product that represents product set
             if ($this->typeConfig->isProductSet($productTypeCustomOption->getValue())) {
                 $stockItem->setIsChildItem(true);
@@ -99,7 +101,7 @@ class StockItem
             $stockItem->unsIsChildItem();
         }
 
-        if (!is_null($result->getItemIsQtyDecimal())) {
+        if ($result->getItemIsQtyDecimal() !== null) {
             $quoteItem->setIsQtyDecimal($result->getItemIsQtyDecimal());
             if ($quoteItem->getParentItem()) {
                 $quoteItem->getParentItem()->setIsQtyDecimal($result->getItemIsQtyDecimal());
@@ -120,15 +122,15 @@ class StockItem
             $quoteItem->setData('qty', $result->getOrigQty());
         }
 
-        if (!is_null($result->getItemUseOldQty())) {
+        if ($result->getItemUseOldQty() !== null) {
             $quoteItem->setUseOldQty($result->getItemUseOldQty());
         }
 
-        if (!is_null($result->getMessage())) {
+        if ($result->getMessage() !== null) {
             $quoteItem->setMessage($result->getMessage());
         }
 
-        if (!is_null($result->getItemBackorders())) {
+        if ($result->getItemBackorders() !== null) {
             $quoteItem->setBackorders($result->getItemBackorders());
         }
 

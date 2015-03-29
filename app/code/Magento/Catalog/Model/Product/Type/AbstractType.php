@@ -10,6 +10,10 @@ use Magento\Framework\App\Filesystem\DirectoryList;
 
 /**
  * Abstract model for product type implementation
+ * @SuppressWarnings(PHPMD.ExcessivePublicCount)
+ * @SuppressWarnings(PHPMD.TooManyFields)
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 abstract class AbstractType
 {
@@ -92,12 +96,7 @@ abstract class AbstractType
     protected $_filesystem;
 
     /**
-     * @var \Magento\Core\Helper\Data
-     */
-    protected $_coreData;
-
-    /**
-     * @var \Magento\Core\Helper\File\Storage\Database
+     * @var \Magento\MediaStorage\Helper\File\Storage\Database
      */
     protected $_fileStorageDb;
 
@@ -161,20 +160,19 @@ abstract class AbstractType
      * @param \Magento\Eav\Model\Config $eavConfig
      * @param \Magento\Catalog\Model\Product\Type $catalogProductType
      * @param \Magento\Framework\Event\ManagerInterface $eventManager
-     * @param \Magento\Core\Helper\Data $coreData
-     * @param \Magento\Core\Helper\File\Storage\Database $fileStorageDb
+     * @param \Magento\MediaStorage\Helper\File\Storage\Database $fileStorageDb
      * @param \Magento\Framework\Filesystem $filesystem
      * @param \Magento\Framework\Registry $coreRegistry
      * @param \Psr\Log\LoggerInterface $logger
      * @param ProductRepositoryInterface $productRepository
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         \Magento\Catalog\Model\Product\Option $catalogProductOption,
         \Magento\Eav\Model\Config $eavConfig,
         \Magento\Catalog\Model\Product\Type $catalogProductType,
         \Magento\Framework\Event\ManagerInterface $eventManager,
-        \Magento\Core\Helper\Data $coreData,
-        \Magento\Core\Helper\File\Storage\Database $fileStorageDb,
+        \Magento\MediaStorage\Helper\File\Storage\Database $fileStorageDb,
         \Magento\Framework\Filesystem $filesystem,
         \Magento\Framework\Registry $coreRegistry,
         \Psr\Log\LoggerInterface $logger,
@@ -185,7 +183,6 @@ abstract class AbstractType
         $this->_catalogProductType = $catalogProductType;
         $this->_coreRegistry = $coreRegistry;
         $this->_eventManager = $eventManager;
-        $this->_coreData = $coreData;
         $this->_fileStorageDb = $fileStorageDb;
         $this->_filesystem = $filesystem;
         $this->_logger = $logger;
@@ -225,6 +222,7 @@ abstract class AbstractType
      * @param int $parentId
      * @param bool $required
      * @return array
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function getChildrenIds($parentId, $required = true)
     {
@@ -236,6 +234,7 @@ abstract class AbstractType
      *
      * @param int|array $childId
      * @return array
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function getParentIdsByChild($childId)
     {
@@ -319,6 +318,7 @@ abstract class AbstractType
      *
      * @param \Magento\Catalog\Model\Product $product
      * @return bool
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function isVirtual($product)
     {
@@ -349,13 +349,14 @@ abstract class AbstractType
      * @param  \Magento\Catalog\Model\Product $product
      * @param  string $processMode
      * @return array|string
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     protected function _prepareProduct(\Magento\Framework\Object $buyRequest, $product, $processMode)
     {
         // try to add custom options
         try {
             $options = $this->_prepareOptions($buyRequest, $product, $processMode);
-        } catch (\Magento\Framework\Model\Exception $e) {
+        } catch (\Magento\Framework\Exception\LocalizedException $e) {
             return $e->getMessage();
         }
 
@@ -461,7 +462,9 @@ abstract class AbstractType
      * Process File Queue
      *
      * @return $this
-     * @throws \Magento\Framework\Model\Exception
+     * @throws \Magento\Framework\Exception\LocalizedException
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     public function processFileQueue()
     {
@@ -486,7 +489,7 @@ abstract class AbstractType
                             );
                             $rootDir->create($rootDir->getRelativePath($path));
                         } catch (\Magento\Framework\Filesystem\FilesystemException $e) {
-                            throw new \Magento\Framework\Model\Exception(
+                            throw new \Magento\Framework\Exception\LocalizedException(
                                 __('We can\'t create writeable directory "%1".', $path)
                             );
                         }
@@ -500,7 +503,7 @@ abstract class AbstractType
                             if (isset($queueOptions['option'])) {
                                 $queueOptions['option']->setIsValid(false);
                             }
-                            throw new \Magento\Framework\Model\Exception(__("The file upload failed."));
+                            throw new \Magento\Framework\Exception\LocalizedException(__('The file upload failed.'));
                         }
                         $this->_fileStorageDb->saveFile($dst);
                         break;
@@ -541,7 +544,7 @@ abstract class AbstractType
     /**
      * Retrieve message for specify option(s)
      *
-     * @return string
+     * @return \Magento\Framework\Phrase
      */
     public function getSpecifyOptionMessage()
     {
@@ -588,7 +591,7 @@ abstract class AbstractType
      *
      * @param  \Magento\Catalog\Model\Product $product
      * @return $this
-     * @throws \Magento\Framework\Model\Exception
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function checkProductBuyState($product)
     {
@@ -598,7 +601,9 @@ abstract class AbstractType
                     $customOption = $product->getCustomOption(self::OPTION_PREFIX . $option->getId());
                     if (!$customOption || strlen($customOption->getValue()) == 0) {
                         $product->setSkipCheckRequiredOption(true);
-                        throw new \Magento\Framework\Model\Exception(__('The product has required options.'));
+                        throw new \Magento\Framework\Exception\LocalizedException(
+                            __('The product has required options.')
+                        );
                     }
                 }
             }
@@ -714,6 +719,7 @@ abstract class AbstractType
      *
      * @param \Magento\Catalog\Model\Product $product
      * @return bool
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function isComposite($product)
     {
@@ -725,6 +731,7 @@ abstract class AbstractType
      *
      * @param \Magento\Catalog\Model\Product $product
      * @return bool
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function canConfigure($product)
     {
@@ -828,6 +835,7 @@ abstract class AbstractType
      * @param \Magento\Catalog\Model\Product $product
      *
      * @return $this
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function updateQtyOption($options, \Magento\Framework\Object $option, $value, $product)
     {
@@ -880,6 +888,8 @@ abstract class AbstractType
      *
      * @param \Magento\Catalog\Model\Product $product
      * @return boolean false
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @SuppressWarnings(PHPMD.BooleanGetMethodName)
      */
     public function getForceChildItemQtyChanges($product)
     {
@@ -892,6 +902,7 @@ abstract class AbstractType
      * @param int|float $qty
      * @param \Magento\Catalog\Model\Product $product
      * @return float
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function prepareQuoteItemQty($qty, $product)
     {
@@ -903,7 +914,7 @@ abstract class AbstractType
      * For example if product which was added to option already removed from catalog.
      *
      * @param \Magento\Catalog\Model\Product $optionProduct
-     * @param \Magento\Sales\Model\Quote\Item\Option $option
+     * @param \Magento\Quote\Model\Quote\Item\Option $option
      * @param \Magento\Catalog\Model\Product $product
      * @return $this
      */
@@ -975,6 +986,7 @@ abstract class AbstractType
      * @param  \Magento\Catalog\Model\Product $product
      * @param  \Magento\Framework\Object $buyRequest
      * @return array
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function processBuyRequest($product, $buyRequest)
     {
@@ -1003,8 +1015,8 @@ abstract class AbstractType
             if (is_string($result)) {
                 $errors[] = $result;
             }
-        } catch (\Magento\Framework\Model\Exception $e) {
-            $errors[] = $e->getMessages();
+        } catch (\Magento\Framework\Exception\LocalizedException $e) {
+            $errors[] = $e->getMessage();
         } catch (\Exception $e) {
             $this->_logger->critical($e);
             $errors[] = __('Something went wrong while processing the request.');
@@ -1028,6 +1040,7 @@ abstract class AbstractType
      *
      * @param \Magento\Catalog\Model\Product $product
      * @return $this
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function setImageFromChildProduct(\Magento\Catalog\Model\Product $product)
     {
@@ -1039,6 +1052,7 @@ abstract class AbstractType
      *
      * @param \Magento\Catalog\Model\Product $product
      * @return array
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function getIdentities(\Magento\Catalog\Model\Product $product)
     {
@@ -1048,6 +1062,7 @@ abstract class AbstractType
     /**
      * @param \Magento\Catalog\Model\Product\Type\AbstractType $product
      * @return array
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function getAssociatedProducts($product)
     {

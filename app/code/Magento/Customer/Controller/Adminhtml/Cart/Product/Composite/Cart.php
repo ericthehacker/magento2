@@ -6,7 +6,7 @@
 namespace Magento\Customer\Controller\Adminhtml\Cart\Product\Composite;
 
 use Magento\Backend\App\Action;
-use Magento\Framework\Model\Exception;
+use Magento\Framework\Exception\LocalizedException;
 
 /**
  * Catalog composite product configuration controller
@@ -25,29 +25,29 @@ class Cart extends \Magento\Backend\App\Action
     /**
      * Quote we're working with
      *
-     * @var \Magento\Sales\Model\Quote
+     * @var \Magento\Quote\Model\Quote
      */
     protected $_quote = null;
 
     /**
      * Quote item we're working with
      *
-     * @var \Magento\Sales\Model\Quote\Item
+     * @var \Magento\Quote\Model\Quote\Item
      */
     protected $_quoteItem = null;
 
     /**
-     * @var \Magento\Sales\Model\QuoteRepository
+     * @var \Magento\Quote\Model\QuoteRepository
      */
     protected $quoteRepository;
 
     /**
      * @param Action\Context $context
-     * @param \Magento\Sales\Model\QuoteRepository $quoteRepository
+     * @param \Magento\Quote\Model\QuoteRepository $quoteRepository
      */
     public function __construct(
         Action\Context $context,
-        \Magento\Sales\Model\QuoteRepository $quoteRepository
+        \Magento\Quote\Model\QuoteRepository $quoteRepository
     ) {
         $this->quoteRepository = $quoteRepository;
         parent::__construct($context);
@@ -57,13 +57,13 @@ class Cart extends \Magento\Backend\App\Action
      * Loads customer, quote and quote item by request params
      *
      * @return $this
-     * @throws \Magento\Framework\Model\Exception
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     protected function _initData()
     {
         $this->_customerId = (int)$this->getRequest()->getParam('customer_id');
         if (!$this->_customerId) {
-            throw new \Magento\Framework\Model\Exception(__('No customer ID defined.'));
+            throw new \Magento\Framework\Exception\LocalizedException(__('No customer ID defined.'));
         }
 
         $quoteItemId = (int)$this->getRequest()->getParam('id');
@@ -80,7 +80,7 @@ class Cart extends \Magento\Backend\App\Action
 
         $this->_quoteItem = $this->_quote->getItemById($quoteItemId);
         if (!$this->_quoteItem) {
-            throw new Exception(__('Please correct the quote items and try again.'));
+            throw new LocalizedException(__('Please correct the quote items and try again.'));
         }
 
         return $this;

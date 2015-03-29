@@ -7,7 +7,7 @@
 namespace Magento\Reports\Test\Constraint;
 
 use Magento\Reports\Test\Page\Adminhtml\ProductReportView;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertProductViewsReportTotalResult
@@ -15,10 +15,6 @@ use Mtf\Constraint\AbstractConstraint;
  */
 class AssertProductViewsReportTotalResult extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Assert product info in report: product name, price and views
      *

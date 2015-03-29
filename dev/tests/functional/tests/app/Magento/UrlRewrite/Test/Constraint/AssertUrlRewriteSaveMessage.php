@@ -7,7 +7,7 @@
 namespace Magento\UrlRewrite\Test\Constraint;
 
 use Magento\UrlRewrite\Test\Page\Adminhtml\UrlRewriteIndex;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertUrlRewriteSaveMessage
@@ -15,10 +15,6 @@ use Mtf\Constraint\AbstractConstraint;
  */
 class AssertUrlRewriteSaveMessage extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     const SUCCESS_MESSAGE = 'The URL Rewrite has been saved.';
 
     /**

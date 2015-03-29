@@ -33,6 +33,9 @@ class Validator extends \Magento\Framework\Validator\AbstractValidator
      * @param \Magento\Tax\Model\Calculation\Rule $value
      * @return boolean
      * @throws Zend_Validate_Exception If validation of $value is impossible
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
+     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     public function isValid($value)
     {
@@ -79,7 +82,7 @@ class Validator extends \Magento\Framework\Validator\AbstractValidator
             foreach ($customerTaxClassIds as $customerTaxClassId) {
                 try {
                     $taxClass = $this->classModelRegistry->retrieve($customerTaxClassId);
-                    if (is_null($taxClass) || !($taxClass->getClassType() == TaxClassModel::TAX_CLASS_TYPE_CUSTOMER)) {
+                    if ($taxClass === null || !($taxClass->getClassType() == TaxClassModel::TAX_CLASS_TYPE_CUSTOMER)) {
                         $this->addErrorMessage(
                             $messages,
                             NoSuchEntityException::MESSAGE_SINGLE_FIELD,
@@ -107,7 +110,7 @@ class Validator extends \Magento\Framework\Validator\AbstractValidator
             foreach ($productTaxClassIds as $productTaxClassId) {
                 try {
                     $taxClass = $this->classModelRegistry->retrieve($productTaxClassId);
-                    if (is_null($taxClass) || !($taxClass->getClassType() == TaxClassModel::TAX_CLASS_TYPE_PRODUCT)) {
+                    if ($taxClass === null || !($taxClass->getClassType() == TaxClassModel::TAX_CLASS_TYPE_PRODUCT)) {
                         $this->addErrorMessage(
                             $messages,
                             NoSuchEntityException::MESSAGE_SINGLE_FIELD,

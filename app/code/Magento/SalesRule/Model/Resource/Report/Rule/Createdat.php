@@ -3,6 +3,9 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
+
+// @codingStandardsIgnoreFile
+
 namespace Magento\SalesRule\Model\Resource\Report\Rule;
 
 /**
@@ -42,13 +45,12 @@ class Createdat extends \Magento\Reports\Model\Resource\Report\AbstractReport
      * @param mixed $from
      * @param mixed $to
      * @return $this
+     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     protected function _aggregateByOrder($aggregationField, $from, $to)
     {
         $from = $this->_dateToUtc($from);
         $to = $this->_dateToUtc($to);
-
-        $this->_checkDates($from, $to);
 
         $table = $this->getMainTable();
         $sourceTable = $this->getTable('sales_order');

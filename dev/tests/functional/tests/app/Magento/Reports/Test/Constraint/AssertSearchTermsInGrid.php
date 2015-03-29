@@ -7,7 +7,7 @@
 namespace Magento\Reports\Test\Constraint;
 
 use Magento\Reports\Test\Page\Adminhtml\SearchIndex;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertSearchTermsInGrid
@@ -15,10 +15,6 @@ use Mtf\Constraint\AbstractConstraint;
  */
 class AssertSearchTermsInGrid extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Assert that Search Terms report in grid
      *

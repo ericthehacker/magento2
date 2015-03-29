@@ -7,9 +7,10 @@
 namespace Magento\Catalog\Test\Block\Adminhtml\Product\Edit\Tab;
 
 use Magento\Backend\Test\Block\Widget\Tab;
+use Magento\Mtf\Client\Element\SimpleElement;
 use Magento\Catalog\Test\Block\Adminhtml\Product\Edit\Tab\Options\Search\Grid;
-use Mtf\Client\Element;
-use Mtf\Client\Element\Locator;
+use Magento\Mtf\ObjectManager;
+use Magento\Mtf\Client\Locator;
 
 /**
  * Class Options
@@ -56,10 +57,12 @@ class Options extends Tab
      * Fill custom options form on tab
      *
      * @param array $fields
-     * @param Element|null $element
+     * @param SimpleElement|null $element
      * @return $this
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function fillFormTab(array $fields, Element $element = null)
+    public function fillFormTab(array $fields, SimpleElement $element = null)
     {
         $fields = reset($fields);
         if (empty($fields['value']) || !is_array($fields['value'])) {
@@ -135,13 +138,16 @@ class Options extends Tab
     /**
      * Get data of tab
      *
-     * @param array|null $fields
-     * @param Element|null $element
+     * @param array|null $tabFields
+     * @param SimpleElement|null $element
      * @return array
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function getDataFormTab($fields = null, Element $element = null)
+    public function getDataFormTab($tabFields = null, SimpleElement $element = null)
     {
-        $fields = reset($fields);
+        $fields = reset($tabFields);
+        $name = key($tabFields);
         $formData = [];
         if (empty($fields['value'])) {
             return $formData;
@@ -179,7 +185,7 @@ class Options extends Tab
                     );
                 }
             }
-            $formData[$fields['attribute_code']][$keyRoot] = $formDataItem;
+            $formData[$name][$keyRoot] = $formDataItem;
         }
 
         return $formData;
@@ -196,21 +202,24 @@ class Options extends Tab
         $importOptions = $options['import']['options'];
         $options = array_merge($options, $importOptions);
         unset($options['import']);
+
         return $options;
     }
 
     /**
      * Convert option name
      *
-     * @param string $str
+     * @param string $inputType
      * @return string
      */
-    protected function optionNameConvert($str)
+    protected function optionNameConvert($inputType)
     {
-        $str = str_replace([' ', '&'], "", $str);
-        if ($end = strpos($str, '-')) {
-            $str = substr($str, 0, $end) . ucfirst(substr($str, ($end + 1)));
+        $option = substr($inputType, strpos($inputType, "/") + 1);
+        $option = str_replace([' ', '&'], "", $option);
+        if ($end = strpos($option, '-')) {
+            $option = substr($option, 0, $end) . ucfirst(substr($option, ($end + 1)));
         }
-        return $str;
+
+        return $option;
     }
 }

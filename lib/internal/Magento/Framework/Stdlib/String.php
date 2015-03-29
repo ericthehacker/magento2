@@ -66,6 +66,8 @@ class String
      * @param bool $trim
      * @param string $wordSeparatorRegex
      * @return string[]
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     public function split($value, $length = 1, $keepWords = false, $trim = false, $wordSeparatorRegex = '\s')
     {
@@ -173,7 +175,7 @@ class String
     public function substr($string, $offset, $length = null)
     {
         $string = $this->cleanString($string);
-        if (is_null($length)) {
+        if ($length === null) {
             $length = $this->strlen($string) - $offset;
         }
         return iconv_substr($string, $offset, $length, self::ICONV_CHARSET);

@@ -3,6 +3,9 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
+
+// @codingStandardsIgnoreFile
+
 namespace Magento\Backend\Block\Widget;
 
 /**
@@ -10,6 +13,7 @@ namespace Magento\Backend\Block\Widget;
  *
  * @method string getRowClickCallback() getRowClickCallback()
  * @method \Magento\Backend\Block\Widget\Grid setRowClickCallback() setRowClickCallback(string $value)
+ * @SuppressWarnings(PHPMD.TooManyFields)
  */
 class Grid extends \Magento\Backend\Block\Widget
 {
@@ -146,6 +150,7 @@ class Grid extends \Magento\Backend\Block\Widget
 
     /**
      * @return void
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     protected function _construct()
     {
@@ -212,13 +217,15 @@ class Grid extends \Magento\Backend\Block\Widget
     /**
      * Retrieve export block
      *
-     * @throws \Magento\Framework\Model\Exception
+     * @throws \Magento\Framework\Exception\LocalizedException
      * @return \Magento\Framework\View\Element\AbstractBlock|bool
      */
     public function getExportBlock()
     {
         if (!$this->getChildBlock('grid.export')) {
-            throw new \Magento\Framework\Model\Exception('Export block for grid ' . $this->getNameInLayout() . ' is not defined');
+            throw new \Magento\Framework\Exception\LocalizedException(
+                __('Export block for grid %1 is not defined', $this->getNameInLayout())
+            );
         }
         return $this->getChildBlock('grid.export');
     }
@@ -331,6 +338,7 @@ class Grid extends \Magento\Backend\Block\Widget
      * Apply sorting and filtering to collection
      *
      * @return $this
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     protected function _prepareCollection()
     {
@@ -578,6 +586,7 @@ class Grid extends \Magento\Backend\Block\Widget
      * Return visibility of pager
      *
      * @return bool
+     * @SuppressWarnings(PHPMD.BooleanGetMethodName)
      */
     public function getPagerVisibility()
     {
@@ -599,6 +608,7 @@ class Grid extends \Magento\Backend\Block\Widget
      * Return visibility of message blocks
      *
      * @return bool
+     * @SuppressWarnings(PHPMD.BooleanGetMethodName)
      */
     public function getMessageBlockVisibility()
     {
@@ -761,6 +771,7 @@ class Grid extends \Magento\Backend\Block\Widget
      * Return count totals
      *
      * @return bool
+     * @SuppressWarnings(PHPMD.BooleanGetMethodName)
      */
     public function getCountTotals()
     {

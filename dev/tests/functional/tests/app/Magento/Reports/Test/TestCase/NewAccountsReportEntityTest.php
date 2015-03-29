@@ -6,10 +6,10 @@
 
 namespace Magento\Reports\Test\TestCase;
 
-use Magento\Customer\Test\Fixture\CustomerInjectable;
+use Magento\Customer\Test\Fixture\Customer;
 use Magento\Customer\Test\Page\Adminhtml\CustomerIndex;
 use Magento\Reports\Test\Page\Adminhtml\CustomerAccounts;
-use Mtf\TestCase\Injectable;
+use Magento\Mtf\TestCase\Injectable;
 
 /**
  * Test Flow:
@@ -29,6 +29,11 @@ use Mtf\TestCase\Injectable;
  */
 class NewAccountsReportEntityTest extends Injectable
 {
+    /* tags */
+    const MVP = 'no';
+    const DOMAIN = 'MX';
+    /* end tags */
+
     /**
      * Customer Accounts pages.
      *
@@ -59,13 +64,13 @@ class NewAccountsReportEntityTest extends Injectable
     /**
      * New Accounts Report.
      *
-     * @param CustomerInjectable $customer
+     * @param Customer $customer
      * @param array $customersReport
      * @return void
      */
-    public function test(CustomerInjectable $customer, array $customersReport)
+    public function test(Customer $customer, array $customersReport)
     {
-        $this->markTestIncomplete('MAGETWO-26663');
+        $this->markTestIncomplete('Bug: MAGETWO-35037');
         // Preconditions
         $this->customerIndexPage->open();
         $this->customerIndexPage->getCustomerGridBlock()->massaction([], 'Delete', true, 'Select All');

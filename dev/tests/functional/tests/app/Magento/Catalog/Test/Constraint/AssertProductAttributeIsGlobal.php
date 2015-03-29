@@ -8,17 +8,13 @@ namespace Magento\Catalog\Test\Constraint;
 
 use Magento\Catalog\Test\Fixture\CatalogProductAttribute;
 use Magento\Catalog\Test\Page\Adminhtml\CatalogProductAttributeIndex;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Look on the scope of product attribute in the grid.
  */
 class AssertProductAttributeIsGlobal extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Look on the scope of product attribute in the grid.
      *

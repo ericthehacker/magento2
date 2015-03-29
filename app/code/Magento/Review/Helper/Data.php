@@ -3,6 +3,9 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
+
+// @codingStandardsIgnoreFile
+
 namespace Magento\Review\Helper;
 
 /**
@@ -20,13 +23,6 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     protected $filter;
 
     /**
-     * Core store config
-     *
-     * @var \Magento\Framework\App\Config\ScopeConfigInterface
-     */
-    protected $_scopeConfig;
-
-    /**
      * Escaper
      *
      * @var \Magento\Framework\Escaper
@@ -35,17 +31,14 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 
     /**
      * @param \Magento\Framework\App\Helper\Context $context
-     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param \Magento\Framework\Escaper $escaper
      * @param \Magento\Framework\Filter\FilterManager $filter
      */
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Framework\Escaper $escaper,
         \Magento\Framework\Filter\FilterManager $filter
     ) {
-        $this->_scopeConfig = $scopeConfig;
         $this->_escaper = $escaper;
         $this->filter = $filter;
         parent::__construct($context);
@@ -77,10 +70,11 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * Return an indicator of whether or not guest is allowed to write
      *
      * @return bool
+     * @SuppressWarnings(PHPMD.BooleanGetMethodName)
      */
     public function getIsGuestAllowToWrite()
     {
-        return $this->_scopeConfig->isSetFlag(self::XML_REVIEW_GUETS_ALLOW, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        return $this->scopeConfig->isSetFlag(self::XML_REVIEW_GUETS_ALLOW, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
     }
 
     /**

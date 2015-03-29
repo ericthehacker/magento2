@@ -7,17 +7,13 @@
 namespace Magento\Customer\Test\Constraint;
 
 use Magento\Customer\Test\Page\Adminhtml\CustomerGroupIndex;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertCustomerGroupSuccessSaveMessage
  */
 class AssertCustomerGroupSuccessSaveMessage extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     const SUCCESS_MESSAGE = 'The customer group has been saved.';
 
     /**

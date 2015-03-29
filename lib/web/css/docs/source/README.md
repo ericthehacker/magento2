@@ -46,11 +46,10 @@ Magento UI library is located under `/lib/web/` folder. It and employs:
     ├── css/
     │    ├── docs/ (Library documentation)
     │    │    ├── source/
-    │    │    │    ├── abstract.less
     │    │    │    ├── actions-toolbar.less
     │    │    │    ├── breadcrumbs.less
     │    │    │    ├── buttons.less
-    │    │    │    ├── docks.less
+    │    │    │    ├── docs.less
     │    │    │    ├── dropdowns.less
     │    │    │    ├── forms.less
     │    │    │    ├── icons.less
@@ -70,7 +69,7 @@ Magento UI library is located under `/lib/web/` folder. It and employs:
     │    │    │    ├── utilities.less
     │    │    │    ├── variables.less
     │    │    │    └── README.md
-    │    │    ├─── abstract.html
+    │    │    ├─── extends.html
     │    │    ├─── actions-toolbar.html
     │    │    ├─── breadcrumbs.html
     │    │    ├─── buttons.html
@@ -97,30 +96,31 @@ Magento UI library is located under `/lib/web/` folder. It and employs:
     │    │    └─── variables.html
     │    ├── source/
     │    │    ├── lib/ (Library source files)
-    │    │    │    ├── abstract.less
-    │    │    │    ├── actions-toolbar.less
-    │    │    │    ├── breadcrumbs.less
-    │    │    │    ├── buttons.less
-    │    │    │    ├── dropdowns.less
-    │    │    │    ├── forms.less
-    │    │    │    ├── icons.less
-    │    │    │    ├── layout.less
-    │    │    │    ├── lib.less
-    │    │    │    ├── loaders.less
-    │    │    │    ├── messages.less
-    │    │    │    ├── navigation.less
-    │    │    │    ├── pages.less
-    │    │    │    ├── popups.less
-    │    │    │    ├── rating.less
-    │    │    │    ├── resets.less
-    │    │    │    ├── responsive.less
-    │    │    │    ├── sections.less
-    │    │    │    ├── tables.less
-    │    │    │    ├── tooltips.less
-    │    │    │    ├── typography.less
-    │    │    │    ├── utilities.less
-    │    │    │    └── variables.less
-    │    │    └── theme.less
+    │    │    │    ├── _extends.less
+    │    │    │    ├── _actions-toolbar.less
+    │    │    │    ├── _breadcrumbs.less
+    │    │    │    ├── _buttons.less
+    │    │    │    ├── _dropdowns.less
+    │    │    │    ├── _forms.less
+    │    │    │    ├── _icons.less
+    │    │    │    ├── _layout.less
+    │    │    │    ├── _lib.less
+    │    │    │    ├── _loaders.less
+    │    │    │    ├── _messages.less
+    │    │    │    ├── _navigation.less
+    │    │    │    ├── _pages.less
+    │    │    │    ├── _popups.less
+    │    │    │    ├── _rating.less
+    │    │    │    ├── _resets.less
+    │    │    │    ├── _responsive.less
+    │    │    │    ├── _sections.less
+    │    │    │    ├── _tables.less
+    │    │    │    ├── _tooltips.less
+    │    │    │    ├── _typography.less
+    │    │    │    ├── _utilities.less
+    │    │    │    └── _variables.less
+    │    │    ├── _extend.less
+    │    │    └── _theme.less
     │    └── styles.less
     ├── fonts/
     │    └── Blank-Theme-Icons/ (Library custom icons font)
@@ -151,32 +151,33 @@ If it is a private variable (is used only in a mixin), it must start with "_" ch
 
 `'@' + '_' + 'object' + '-' + 'property' + '-' + 'state' = @_object-property-state`
 
-### Examples:
+#### Examples:
 
-#### Acceptable:
+##### Acceptable:
 
-`
+```css
     @link-color-hover;
     @color-primary;
     @color-2;
-`
+```
 
 Private variables:
 
-`  
+```css
     @_padding-left;
     @_font-size;
-`
+```
 
-#### Unacceptable:
+##### Unacceptable:
 
-`
+```css
     @Link-Color-Hover;
     @colorPrimary;
     @color--primary;
     @paddingleft;
     @__font-size;
-`
+```
+&nbsp;
 
 # Less mixins naming
 
@@ -184,19 +185,63 @@ A less mixin name can contain lowercase letters, numbers, "-" and "_" characters
 
 A mixin name can consist of one or several words, concatenated with one hyphen. If the mixin is private, its name must start with the "_" character. Mixin should be named after property or action it describes.
 
-### Examples:
+#### Examples:
 
-#### Acceptable:
-`
+##### Acceptable:
+```css
     .mixin-name() {}
     .transition() {}
     .mixin() {}
     ._button-gradient() {}
-`
-#### Unacceptable:
-`
+```
+##### Unacceptable:
+```css
     .mixinName() {}
     .__transition() {}
     .MiXiN() {}
     ._button--gradient() {}
-`
+```
+&nbsp;
+
+# Magento UI library code style
+
+Magento UI library involves 3 comments levels:
+
+First level comment must have an empty line before it and must be followed by an empty line:
+
+```css
+//
+//  First level comment
+//  _____________________________________________
+```
+
+Second level comment must have an empty line before it and must be followed by an empty line:
+
+```css
+//
+//  Second level comment
+//  ---------------------------------------------
+```
+
+Third level comment is recommended to have an empty line before it, when it is a single line comment. Also it is possible to use it in the end of a code line:
+
+```css
+// Third level comment
+```
+
+Magento UI library involves the following code style:
+
+* Every CSS/LESS code line has a ";" character
+* All selectors are set to lowercase
+* The CSS/LESS file has a line break at EOF
+* There is a space but not a line break before the opening brace "{" and a line brake after it
+* There is a line break before the closing brace "}"
+* The leading zeroes are removed (i.e. padding: .5em; instead of padding: 0.5em;)
+* There is a line break between declarations
+* There is a line break after selector delimiter
+* Units in zero-valued dimensions are removed
+* Single quotes are used
+* Properties are sorted alphabetically
+* All colors are set to lowercase
+* Shorthands for hexadecimal colors are used
+* The code has a 4 spaces indent

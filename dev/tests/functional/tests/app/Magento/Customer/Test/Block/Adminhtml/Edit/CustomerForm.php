@@ -7,17 +7,45 @@
 namespace Magento\Customer\Test\Block\Adminhtml\Edit;
 
 use Magento\Backend\Test\Block\Widget\FormTabs;
-use Mtf\Fixture\FixtureInterface;
-use Mtf\Fixture\InjectableFixture;
+use Magento\Mtf\Client\Locator;
+use Magento\Mtf\Fixture\FixtureInterface;
+use Magento\Mtf\Fixture\InjectableFixture;
 
 /**
- * Class CustomerForm
- * Form for creation of the customer
+ * Form for creation of the customer.
  */
 class CustomerForm extends FormTabs
 {
     /**
-     * Fill Customer forms on tabs by customer, addresses data
+     * Magento form loader.
+     *
+     * @var string
+     */
+    protected $spinner = '[data-role="spinner"]';
+
+    /**
+     * Customer form to load.
+     *
+     * @var string
+     */
+    protected $activeFormTab = '#container [data-bind="visible: active"]:not([style="display: none;"])';
+
+    /**
+     * Field wrapper with label on form.
+     *
+     * @var string
+     */
+    protected $fieldLabel = './/*[contains(@class, "admin__field")]/*[contains(@class,"label")]';
+
+    /**
+     * Field wrapper with control block on form.
+     *
+     * @var string
+     */
+    protected $fieldWrapperControl = './/*[contains(@class, "admin__field")]/*[contains(@class,"control")]';
+
+    /**
+     * Fill Customer forms on tabs by customer, addresses data.
      *
      * @param FixtureInterface $customer
      * @param FixtureInterface|FixtureInterface[]|null $address
@@ -25,8 +53,10 @@ class CustomerForm extends FormTabs
      */
     public function fillCustomer(FixtureInterface $customer, $address = null)
     {
+        $this->waitForm();
+        $this->waitFields();
+
         $isHasData = ($customer instanceof InjectableFixture) ? $customer->hasData() : true;
-        $this->waitBeforeFill();
         if ($isHasData) {
             parent::fill($customer);
         }
@@ -39,7 +69,7 @@ class CustomerForm extends FormTabs
     }
 
     /**
-     * Update Customer forms on tabs by customer, addresses data
+     * Update Customer forms on tabs by customer, addresses data.
      *
      * @param FixtureInterface $customer
      * @param FixtureInterface|FixtureInterface[]|null $address
@@ -47,8 +77,9 @@ class CustomerForm extends FormTabs
      */
     public function updateCustomer(FixtureInterface $customer, $address = null)
     {
+        $this->waitForm();
+
         $isHasData = ($customer instanceof InjectableFixture) ? $customer->hasData() : true;
-        $this->waitBeforeFill();
         if ($isHasData) {
             parent::fill($customer);
         }
@@ -69,8 +100,9 @@ class CustomerForm extends FormTabs
      */
     public function getDataCustomer(FixtureInterface $customer, $address = null)
     {
-        $data = ['customer' => $customer->hasData() ? parent::getData($customer) : parent::getData()];
+        $this->waitForm();
 
+        $data = ['customer' => $customer->hasData() ? parent::getData($customer) : parent::getData()];
         if (null !== $address) {
             $this->openTab('addresses');
             $data['addresses'] = $this->getTabElement('addresses')->getDataAddresses($address);
@@ -85,8 +117,24 @@ class CustomerForm extends FormTabs
      *
      * @return void
      */
-    protected function waitBeforeFill()
+    protected function waitForm()
     {
-        usleep(500000);
+        $this->waitForElementNotVisible($this->spinner);
+        $this->waitForElementVisible($this->activeFormTab);
+        sleep(10); //@todo MAGETWO-33615
+    }
+
+    /**
+     * Wait for User before fill form which calls JS validation on correspondent fields of form.
+     * See details in MAGETWO-31435.
+     *
+     * @return void
+     */
+    protected function waitFields()
+    {
+        /* Wait for field label is visible in the form */
+        $this->waitForElementVisible($this->fieldLabel, Locator::SELECTOR_XPATH);
+        /* Wait for field's control block is visible in the form */
+        $this->waitForElementVisible($this->fieldWrapperControl, Locator::SELECTOR_XPATH);
     }
 }

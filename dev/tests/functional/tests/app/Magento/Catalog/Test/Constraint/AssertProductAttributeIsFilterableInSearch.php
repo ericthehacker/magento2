@@ -9,18 +9,14 @@ namespace Magento\Catalog\Test\Constraint;
 use Magento\Catalog\Test\Fixture\CatalogProductAttribute;
 use Magento\Catalog\Test\Page\Category\CatalogCategoryView;
 use Magento\Cms\Test\Page\CmsIndex;
-use Mtf\Constraint\AbstractConstraint;
-use Mtf\Fixture\InjectableFixture;
+use Magento\Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Fixture\InjectableFixture;
 
 /**
  * Check out if the attribute in the navigation bar on the search results page in Layered navigation.
  */
 class AssertProductAttributeIsFilterableInSearch extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Check out if the attribute in the navigation bar on the search results page in Layered navigation.
      *

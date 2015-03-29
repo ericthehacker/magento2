@@ -10,17 +10,13 @@ use Magento\Catalog\Test\Fixture\CatalogProductAttribute;
 use Magento\Catalog\Test\Page\Adminhtml\CatalogProductIndex;
 use Magento\Catalog\Test\Page\Adminhtml\CatalogProductNew;
 use Magento\ConfigurableProduct\Test\Block\Adminhtml\Product\Edit\Tab\Super\Config as TabVariation;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Assert check whether the attribute is used to create a configurable products.
  */
 class AssertProductAttributeIsConfigurable extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'high';
-    /* end tags */
-
     /**
      * Assert check whether the attribute is used to create a configurable products.
      *
@@ -35,7 +31,7 @@ class AssertProductAttributeIsConfigurable extends AbstractConstraint
         CatalogProductNew $newProductPage,
         CatalogProductAttribute $productAttribute = null
     ) {
-        $attributeSearch = is_null($productAttribute) ? $attribute : $productAttribute;
+        $attributeSearch = $productAttribute === null ? $attribute : $productAttribute;
         $productGrid->open();
         $productGrid->getGridPageActionBlock()->addProduct('configurable');
         $productBlockForm = $newProductPage->getProductForm();

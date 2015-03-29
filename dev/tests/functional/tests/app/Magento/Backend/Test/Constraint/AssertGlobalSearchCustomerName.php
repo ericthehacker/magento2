@@ -8,7 +8,7 @@ namespace Magento\Backend\Test\Constraint;
 
 use Magento\Backend\Test\Fixture\GlobalSearch;
 use Magento\Backend\Test\Page\Adminhtml\Dashboard;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertGlobalSearchCustomerName
@@ -16,10 +16,6 @@ use Mtf\Constraint\AbstractConstraint;
  */
 class AssertGlobalSearchCustomerName extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Assert that customer name is present in search results
      *

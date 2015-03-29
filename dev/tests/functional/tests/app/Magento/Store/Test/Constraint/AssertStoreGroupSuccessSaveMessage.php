@@ -7,7 +7,7 @@
 namespace Magento\Store\Test\Constraint;
 
 use Magento\Backend\Test\Page\Adminhtml\StoreIndex;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertStoreGroupSuccessSaveMessage
@@ -15,10 +15,6 @@ use Mtf\Constraint\AbstractConstraint;
  */
 class AssertStoreGroupSuccessSaveMessage extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Success store create message
      */

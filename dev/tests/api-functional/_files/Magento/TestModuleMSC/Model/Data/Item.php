@@ -3,12 +3,19 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
+
+// @codingStandardsIgnoreFile
+
 namespace Magento\TestModuleMSC\Model\Data;
 
 use Magento\TestModuleMSC\Api\Data\ItemInterface;
 
-class Item extends \Magento\Framework\Model\AbstractExtensibleModel
-    implements ItemInterface
+/**
+ * Class Item
+ *
+ * @method \Magento\TestModuleMSC\Api\Data\ItemExtensionInterface getExtensionAttributes()
+ */
+class Item extends \Magento\Framework\Model\AbstractExtensibleModel implements ItemInterface
 {
     /**
      * @return int
@@ -19,10 +26,28 @@ class Item extends \Magento\Framework\Model\AbstractExtensibleModel
     }
 
     /**
+     * @param int $itemId
+     * @return $this
+     */
+    public function setItemId($itemId)
+    {
+        return $this->setData('item_id', $itemId);
+    }
+
+    /**
      * @return string
      */
     public function getName()
     {
         return $this->_data['name'];
+    }
+
+    /**
+     * @param string $name
+     * @return $this
+     */
+    public function setName($name)
+    {
+        return $this->setData('name', $name);
     }
 }

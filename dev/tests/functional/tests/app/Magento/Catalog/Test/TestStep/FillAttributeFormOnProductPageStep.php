@@ -8,7 +8,7 @@ namespace Magento\Catalog\Test\TestStep;
 
 use Magento\Catalog\Test\Fixture\CatalogProductAttribute;
 use Magento\Catalog\Test\Page\Adminhtml\CatalogProductEdit;
-use Mtf\TestStep\TestStepInterface;
+use Magento\Mtf\TestStep\TestStepInterface;
 
 /**
  * Fill custom attribute form on product page.
@@ -47,7 +47,7 @@ class FillAttributeFormOnProductPageStep implements TestStepInterface
      */
     public function run()
     {
-        $this->catalogProductEdit->getProductForm()->fillAttributeForm($this->attribute);
+        $this->catalogProductEdit->getProductForm()->getAttributeForm()->fill($this->attribute);
         return ['attribute' => $this->attribute];
     }
 }

@@ -6,12 +6,12 @@
 
 namespace Magento\Customer\Test\Handler\Curl;
 
-use Mtf\Fixture\FixtureInterface;
-use Mtf\Handler\Curl;
-use Mtf\System\Config;
-use Mtf\Util\Protocol\CurlInterface;
-use Mtf\Util\Protocol\CurlTransport;
-use Mtf\Util\Protocol\CurlTransport\BackendDecorator;
+use Magento\Mtf\Fixture\FixtureInterface;
+use Magento\Mtf\Handler\Curl;
+use Magento\Mtf\Config;
+use Magento\Mtf\Util\Protocol\CurlInterface;
+use Magento\Mtf\Util\Protocol\CurlTransport;
+use Magento\Mtf\Util\Protocol\CurlTransport\BackendDecorator;
 
 /**
  * Curl handler for creating customer group in admin
@@ -71,7 +71,7 @@ class CreateCustomerGroup extends Curl
         /** @var \Magento\Customer\Test\Fixture\CustomerGroup $fixture*/
         $params = $this->prepareData($fixture);
         $url = $_ENV['app_backend_url'] . $this->saveUrl;
-        $curl = new BackendDecorator(new CurlTransport(), new Config());
+        $curl = new BackendDecorator(new CurlTransport(), $this->_configuration);
         $curl->addOption(CURLOPT_HEADER, 1);
         $curl->write(CurlInterface::POST, $url, '1.0', [], $params);
         $response = $curl->read();

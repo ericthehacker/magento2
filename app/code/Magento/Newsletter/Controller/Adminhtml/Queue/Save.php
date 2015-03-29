@@ -4,6 +4,9 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
+
+// @codingStandardsIgnoreFile
+
 namespace Magento\Newsletter\Controller\Adminhtml\Queue;
 
 class Save extends \Magento\Newsletter\Controller\Adminhtml\Queue
@@ -11,8 +14,9 @@ class Save extends \Magento\Newsletter\Controller\Adminhtml\Queue
     /**
      * Save Newsletter queue
      *
-     * @throws \Magento\Framework\Model\Exception
+     * @throws \Magento\Framework\Exception\LocalizedException
      * @return void
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function execute()
     {
@@ -26,7 +30,7 @@ class Save extends \Magento\Newsletter\Controller\Adminhtml\Queue
                 $template = $this->_objectManager->create('Magento\Newsletter\Model\Template')->load($templateId);
 
                 if (!$template->getId() || $template->getIsSystem()) {
-                    throw new \Magento\Framework\Model\Exception(__('Please correct the newsletter template and try again.'));
+                    throw new \Magento\Framework\Exception\LocalizedException(__('Please correct the newsletter template and try again.'));
                 }
 
                 $queue->setTemplateId(
@@ -80,7 +84,7 @@ class Save extends \Magento\Newsletter\Controller\Adminhtml\Queue
             $this->_getSession()->setFormData(false);
 
             $this->_redirect('*/*');
-        } catch (\Magento\Framework\Model\Exception $e) {
+        } catch (\Magento\Framework\Exception\LocalizedException $e) {
             $this->messageManager->addError($e->getMessage());
             $id = $this->getRequest()->getParam('id');
             if ($id) {

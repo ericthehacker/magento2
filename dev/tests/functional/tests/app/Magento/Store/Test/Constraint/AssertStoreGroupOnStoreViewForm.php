@@ -9,7 +9,7 @@ namespace Magento\Store\Test\Constraint;
 use Magento\Backend\Test\Page\Adminhtml\StoreIndex;
 use Magento\Backend\Test\Page\Adminhtml\StoreNew;
 use Magento\Store\Test\Fixture\StoreGroup;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertStoreGroupOnStoreViewForm
@@ -17,10 +17,6 @@ use Mtf\Constraint\AbstractConstraint;
  */
 class AssertStoreGroupOnStoreViewForm extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Assert that New Store Group visible on StoreView Form in Store dropdown
      *

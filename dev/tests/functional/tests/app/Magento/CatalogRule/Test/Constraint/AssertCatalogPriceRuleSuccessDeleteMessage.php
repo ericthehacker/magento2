@@ -7,17 +7,13 @@
 namespace Magento\CatalogRule\Test\Constraint;
 
 use Magento\CatalogRule\Test\Page\Adminhtml\CatalogRuleIndex;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertCatalogPriceRuleSuccessDeleteMessage
  */
 class AssertCatalogPriceRuleSuccessDeleteMessage extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     const SUCCESS_DELETE_MESSAGE = 'The rule has been deleted.';
 
     /**

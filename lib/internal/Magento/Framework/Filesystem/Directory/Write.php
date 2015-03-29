@@ -130,6 +130,30 @@ class Write extends Read implements WriteInterface
     }
 
     /**
+     * Creates symlink on a file and places it to destination
+     *
+     * @param string $path
+     * @param string $destination
+     * @param WriteInterface $targetDirectory [optional]
+     * @return bool
+     * @throws \Magento\Framework\Filesystem\FilesystemException
+     */
+    public function createSymlink($path, $destination, WriteInterface $targetDirectory = null)
+    {
+        $this->assertIsFile($path);
+
+        $targetDirectory = $targetDirectory ?: $this;
+        $parentDirectory = $this->driver->getParentDirectory($destination);
+        if (!$targetDirectory->isExist($parentDirectory)) {
+            $targetDirectory->create($parentDirectory);
+        }
+        $absolutePath = $this->driver->getAbsolutePath($this->path, $path);
+        $absoluteDestination = $targetDirectory->getAbsolutePath($destination);
+
+        return $this->driver->symlink($absolutePath, $absoluteDestination, $targetDirectory->driver);
+    }
+
+    /**
      * Delete given path
      *
      * @param string $path
@@ -197,16 +221,15 @@ class Write extends Read implements WriteInterface
      *
      * @param string $path
      * @param string $mode
-     * @param string|null $protocol
      * @return \Magento\Framework\Filesystem\File\WriteInterface
      */
-    public function openFile($path, $mode = 'w', $protocol = null)
+    public function openFile($path, $mode = 'w')
     {
         $folder = dirname($path);
         $this->create($folder);
         $this->assertWritable($folder);
         $absolutePath = $this->driver->getAbsolutePath($this->path, $path);
-        return $this->fileFactory->create($absolutePath, $protocol, $this->driver, $mode);
+        return $this->fileFactory->create($absolutePath, $this->driver, $mode);
     }
 
     /**
@@ -215,13 +238,12 @@ class Write extends Read implements WriteInterface
      * @param string $path
      * @param string $content
      * @param string|null $mode
-     * @param string|null $protocol
      * @return int The number of bytes that were written.
      * @throws FilesystemException
      */
-    public function writeFile($path, $content, $mode = 'w+', $protocol = null)
+    public function writeFile($path, $content, $mode = 'w+')
     {
-        return $this->openFile($path, $mode, $protocol)->write($content);
+        return $this->openFile($path, $mode)->write($content);
     }
 
     /**

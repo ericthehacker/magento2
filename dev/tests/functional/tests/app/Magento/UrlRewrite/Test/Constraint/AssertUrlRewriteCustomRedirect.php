@@ -8,8 +8,8 @@ namespace Magento\UrlRewrite\Test\Constraint;
 
 use Magento\Cms\Test\Page\CmsIndex;
 use Magento\UrlRewrite\Test\Fixture\UrlRewrite;
-use Mtf\Client\Browser;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Client\BrowserInterface;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertUrlRewriteCustomRedirect
@@ -17,23 +17,19 @@ use Mtf\Constraint\AbstractConstraint;
  */
 class AssertUrlRewriteCustomRedirect extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Assert check URL rewrite custom redirect
      *
      * @param UrlRewrite $urlRewrite
-     * @param Browser $browser
+     * @param BrowserInterface $browser
      * @param CmsIndex $cmsIndex
      * @return void
      */
-    public function processAssert(UrlRewrite $urlRewrite, Browser $browser, CmsIndex $cmsIndex)
+    public function processAssert(UrlRewrite $urlRewrite, BrowserInterface $browser, CmsIndex $cmsIndex)
     {
         $browser->open($_ENV['app_frontend_url'] . $urlRewrite->getRequestPath());
         $entity = $urlRewrite->getDataFieldConfig('target_path')['source']->getEntity();
-        $title = $entity->hasData('name') ? $entity->getName() : $entity->getTitle();
+        $title = $entity->hasData('name') ? $entity->getName() : $entity->getContentHeading();
         $pageTitle = $cmsIndex->getTitleBlock()->getTitle();
         \PHPUnit_Framework_Assert::assertEquals(
             $pageTitle,

@@ -3,6 +3,9 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
+
+// @codingStandardsIgnoreFile
+
 namespace Magento\Framework\Less\File\Collector;
 
 use Magento\Framework\App\Bootstrap;
@@ -86,9 +89,6 @@ class AggregatedTest extends \PHPUnit_Framework_TestCase
         /** @var \Magento\Framework\View\Design\Theme\FlyweightFactory $themeFactory */
         $themeFactory = $this->objectManager->get('Magento\Framework\View\Design\Theme\FlyweightFactory');
         $theme = $themeFactory->create($themeName);
-        if (!count($expectedFiles)) {
-            $this->setExpectedException('LogicException', 'magento_import returns empty result by path doesNotExist');
-        }
         $files = $this->model->getFiles($theme, $path);
         $actualFiles = [];
         foreach ($files as $file) {

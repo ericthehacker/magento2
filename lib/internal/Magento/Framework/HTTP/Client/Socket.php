@@ -11,6 +11,12 @@
  */
 namespace Magento\Framework\HTTP\Client;
 
+/**
+ * @SuppressWarnings(PHPMD.UnusedPrivateField)
+ */
+/**
+ * @SuppressWarnings(PHPMD.UnusedPrivateField)
+ */
 class Socket implements \Magento\Framework\HTTP\ClientInterface
 {
     /**
@@ -313,7 +319,7 @@ class Socket implements \Magento\Framework\HTTP\ClientInterface
                 continue;
             }
             list($key, $val) = explode("=", $values[0]);
-            if (is_null($val)) {
+            if ($val === null) {
                 continue;
             }
             $out[trim($key)] = trim($val);
@@ -339,7 +345,7 @@ class Socket implements \Magento\Framework\HTTP\ClientInterface
                 continue;
             }
             list($key, $val) = explode("=", $values[0]);
-            if (is_null($val)) {
+            if ($val === null) {
                 continue;
             }
             $out[trim($key)] = ['value' => trim($val)];
@@ -407,6 +413,7 @@ class Socket implements \Magento\Framework\HTTP\ClientInterface
      * Process response
      *
      * @return void
+     * @SuppressWarnings(PHPMD.UnusedLocalVariable)
      */
     protected function processResponse()
     {
@@ -517,6 +524,7 @@ class Socket implements \Magento\Framework\HTTP\ClientInterface
      *
      * @param array $arr
      * @return void
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function setOptions($arr)
     {
@@ -529,6 +537,7 @@ class Socket implements \Magento\Framework\HTTP\ClientInterface
      * @param string $name
      * @param string $value
      * @return void
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function setOption($name, $value)
     {

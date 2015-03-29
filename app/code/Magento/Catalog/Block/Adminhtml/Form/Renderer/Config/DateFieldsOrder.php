@@ -11,7 +11,7 @@
  */
 namespace Magento\Catalog\Block\Adminhtml\Form\Renderer\Config;
 
-use Magento\Backend\Block\System\Config\Form\Field;
+use Magento\Config\Block\System\Config\Form\Field;
 use Magento\Framework\Data\Form\Element\AbstractElement;
 
 class DateFieldsOrder extends Field
@@ -19,6 +19,7 @@ class DateFieldsOrder extends Field
     /**
      * @param AbstractElement $element
      * @return string
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     protected function _getElementHtml(AbstractElement $element)
     {

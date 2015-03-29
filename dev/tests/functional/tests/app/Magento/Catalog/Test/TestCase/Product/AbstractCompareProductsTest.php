@@ -9,13 +9,13 @@ namespace Magento\Catalog\Test\TestCase\Product;
 use Magento\Catalog\Test\Page\Product\CatalogProductCompare;
 use Magento\Catalog\Test\Page\Product\CatalogProductView;
 use Magento\Cms\Test\Page\CmsIndex;
-use Magento\Customer\Test\Fixture\CustomerInjectable;
+use Magento\Customer\Test\Fixture\Customer;
 use Magento\Customer\Test\Page\CustomerAccountLogin;
-use Mtf\Client\Browser;
-use Mtf\Constraint\AbstractConstraint;
-use Mtf\Fixture\FixtureFactory;
-use Mtf\Fixture\InjectableFixture;
-use Mtf\TestCase\Injectable;
+use Magento\Mtf\Client\BrowserInterface;
+use Magento\Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Fixture\FixtureFactory;
+use Magento\Mtf\Fixture\InjectableFixture;
+use Magento\Mtf\TestCase\Injectable;
 
 /**
  * Abstract class for compare products class.
@@ -41,7 +41,7 @@ abstract class AbstractCompareProductsTest extends Injectable
     /**
      * Browser.
      *
-     * @var Browser
+     * @var BrowserInterface
      */
     protected $browser;
 
@@ -76,7 +76,7 @@ abstract class AbstractCompareProductsTest extends Injectable
     /**
      * Fixture customer.
      *
-     * @var CustomerInjectable
+     * @var Customer
      */
     protected $customer;
 
@@ -84,10 +84,10 @@ abstract class AbstractCompareProductsTest extends Injectable
      * Prepare data.
      *
      * @param FixtureFactory $fixtureFactory
-     * @param CustomerInjectable $customer
+     * @param Customer $customer
      * @return void
      */
-    public function __prepare(FixtureFactory $fixtureFactory, CustomerInjectable $customer)
+    public function __prepare(FixtureFactory $fixtureFactory, Customer $customer)
     {
         $this->fixtureFactory = $fixtureFactory;
         $customer->persist();
@@ -99,14 +99,14 @@ abstract class AbstractCompareProductsTest extends Injectable
      *
      * @param CmsIndex $cmsIndex
      * @param CatalogProductView $catalogProductView
-     * @param Browser $browser
+     * @param BrowserInterface $browser
      * @param CustomerAccountLogin $customerAccountLogin
      * @return void
      */
     public function __inject(
         CmsIndex $cmsIndex,
         CatalogProductView $catalogProductView,
-        Browser $browser,
+        BrowserInterface $browser,
         CustomerAccountLogin $customerAccountLogin
     ) {
         $this->cmsIndex = $cmsIndex;

@@ -3,12 +3,16 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
+
+// @codingStandardsIgnoreFile
+
 namespace Magento\Shipping\Model\Shipping;
 
 use Magento\Sales\Model\Order\Shipment;
 
 /**
  * Shipping labels model
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Labels extends \Magento\Shipping\Model\Shipping
 {
@@ -34,6 +38,7 @@ class Labels extends \Magento\Shipping\Model\Shipping
      * @param \Magento\CatalogInventory\Api\StockRegistryInterface $stockRegistry
      * @param \Magento\Backend\Model\Auth\Session $authSession
      * @param \Magento\Shipping\Model\Shipment\Request $request
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
@@ -68,7 +73,9 @@ class Labels extends \Magento\Shipping\Model\Shipping
      *
      * @param Shipment $orderShipment
      * @return \Magento\Framework\Object
-     * @throws \Magento\Framework\Model\Exception
+     * @throws \Magento\Framework\Exception\LocalizedException
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     public function requestToShipment(Shipment $orderShipment)
     {
@@ -80,7 +87,9 @@ class Labels extends \Magento\Shipping\Model\Shipping
         $shipmentCarrier = $this->_carrierFactory->create($order->getShippingMethod(true)->getCarrierCode());
         $baseCurrencyCode = $this->_storeManager->getStore($shipmentStoreId)->getBaseCurrencyCode();
         if (!$shipmentCarrier) {
-            throw new \Magento\Framework\Model\Exception('Invalid carrier: ' . $shippingMethod->getCarrierCode());
+            throw new \Magento\Framework\Exception\LocalizedException(
+                __('Invalid carrier: %1' , $shippingMethod->getCarrierCode())
+            );
         }
         $shipperRegionCode = $this->_scopeConfig->getValue(
             Shipment::XML_PATH_STORE_REGION_ID,
@@ -133,7 +142,7 @@ class Labels extends \Magento\Shipping\Model\Shipping
                 $shipmentStoreId
             )
         ) {
-            throw new \Magento\Framework\Model\Exception(
+            throw new \Magento\Framework\Exception\LocalizedException(
                 __(
                     'We don\'t have enough information to create shipping labels. Please make sure your store information and settings are complete.'
                 )

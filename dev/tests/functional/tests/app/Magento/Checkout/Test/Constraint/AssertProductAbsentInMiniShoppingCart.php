@@ -7,8 +7,8 @@
 namespace Magento\Checkout\Test\Constraint;
 
 use Magento\Cms\Test\Page\CmsIndex;
-use Mtf\Constraint\AbstractConstraint;
-use Mtf\Fixture\FixtureInterface;
+use Magento\Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Fixture\FixtureInterface;
 
 /**
  * Class AssertProductAbsentInMiniShoppingCart
@@ -16,10 +16,6 @@ use Mtf\Fixture\FixtureInterface;
  */
 class AssertProductAbsentInMiniShoppingCart extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Assert product is absent on mini shopping cart
      *

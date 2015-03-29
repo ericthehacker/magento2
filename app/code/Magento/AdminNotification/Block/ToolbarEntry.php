@@ -3,6 +3,9 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
+
+// @codingStandardsIgnoreFile
+
 namespace Magento\AdminNotification\Block;
 
 /**
@@ -15,7 +18,17 @@ class ToolbarEntry extends \Magento\Backend\Block\Template
     /**
      * Number of notifications showed on expandable window
      */
-    const NOTIFICATIONS_NUMBER = 4;
+    const NOTIFICATIONS_NUMBER = 3;
+
+    /**
+     * Number of notifications showed on icon
+     */
+    const NOTIFICATIONS_COUNTER_MAX = 99;
+
+    /**
+     * Length of notification description showed by default
+     */
+    const NOTIFICATION_DESCRIPTION_LENGTH = 150;
 
     /**
      * Collection of latest unread notifications
@@ -36,6 +49,26 @@ class ToolbarEntry extends \Magento\Backend\Block\Template
     ) {
         parent::__construct($context, $data);
         $this->_notificationList = $notificationList;
+    }
+
+    /**
+     * Retrieve notification description start length
+     *
+     * @return int
+     */
+    public function getNotificationDescriptionLength()
+    {
+        return self::NOTIFICATION_DESCRIPTION_LENGTH;
+    }
+
+    /**
+     * Retrieve notification counter max value
+     *
+     * @return int
+     */
+    public function getNotificationCounterMax()
+    {
+        return self::NOTIFICATIONS_COUNTER_MAX;
     }
 
     /**
@@ -66,13 +99,18 @@ class ToolbarEntry extends \Magento\Backend\Block\Template
      */
     public function formatNotificationDate($dateString)
     {
-        if (date('Ymd') == date('Ymd', strtotime($dateString))) {
-            return $this->formatTime(
-                $dateString,
-                \Magento\Framework\Stdlib\DateTime\TimezoneInterface::FORMAT_TYPE_SHORT,
-                false
+        $date = new \DateTime($dateString);
+        if ($date == new \DateTime('today')) {
+            return $this->_localeDate->formatDateTime(
+                $date,
+                \IntlDateFormatter::NONE,
+                \IntlDateFormatter::SHORT
             );
         }
-        return $this->formatDate($dateString, \Magento\Framework\Stdlib\DateTime\TimezoneInterface::FORMAT_TYPE_MEDIUM, true);
+        return $this->_localeDate->formatDateTime(
+            $date,
+            \IntlDateFormatter::MEDIUM,
+            \IntlDateFormatter::MEDIUM
+        );
     }
 }

@@ -10,7 +10,7 @@ use Magento\Sales\Test\Constraint\AbstractAssertItems;
 use Magento\Sales\Test\Fixture\OrderInjectable;
 use Magento\Shipping\Test\Page\Adminhtml\SalesShipmentView;
 use Magento\Shipping\Test\Page\Adminhtml\ShipmentIndex;
-use Mtf\ObjectManager;
+use Magento\Mtf\ObjectManager;
 
 /**
  * Class AssertShipmentItems
@@ -18,10 +18,6 @@ use Mtf\ObjectManager;
  */
 class AssertShipmentItems extends AbstractAssertItems
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Shipment index page
      *

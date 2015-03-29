@@ -7,10 +7,11 @@ namespace Magento\Checkout\Block\Onepage\Shipping\Method;
 
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Customer\Model\Address\Config as AddressConfig;
-use Magento\Sales\Model\Quote\Address;
+use Magento\Quote\Model\Quote\Address;
 
 /**
  * One page checkout status
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Available extends \Magento\Checkout\Block\Onepage\AbstractOnepage
 {
@@ -26,7 +27,7 @@ class Available extends \Magento\Checkout\Block\Onepage\AbstractOnepage
 
     /**
      * @param \Magento\Framework\View\Element\Template\Context $context
-     * @param \Magento\Core\Helper\Data $coreData
+     * @param \Magento\Directory\Helper\Data $directoryHelper
      * @param \Magento\Framework\App\Cache\Type\Config $configCacheType
      * @param \Magento\Customer\Model\Session $customerSession
      * @param \Magento\Checkout\Model\Session $resourceSession
@@ -37,10 +38,11 @@ class Available extends \Magento\Checkout\Block\Onepage\AbstractOnepage
      * @param \Magento\Framework\App\Http\Context $httpContext
      * @param \Magento\Customer\Model\Address\Mapper $addressMapper
      * @param array $data
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         \Magento\Framework\View\Element\Template\Context $context,
-        \Magento\Core\Helper\Data $coreData,
+        \Magento\Directory\Helper\Data $directoryHelper,
         \Magento\Framework\App\Cache\Type\Config $configCacheType,
         \Magento\Customer\Model\Session $customerSession,
         \Magento\Checkout\Model\Session $resourceSession,
@@ -54,7 +56,7 @@ class Available extends \Magento\Checkout\Block\Onepage\AbstractOnepage
     ) {
         parent::__construct(
             $context,
-            $coreData,
+            $directoryHelper,
             $configCacheType,
             $customerSession,
             $resourceSession,

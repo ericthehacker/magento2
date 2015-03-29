@@ -7,7 +7,7 @@ namespace Magento\Tax\Block\Adminhtml\Frontend\Region;
 
 use Magento\Framework\Data\Form\Element\AbstractElement;
 
-class Updater extends \Magento\Backend\Block\System\Config\Form\Field
+class Updater extends \Magento\Config\Block\System\Config\Form\Field
 {
     /**
      * @var \Magento\Directory\Helper\Data
@@ -36,7 +36,7 @@ class Updater extends \Magento\Backend\Block\System\Config\Form\Field
     {
         $html = parent::_getElementHtml($element);
 
-        $js = '<script type="text/javascript">
+        $js = '<script>
               require(["prototype", "mage/adminhtml/form"], function(){
                updater = new RegionUpdater("tax_defaults_country", "none", "tax_defaults_region", %s, "nullify");
                if(updater.lastCountryId) {

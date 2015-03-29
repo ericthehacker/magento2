@@ -3,6 +3,9 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
+
+// @codingStandardsIgnoreFile
+
 namespace Magento\Store\Model\Resource;
 
 /**
@@ -36,12 +39,12 @@ class Website extends \Magento\Framework\Model\Resource\Db\AbstractDb
      *
      * @param \Magento\Framework\Model\AbstractModel $object
      * @return $this
-     * @throws \Magento\Framework\Model\Exception
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     protected function _beforeSave(\Magento\Framework\Model\AbstractModel $object)
     {
         if (!preg_match('/^[a-z]+[a-z0-9_]*$/', $object->getCode())) {
-            throw new \Magento\Framework\Model\Exception(
+            throw new \Magento\Framework\Exception\LocalizedException(
                 __(
                     'Website code may only contain letters (a-z), numbers (0-9) or underscore(_), the first character must be a letter'
                 )

@@ -6,12 +6,13 @@
 
 namespace Magento\Catalog\Test\Block\Adminhtml\Product\Attribute\Edit;
 
-use Magento\Backend\Test\Block\Widget\FormTabs;
 use Magento\Backend\Test\Block\Widget\Tab;
-use Mtf\Client\Element;
-use Mtf\Client\Element\Locator;
-use Mtf\Fixture\FixtureInterface;
-use Mtf\Fixture\InjectableFixture;
+use Magento\Backend\Test\Block\Widget\FormTabs;
+use Magento\Mtf\Client\Element\SimpleElement;
+use Magento\Mtf\Client\Element;
+use Magento\Mtf\Client\Locator;
+use Magento\Mtf\Fixture\FixtureInterface;
+use Magento\Mtf\Fixture\InjectableFixture;
 
 /**
  * Catalog Product Attribute form.
@@ -33,17 +34,24 @@ class AttributeForm extends FormTabs
     protected $propertiesTab = '#product_attribute_tabs_main';
 
     /**
+     * Page title.
+     *
+     * @var string
+     */
+    protected $pageTitle = '.page-title';
+
+    /**
      * Get data of the tabs.
      *
      * @param FixtureInterface $fixture
-     * @param Element $element
+     * @param SimpleElement $element
      * @return array
      * @throws \Exception
      *
      * @SuppressWarnings(PHPMD.UnusedLocalVariable)
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function getData(FixtureInterface $fixture = null, Element $element = null)
+    public function getData(FixtureInterface $fixture = null, SimpleElement $element = null)
     {
         $this->waitForElementVisible($this->propertiesTab);
         $data = [];
@@ -79,7 +87,7 @@ class AttributeForm extends FormTabs
      */
     protected function expandAllToggles()
     {
-        $closedToggles = $this->_rootElement->find($this->closedToggle, Locator::SELECTOR_XPATH)->getElements();
+        $closedToggles = $this->_rootElement->getElements($this->closedToggle, Locator::SELECTOR_XPATH);
         foreach ($closedToggles as $toggle) {
             $toggle->click();
         }
@@ -93,15 +101,8 @@ class AttributeForm extends FormTabs
      */
     public function openTab($tabName)
     {
-        $selector = $this->tabs[$tabName]['selector'];
-        $strategy = isset($this->tabs[$tabName]['strategy'])
-            ? $this->tabs[$tabName]['strategy']
-            : Locator::SELECTOR_CSS;
-        $tab = $this->_rootElement->find($selector, $strategy);
-        $target = $this->browser->find('.page-title .title');// Handle menu overlap problem
-        $this->_rootElement->dragAndDrop($target);
-        $tab->click();
-        return $this;
+        $this->browser->find($this->pageTitle)->click(); // Handle menu overlap problem
+        return parent::openTab($tabName);
     }
 
     /**

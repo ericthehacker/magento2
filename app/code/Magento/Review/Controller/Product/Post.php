@@ -14,6 +14,7 @@ class Post extends \Magento\Review\Controller\Product
      * Submit new review action
      *
      * @return void
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function execute()
     {
@@ -29,7 +30,7 @@ class Post extends \Magento\Review\Controller\Product
                 $rating = $data['ratings'];
             }
         } else {
-            $data = $this->getRequest()->getPost();
+            $data = $this->getRequest()->getPostValue();
             $rating = $this->getRequest()->getParam('ratings', []);
         }
 

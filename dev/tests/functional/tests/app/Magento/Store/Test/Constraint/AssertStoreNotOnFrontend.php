@@ -8,7 +8,7 @@ namespace Magento\Store\Test\Constraint;
 
 use Magento\Cms\Test\Page\CmsIndex;
 use Magento\Store\Test\Fixture\Store;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertStoreNotOnFrontend
@@ -16,10 +16,6 @@ use Mtf\Constraint\AbstractConstraint;
  */
 class AssertStoreNotOnFrontend extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Assert that created store view is not available on frontend (store view selector on page top)
      *

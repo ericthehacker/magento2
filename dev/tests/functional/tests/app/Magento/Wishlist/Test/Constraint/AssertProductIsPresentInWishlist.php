@@ -9,8 +9,8 @@ namespace Magento\Wishlist\Test\Constraint;
 use Magento\Cms\Test\Page\CmsIndex;
 use Magento\Customer\Test\Page\CustomerAccountIndex;
 use Magento\Wishlist\Test\Page\WishlistIndex;
-use Mtf\Constraint\AbstractConstraint;
-use Mtf\Fixture\InjectableFixture;
+use Magento\Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Fixture\InjectableFixture;
 
 /**
  * Class AssertProductIsPresentInWishlist
@@ -18,10 +18,6 @@ use Mtf\Fixture\InjectableFixture;
  */
 class AssertProductIsPresentInWishlist extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Assert that product is present in default wishlist
      *

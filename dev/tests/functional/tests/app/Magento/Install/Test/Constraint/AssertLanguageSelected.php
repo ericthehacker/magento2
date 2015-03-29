@@ -7,17 +7,13 @@
 namespace Magento\Install\Test\Constraint;
 
 use Magento\Cms\Test\Page\CmsIndex;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Assert that selected language currently displays on frontend.
  */
 class AssertLanguageSelected extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Assert that selected language currently displays on frontend.
      *

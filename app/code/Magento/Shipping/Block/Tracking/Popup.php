@@ -3,6 +3,9 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
+
+// @codingStandardsIgnoreFile
+
 namespace Magento\Shipping\Block\Tracking;
 
 class Popup extends \Magento\Framework\View\Element\Template
@@ -61,8 +64,8 @@ class Popup extends \Magento\Framework\View\Element\Template
      */
     public function formatDeliveryDate($date)
     {
-        $format = $this->_localeDate->getDateFormat(\Magento\Framework\Stdlib\DateTime\TimezoneInterface::FORMAT_TYPE_MEDIUM);
-        return $this->_localeDate->date(strtotime($date), \Zend_Date::TIMESTAMP, null, false)->toString($format);
+        $format = $this->_localeDate->getDateFormat(\IntlDateFormatter::MEDIUM);
+        return \IntlDateFormatter::formatObject($this->_localeDate->date(new \DateTime($date)), $format);
     }
 
     /**
@@ -78,14 +81,15 @@ class Popup extends \Magento\Framework\View\Element\Template
             $time = $date . ' ' . $time;
         }
 
-        $format = $this->_localeDate->getTimeFormat(\Magento\Framework\Stdlib\DateTime\TimezoneInterface::FORMAT_TYPE_SHORT);
-        return $this->_localeDate->date(strtotime($time), \Zend_Date::TIMESTAMP, null, false)->toString($format);
+        $format = $this->_localeDate->getTimeFormat(\IntlDateFormatter::SHORT);
+        return \IntlDateFormatter::formatObject($this->_localeDate->date(new \DateTime($time)), $format);
     }
 
     /**
      * Is 'contact us' option enabled?
      *
      * @return boolean
+     * @SuppressWarnings(PHPMD.BooleanGetMethodName)
      */
     public function getContactUsEnabled()
     {

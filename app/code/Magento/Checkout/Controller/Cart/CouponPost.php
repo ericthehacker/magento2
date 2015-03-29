@@ -1,19 +1,16 @@
 <?php
 /**
- *
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Magento\Checkout\Controller\Cart;
-
-use Magento\Checkout\Model\Cart as CustomerCart;
 
 class CouponPost extends \Magento\Checkout\Controller\Cart
 {
     /**
      * Sales quote repository
      *
-     * @var \Magento\Sales\Model\QuoteRepository
+     * @var \Magento\Quote\Model\QuoteRepository
      */
     protected $quoteRepository;
 
@@ -22,18 +19,20 @@ class CouponPost extends \Magento\Checkout\Controller\Cart
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param \Magento\Checkout\Model\Session $checkoutSession
      * @param \Magento\Store\Model\StoreManagerInterface $storeManager
-     * @param \Magento\Core\App\Action\FormKeyValidator $formKeyValidator
-     * @param CustomerCart $cart
-     * @param \Magento\Sales\Model\QuoteRepository $quoteRepository
+     * @param \Magento\Framework\Data\Form\FormKey\Validator $formKeyValidator
+     * @param \Magento\Checkout\Model\Cart $cart
+     * @param \Magento\Framework\Controller\Result\RedirectFactory $resultRedirectFactory
+     * @param \Magento\Quote\Model\QuoteRepository $quoteRepository
      */
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Checkout\Model\Session $checkoutSession,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Magento\Core\App\Action\FormKeyValidator $formKeyValidator,
-        CustomerCart $cart,
-        \Magento\Sales\Model\QuoteRepository $quoteRepository
+        \Magento\Framework\Data\Form\FormKey\Validator $formKeyValidator,
+        \Magento\Checkout\Model\Cart $cart,
+        \Magento\Framework\Controller\Result\RedirectFactory $resultRedirectFactory,
+        \Magento\Quote\Model\QuoteRepository $quoteRepository
     ) {
         parent::__construct(
             $context,
@@ -41,7 +40,8 @@ class CouponPost extends \Magento\Checkout\Controller\Cart
             $checkoutSession,
             $storeManager,
             $formKeyValidator,
-            $cart
+            $cart,
+            $resultRedirectFactory
         );
         $this->quoteRepository = $quoteRepository;
     }
@@ -49,7 +49,9 @@ class CouponPost extends \Magento\Checkout\Controller\Cart
     /**
      * Initialize coupon
      *
-     * @return void
+     * @return \Magento\Framework\Controller\Result\Redirect
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     public function execute()
     {
@@ -57,20 +59,16 @@ class CouponPost extends \Magento\Checkout\Controller\Cart
          * No reason continue with empty shopping cart
          */
         if (!$this->cart->getQuote()->getItemsCount()) {
-            $this->_goBack();
-            return;
+            return $this->_goBack();
         }
 
-        $couponCode = $this->getRequest()->getParam(
-            'remove'
-        ) == 1 ? '' : trim(
-            $this->getRequest()->getParam('coupon_code')
-        );
+        $couponCode = $this->getRequest()->getParam('remove') == 1
+            ? ''
+            : trim($this->getRequest()->getParam('coupon_code'));
         $oldCouponCode = $this->cart->getQuote()->getCouponCode();
 
         if (!strlen($couponCode) && !strlen($oldCouponCode)) {
-            $this->_goBack();
-            return;
+            return $this->_goBack();
         }
 
         try {
@@ -96,17 +94,18 @@ class CouponPost extends \Magento\Checkout\Controller\Cart
                             $this->_objectManager->get('Magento\Framework\Escaper')->escapeHtml($couponCode)
                         )
                     );
+                    $this->cart->save();
                 }
             } else {
                 $this->messageManager->addSuccess(__('The coupon code was canceled.'));
             }
-        } catch (\Magento\Framework\Model\Exception $e) {
+        } catch (\Magento\Framework\Exception\LocalizedException $e) {
             $this->messageManager->addError($e->getMessage());
         } catch (\Exception $e) {
             $this->messageManager->addError(__('We cannot apply the coupon code.'));
             $this->_objectManager->get('Psr\Log\LoggerInterface')->critical($e);
         }
 
-        $this->_goBack();
+        return $this->_goBack();
     }
 }

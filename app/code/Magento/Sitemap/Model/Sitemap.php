@@ -3,6 +3,9 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
+
+// @codingStandardsIgnoreFile
+
 namespace Magento\Sitemap\Model;
 
 use Magento\Framework\App\Filesystem\DirectoryList;
@@ -22,6 +25,8 @@ use Magento\Framework\App\Filesystem\DirectoryList;
  * @method \Magento\Sitemap\Model\Sitemap setSitemapTime(string $value)
  * @method int getStoreId()
  * @method \Magento\Sitemap\Model\Sitemap setStoreId(int $value)
+ * @SuppressWarnings(PHPMD.TooManyFields)
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Sitemap extends \Magento\Framework\Model\AbstractModel
 {
@@ -157,6 +162,7 @@ class Sitemap extends \Magento\Framework\Model\AbstractModel
      * @param \Magento\Framework\Model\Resource\AbstractResource $resource
      * @param \Magento\Framework\Data\Collection\Db $resourceCollection
      * @param array $data
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         \Magento\Framework\Model\Context $context,
@@ -202,14 +208,14 @@ class Sitemap extends \Magento\Framework\Model\AbstractModel
      * Get file handler
      *
      * @return \Magento\Framework\Filesystem\File\WriteInterface
-     * @throws \Magento\Framework\Model\Exception
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     protected function _getStream()
     {
         if ($this->_stream) {
             return $this->_stream;
         } else {
-            throw new \Magento\Framework\Model\Exception(__('File handler unreachable'));
+            throw new \Magento\Framework\Exception\LocalizedException(__('File handler unreachable'));
         }
     }
 
@@ -272,7 +278,7 @@ class Sitemap extends \Magento\Framework\Model\AbstractModel
      * Check sitemap file location and permissions
      *
      * @return \Magento\Framework\Model\AbstractModel
-     * @throws \Magento\Framework\Model\Exception
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function beforeSave()
     {
@@ -282,13 +288,13 @@ class Sitemap extends \Magento\Framework\Model\AbstractModel
          * Check path is allow
          */
         if ($path && preg_match('#\.\.[\\\/]#', $path)) {
-            throw new \Magento\Framework\Model\Exception(__('Please define a correct path.'));
+            throw new \Magento\Framework\Exception\LocalizedException(__('Please define a correct path.'));
         }
         /**
          * Check exists and writable path
          */
         if (!$this->_directory->isExist($path)) {
-            throw new \Magento\Framework\Model\Exception(
+            throw new \Magento\Framework\Exception\LocalizedException(
                 __(
                     'Please create the specified folder "%1" before saving the sitemap.',
                     $this->_escaper->escapeHtml($this->getSitemapPath())
@@ -297,7 +303,7 @@ class Sitemap extends \Magento\Framework\Model\AbstractModel
         }
 
         if (!$this->_directory->isWritable($path)) {
-            throw new \Magento\Framework\Model\Exception(
+            throw new \Magento\Framework\Exception\LocalizedException(
                 __('Please make sure that "%1" is writable by the web-server.', $this->getSitemapPath())
             );
         }
@@ -305,7 +311,7 @@ class Sitemap extends \Magento\Framework\Model\AbstractModel
          * Check allow filename
          */
         if (!preg_match('#^[a-zA-Z0-9_\.]+$#', $this->getSitemapFilename())) {
-            throw new \Magento\Framework\Model\Exception(
+            throw new \Magento\Framework\Exception\LocalizedException(
                 __(
                     'Please use only letters (a-z or A-Z), numbers (0-9) or underscores (_) in the filename. No spaces or other characters are allowed.'
                 )
@@ -405,7 +411,7 @@ class Sitemap extends \Magento\Framework\Model\AbstractModel
      */
     protected function _getCurrentDateTime()
     {
-        return $this->dateTime->now();
+        return (new \DateTime())->format(\Magento\Framework\Stdlib\DateTime::DATETIME_PHP_FORMAT);
     }
 
     /**
@@ -505,7 +511,7 @@ class Sitemap extends \Magento\Framework\Model\AbstractModel
      * @param null|string $fileName
      * @param string $type
      * @return void
-     * @throws \Magento\Framework\Model\Exception
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     protected function _createSitemap($fileName = null, $type = self::TYPE_URL)
     {

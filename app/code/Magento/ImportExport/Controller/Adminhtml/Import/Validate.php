@@ -54,7 +54,7 @@ class Validate extends \Magento\ImportExport\Controller\Adminhtml\Import
      */
     public function execute()
     {
-        $data = $this->getRequest()->getPost();
+        $data = $this->getRequest()->getPostValue();
         if ($data) {
             $this->_view->loadLayout(false);
             /** @var $resultBlock \Magento\ImportExport\Block\Adminhtml\Import\Frame\Result */
@@ -63,12 +63,6 @@ class Validate extends \Magento\ImportExport\Controller\Adminhtml\Import
             $resultBlock->addAction(
                 'show',
                 'import_validation_container'
-            )->addAction(
-                'clear',
-                [
-                    \Magento\ImportExport\Model\Import::FIELD_NAME_SOURCE_FILE,
-                    \Magento\ImportExport\Model\Import::FIELD_NAME_IMG_ARCHIVE_FILE
-                ]
             );
 
             try {

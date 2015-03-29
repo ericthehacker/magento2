@@ -7,7 +7,7 @@
 namespace Magento\Sales\Test\Constraint;
 
 use Magento\Sales\Test\Page\SalesOrder;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertOrderButtonsAvailable
@@ -15,10 +15,6 @@ use Mtf\Constraint\AbstractConstraint;
  */
 class AssertOrderButtonsAvailable extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Assert that specified in data set buttons exist on order page in backend
      *

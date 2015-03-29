@@ -7,7 +7,7 @@
 namespace Magento\Customer\Test\Constraint;
 
 use Magento\Customer\Test\Page\CustomerAccountEdit;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertChangePasswordFailMessage
@@ -15,10 +15,6 @@ use Mtf\Constraint\AbstractConstraint;
  */
 class AssertChangePasswordFailMessage extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Fail message
      */

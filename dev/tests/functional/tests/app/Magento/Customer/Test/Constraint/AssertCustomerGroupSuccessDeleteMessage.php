@@ -7,17 +7,13 @@
 namespace Magento\Customer\Test\Constraint;
 
 use Magento\Customer\Test\Page\Adminhtml\CustomerGroupIndex;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertCustomerGroupSuccessDeleteMessage
  */
 class AssertCustomerGroupSuccessDeleteMessage extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'high';
-    /* end tags */
-
     const SUCCESS_DELETE_MESSAGE= "The customer group has been deleted.";
 
     /**

@@ -7,18 +7,14 @@
 namespace Magento\Sales\Test\Constraint;
 
 use Magento\Sales\Test\Page\SalesGuestPrint;
-use Mtf\Constraint\AbstractConstraint;
-use Mtf\Fixture\InjectableFixture;
+use Magento\Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Fixture\InjectableFixture;
 
 /**
  * Assert that products printed correctly on sales guest print page.
  */
 class AssertSalesPrintOrderProducts extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Template for error message.
      */

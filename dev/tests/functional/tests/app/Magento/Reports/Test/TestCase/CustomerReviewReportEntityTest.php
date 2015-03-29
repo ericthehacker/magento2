@@ -10,18 +10,16 @@ use Magento\Catalog\Test\Fixture\CatalogProductSimple;
 use Magento\Catalog\Test\Page\Category\CatalogCategoryView;
 use Magento\Catalog\Test\Page\Product\CatalogProductView;
 use Magento\Cms\Test\Page\CmsIndex;
-use Magento\Customer\Test\Fixture\CustomerInjectable;
+use Magento\Customer\Test\Fixture\Customer;
 use Magento\Customer\Test\Page\CustomerAccountLogin;
 use Magento\Customer\Test\Page\CustomerAccountLogout;
 use Magento\Reports\Test\Page\Adminhtml\ProductReportReview;
-use Magento\Review\Test\Fixture\ReviewInjectable;
-use Mtf\Client\Browser;
-use Mtf\Fixture\FixtureFactory;
-use Mtf\TestCase\Injectable;
+use Magento\Review\Test\Fixture\Review;
+use Magento\Mtf\Client\BrowserInterface;
+use Magento\Mtf\Fixture\FixtureFactory;
+use Magento\Mtf\TestCase\Injectable;
 
 /**
- * Test Creation for CustomerReviewReportEntity
- *
  * Preconditions:
  * 1. Create customer
  * 2. Create simple product
@@ -30,7 +28,7 @@ use Mtf\TestCase\Injectable;
  * 5. Fill data according to DataSet
  * 6. Click Submit review
  *
- * Test Flow:
+ * Steps:
  * 1. Open Reports -> Review : By Customers
  * 2. Assert Reviews qty
  * 3. Click Show Reviews
@@ -38,9 +36,16 @@ use Mtf\TestCase\Injectable;
  *
  * @group Reports_(MX)
  * @ZephyrId MAGETWO-27555
+ *
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class CustomerReviewReportEntityTest extends Injectable
 {
+    /* tags */
+    const MVP = 'no';
+    const DOMAIN = 'MX';
+    /* end tags */
+
     /**
      * Customer frontend logout page
      *
@@ -91,7 +96,7 @@ class CustomerReviewReportEntityTest extends Injectable
      */
     public function __prepare(FixtureFactory $fixtureFactory)
     {
-        $customer = $fixtureFactory->createByCode('customerInjectable', ['dataSet' => 'johndoe_unique']);
+        $customer = $fixtureFactory->createByCode('customer', ['dataSet' => 'johndoe_unique']);
         $customer->persist();
 
         return ['customer' => $customer];
@@ -127,20 +132,20 @@ class CustomerReviewReportEntityTest extends Injectable
     /**
      * Test Creation for CustomerReviewReportEntity
      *
-     * @param ReviewInjectable $review
-     * @param CustomerInjectable $customer
+     * @param Review $review
+     * @param Customer $customer
      * @param $customerLogin
      * @param CatalogProductSimple $product
-     * @param Browser $browser
+     * @param BrowserInterface $browser
      * @return array
      *
      * @SuppressWarnings(PHPMD.ConstructorWithNameAsEnclosingClass)
      */
     public function test(
-        ReviewInjectable $review,
-        CustomerInjectable $customer,
+        Review $review,
+        Customer $customer,
         CatalogProductSimple $product,
-        Browser $browser,
+        BrowserInterface $browser,
         $customerLogin
     ) {
         // Preconditions

@@ -7,8 +7,8 @@
 namespace Magento\Reports\Test\Block\Adminhtml\Review\Customer;
 
 use Magento\Backend\Test\Block\Widget\Grid as AbstractGrid;
-use Magento\Customer\Test\Fixture\CustomerInjectable;
-use Mtf\Client\Element\Locator;
+use Magento\Customer\Test\Fixture\Customer;
+use Magento\Mtf\Client\Locator;
 
 /**
  * Class Grid
@@ -33,12 +33,12 @@ class Grid extends AbstractGrid
     /**
      * Open customer review report
      *
-     * @param CustomerInjectable $customer
+     * @param Customer $customer
      * @return void
      */
-    public function openReview(CustomerInjectable $customer)
+    public function openReview(Customer $customer)
     {
-        $customerName = $customer->getFirstName() . ' ' . $customer->getLastName();
+        $customerName = $customer->getFirstname() . ' ' . $customer->getLastname();
         $this->_rootElement->find(sprintf($this->searchRow, $customerName), Locator::SELECTOR_XPATH)->click();
     }
 

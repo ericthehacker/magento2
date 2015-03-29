@@ -10,8 +10,8 @@ use Magento\Catalog\Test\Fixture\CatalogProductSimple;
 use Magento\Checkout\Test\Fixture\Cart;
 use Magento\Checkout\Test\Fixture\Cart\Items;
 use Magento\Checkout\Test\Page\CheckoutCart;
-use Mtf\Constraint\AbstractAssertForm;
-use Mtf\Fixture\FixtureInterface;
+use Magento\Mtf\Constraint\AbstractAssertForm;
+use Magento\Mtf\Fixture\FixtureInterface;
 
 /**
  * Assert that cart item options for product(s) display with correct information block.
@@ -21,10 +21,6 @@ use Mtf\Fixture\FixtureInterface;
  */
 class AssertCartItemsOptions extends AbstractAssertForm
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Error message for verify options
      *

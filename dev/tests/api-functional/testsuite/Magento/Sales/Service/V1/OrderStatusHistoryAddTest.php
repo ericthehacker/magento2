@@ -3,11 +3,13 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
+
+// @codingStandardsIgnoreFile
+
 namespace Magento\Sales\Service\V1;
 
 use Magento\Sales\Api\Data\OrderStatusHistoryInterface;
 use Magento\TestFramework\TestCase\WebapiAbstract;
-use Magento\Webapi\Model\Rest\Config;
 
 /**
  * Class OrderCommentAddTest
@@ -33,6 +35,7 @@ class OrderStatusHistoryAddTest extends WebapiAbstract
 
     /**
      * @magentoApiDataFixture Magento/Sales/_files/order.php
+     * @SuppressWarnings(PHPMD.UnusedLocalVariable)
      */
     public function testOrderCommentAdd()
     {
@@ -54,8 +57,8 @@ class OrderStatusHistoryAddTest extends WebapiAbstract
         $requestData = ['id' => $order->getId(), 'statusHistory' => $commentData];
         $serviceInfo = [
             'rest' => [
-                'resourcePath' => '/V1/order/' . $order->getId() . '/comment',
-                'httpMethod' => Config::HTTP_METHOD_POST,
+                'resourcePath' => '/V1/orders/' . $order->getId() . '/comments',
+                'httpMethod' => \Magento\Framework\Webapi\Rest\Request::HTTP_METHOD_POST,
             ],
             'soap' => [
                 'service' => self::SERVICE_READ_NAME,
@@ -74,10 +77,12 @@ class OrderStatusHistoryAddTest extends WebapiAbstract
             $this->assertEquals($commentData[OrderStatusHistoryInterface::COMMENT], $statusHistoryComment->getComment());
             $this->assertEquals($commentData[OrderStatusHistoryInterface::PARENT_ID], $statusHistoryComment->getParentId());
             $this->assertEquals(
-                $commentData[OrderStatusHistoryInterface::IS_CUSTOMER_NOTIFIED], $statusHistoryComment->getIsCustomerNotified()
+                $commentData[OrderStatusHistoryInterface::IS_CUSTOMER_NOTIFIED],
+                $statusHistoryComment->getIsCustomerNotified()
             );
             $this->assertEquals(
-                $commentData[OrderStatusHistoryInterface::IS_VISIBLE_ON_FRONT], $statusHistoryComment->getIsVisibleOnFront()
+                $commentData[OrderStatusHistoryInterface::IS_VISIBLE_ON_FRONT],
+                $statusHistoryComment->getIsVisibleOnFront()
             );
         }
     }

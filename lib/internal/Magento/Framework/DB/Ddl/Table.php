@@ -224,7 +224,7 @@ class Table
      */
     public function getName()
     {
-        if (is_null($this->_tableName)) {
+        if ($this->_tableName === null) {
             throw new \Zend_Db_Exception('Table name is not defined');
         }
         return $this->_tableName;
@@ -270,6 +270,9 @@ class Table
      * @param string $comment column description
      * @return $this
      * @throws \Zend_Db_Exception
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
+     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     public function addColumn($name, $type, $size = null, $options = [], $comment = null)
     {
@@ -405,6 +408,7 @@ class Table
      * @param string $onUpdate      the action on update
      * @return $this
      * @throws \Zend_Db_Exception
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function addForeignKey($fkName, $column, $refTable, $refColumn, $onDelete = null, $onUpdate = null)
     {
@@ -455,6 +459,7 @@ class Table
      * @param array $options array of additional options
      * @return $this
      * @throws \Zend_Db_Exception
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function addIndex($indexName, $fields, $options = [])
     {

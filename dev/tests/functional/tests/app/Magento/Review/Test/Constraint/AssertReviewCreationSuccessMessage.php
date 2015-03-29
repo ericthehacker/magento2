@@ -7,17 +7,13 @@
 namespace Magento\Review\Test\Constraint;
 
 use Magento\Catalog\Test\Page\Product\CatalogProductView;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertReviewCreationSuccessMessage
  */
 class AssertReviewCreationSuccessMessage extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'high';
-    /* end tags */
-
     /**
      * Text of success message after review created
      */

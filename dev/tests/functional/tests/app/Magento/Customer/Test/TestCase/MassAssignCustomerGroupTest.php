@@ -7,9 +7,9 @@
 namespace Magento\Customer\Test\TestCase;
 
 use Magento\Customer\Test\Fixture\CustomerGroupInjectable;
-use Magento\Customer\Test\Fixture\CustomerInjectable;
+use Magento\Customer\Test\Fixture\Customer;
 use Magento\Customer\Test\Page\Adminhtml\CustomerIndex;
-use Mtf\TestCase\Injectable;
+use Magento\Mtf\TestCase\Injectable;
 
 /**
  * Test creation for MassAssignCustomerGroup
@@ -34,6 +34,11 @@ use Mtf\TestCase\Injectable;
  */
 class MassAssignCustomerGroupTest extends Injectable
 {
+    /* tags */
+    const MVP = 'yes';
+    const DOMAIN = 'CS';
+    /* end tags */
+
     /**
      * Customer index page
      *
@@ -51,10 +56,10 @@ class MassAssignCustomerGroupTest extends Injectable
     /**
      * Prepare data
      *
-     * @param CustomerInjectable $customer
+     * @param Customer $customer
      * @return array
      */
-    public function __prepare(CustomerInjectable $customer)
+    public function __prepare(Customer $customer)
     {
         $customer->persist();
 
@@ -75,11 +80,11 @@ class MassAssignCustomerGroupTest extends Injectable
     /**
      * Mass assign customer group
      *
-     * @param CustomerInjectable $customer
+     * @param Customer $customer
      * @param CustomerGroupInjectable $customerGroup
      * @return void
      */
-    public function test(CustomerInjectable $customer, CustomerGroupInjectable $customerGroup)
+    public function test(Customer $customer, CustomerGroupInjectable $customerGroup)
     {
         // Steps
         $customerGroup->persist();

@@ -9,6 +9,7 @@ namespace Magento\Framework;
  * Universal data container with array access implementation
  *
  * @author      Magento Core Team <core@magentocommerce.com>
+ * @SuppressWarnings(PHPMD.NumberOfChildren)
  */
 class Object implements \ArrayAccess
 {
@@ -75,7 +76,7 @@ class Object implements \ArrayAccess
     public function isDeleted($isDeleted = null)
     {
         $result = $this->_isDeleted;
-        if (!is_null($isDeleted)) {
+        if ($isDeleted !== null) {
             $this->_isDeleted = $isDeleted;
         }
         return $result;
@@ -647,7 +648,7 @@ class Object implements \ArrayAccess
      */
     public function debug($data = null, &$objects = [])
     {
-        if (is_null($data)) {
+        if ($data === null) {
             $hash = spl_object_hash($this);
             if (!empty($objects[$hash])) {
                 return '*** RECURSION ***';

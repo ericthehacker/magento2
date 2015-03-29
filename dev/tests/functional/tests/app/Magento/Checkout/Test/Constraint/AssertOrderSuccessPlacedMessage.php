@@ -7,7 +7,7 @@
 namespace Magento\Checkout\Test\Constraint;
 
 use Magento\Checkout\Test\Page\CheckoutOnepageSuccess;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertOrderSuccessPlacedMessage
@@ -15,10 +15,6 @@ use Mtf\Constraint\AbstractConstraint;
  */
 class AssertOrderSuccessPlacedMessage extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'high';
-    /* end tags */
-
     /**
      * Message of success checkout
      */

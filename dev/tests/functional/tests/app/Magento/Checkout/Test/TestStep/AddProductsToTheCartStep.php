@@ -9,11 +9,10 @@ namespace Magento\Checkout\Test\TestStep;
 use Magento\Catalog\Test\Page\Product\CatalogProductView;
 use Magento\Checkout\Test\Page\CheckoutCart;
 use Magento\Cms\Test\Page\CmsIndex;
-use Mtf\Client\Browser;
-use Mtf\TestStep\TestStepInterface;
+use Magento\Mtf\Client\BrowserInterface;
+use Magento\Mtf\TestStep\TestStepInterface;
 
 /**
- * Class AddProductsToTheCartStep
  * Adding created products to the cart
  */
 class AddProductsToTheCartStep implements TestStepInterface
@@ -49,7 +48,7 @@ class AddProductsToTheCartStep implements TestStepInterface
     /**
      * Interface Browser
      *
-     * @var Browser
+     * @var BrowserInterface
      */
     protected $browser;
 
@@ -58,14 +57,14 @@ class AddProductsToTheCartStep implements TestStepInterface
      * @param CatalogProductView $catalogProductView
      * @param CheckoutCart $checkoutCart
      * @param CmsIndex $cmsIndex
-     * @param Browser $browser
+     * @param BrowserInterface $browser
      * @param array $products
      */
     public function __construct(
         CatalogProductView $catalogProductView,
         CheckoutCart $checkoutCart,
         CmsIndex $cmsIndex,
-        Browser $browser,
+        BrowserInterface $browser,
         array $products
     ) {
         $this->products = $products;
@@ -88,6 +87,7 @@ class AddProductsToTheCartStep implements TestStepInterface
         foreach ($this->products as $product) {
             $this->browser->open($_ENV['app_frontend_url'] . $product->getUrlKey() . '.html');
             $this->catalogProductView->getViewBlock()->addToCart($product);
+            $this->catalogProductView->getMessagesBlock()->waitSuccessMessage();
         }
     }
 }

@@ -3,6 +3,9 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
+
+// @codingStandardsIgnoreFile
+
 namespace Magento\Catalog\Controller\Product;
 
 /**
@@ -161,9 +164,9 @@ class CompareTest extends \Magento\TestFramework\TestCase\AbstractController
         $visitor = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
             ->create('Magento\Customer\Model\Visitor');
         /** @var \Magento\Framework\Stdlib\DateTime $dateTime */
-        $dateTime = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
-            ->create('Magento\Framework\Stdlib\DateTime');
-        $visitor->setSessionId(md5(time()) . md5(microtime()))->setLastVisitAt($dateTime->now())->save();
+        $visitor->setSessionId(md5(time()) . md5(microtime()))
+            ->setLastVisitAt((new \DateTime())->format(\Magento\Framework\Stdlib\DateTime::DATETIME_PHP_FORMAT))
+            ->save();
         /** @var $item \Magento\Catalog\Model\Product\Compare\Item */
         $item = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
             'Magento\Catalog\Model\Product\Compare\Item'
@@ -182,11 +185,9 @@ class CompareTest extends \Magento\TestFramework\TestCase\AbstractController
         $visitor = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
             ->create('Magento\Customer\Model\Visitor');
 
-        /** @var \Magento\Framework\Stdlib\DateTime $dateTime */
-        $dateTime = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
-            ->create('Magento\Framework\Stdlib\DateTime');
-
-        $visitor->setSessionId(md5(time()) . md5(microtime()))->setLastVisitAt($dateTime->now())->save();
+        $visitor->setSessionId(md5(time()) . md5(microtime()))
+            ->setLastVisitAt((new \DateTime())->format(\Magento\Framework\Stdlib\DateTime::DATETIME_PHP_FORMAT))
+            ->save();
 
         \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
             'Magento\Customer\Model\Visitor'
@@ -202,10 +203,9 @@ class CompareTest extends \Magento\TestFramework\TestCase\AbstractController
         /** @var $visitor \Magento\Customer\Model\Visitor */
         $visitor = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
             ->create('Magento\Customer\Model\Visitor');
-        /** @var \Magento\Framework\Stdlib\DateTime $dateTime */
-        $dateTime = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
-            ->create('Magento\Framework\Stdlib\DateTime');
-        $visitor->setSessionId(md5(time()) . md5(microtime()))->setLastVisitAt($dateTime->now())->save();
+        $visitor->setSessionId(md5(time()) . md5(microtime()))
+            ->setLastVisitAt((new \DateTime())->format(\Magento\Framework\Stdlib\DateTime::DATETIME_PHP_FORMAT))
+            ->save();
 
         /** @var $item \Magento\Catalog\Model\Product\Compare\Item */
         $item = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
@@ -258,11 +258,8 @@ class CompareTest extends \Magento\TestFramework\TestCase\AbstractController
         /** @var $visitor \Magento\Customer\Model\Visitor */
         $visitor = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
             ->create('Magento\Customer\Model\Visitor');
-        /** @var \Magento\Framework\Stdlib\DateTime $dateTime */
-        $dateTime = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
-            ->create('Magento\Framework\Stdlib\DateTime');
         $visitor->setSessionId(md5(time()) . md5(microtime()))
-            ->setLastVisitAt($dateTime->now())
+            ->setLastVisitAt((new \DateTime())->format(\Magento\Framework\Stdlib\DateTime::DATETIME_PHP_FORMAT))
             ->save();
 
         /** @var $item \Magento\Catalog\Model\Product\Compare\Item */

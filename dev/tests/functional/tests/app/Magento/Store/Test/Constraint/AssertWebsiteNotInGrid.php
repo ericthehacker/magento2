@@ -8,7 +8,7 @@ namespace Magento\Store\Test\Constraint;
 
 use Magento\Backend\Test\Page\Adminhtml\StoreIndex;
 use Magento\Store\Test\Fixture\Website;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertWebsiteNotInGrid
@@ -16,10 +16,6 @@ use Mtf\Constraint\AbstractConstraint;
  */
 class AssertWebsiteNotInGrid extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Assert that created Website can't be found in grid by name
      *

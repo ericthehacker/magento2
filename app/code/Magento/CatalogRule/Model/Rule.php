@@ -37,6 +37,8 @@ use Magento\Catalog\Model\Product;
  * @method \Magento\CatalogRule\Model\Rule setDiscountAmount(float $value)
  * @method string getWebsiteIds()
  * @method \Magento\CatalogRule\Model\Rule setWebsiteIds(string $value)
+ * @SuppressWarnings(PHPMD.TooManyFields)
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Rule extends \Magento\Rule\Model\AbstractModel
 {
@@ -142,6 +144,11 @@ class Rule extends \Magento\Rule\Model\AbstractModel
     protected $dateTime;
 
     /**
+     * @var \Magento\CatalogRule\Model\Indexer\Rule\RuleProductProcessor;
+     */
+    protected $_ruleProductProcessor;
+
+    /**
      * @param \Magento\Framework\Model\Context $context
      * @param \Magento\Framework\Registry $registry
      * @param \Magento\Framework\Data\FormFactory $formFactory
@@ -156,10 +163,12 @@ class Rule extends \Magento\Rule\Model\AbstractModel
      * @param \Magento\CatalogRule\Helper\Data $catalogRuleData
      * @param \Magento\Framework\App\Cache\TypeListInterface $cacheTypesList
      * @param \Magento\Framework\Stdlib\DateTime $dateTime
+     * @param \Magento\CatalogRule\Model\Indexer\Rule\RuleProductProcessor $ruleProductProcessor
      * @param \Magento\Framework\Model\Resource\AbstractResource $resource
      * @param \Magento\Framework\Data\Collection\Db $resourceCollection
      * @param array $relatedCacheTypes
      * @param array $data
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         \Magento\Framework\Model\Context $context,
@@ -176,6 +185,7 @@ class Rule extends \Magento\Rule\Model\AbstractModel
         \Magento\CatalogRule\Helper\Data $catalogRuleData,
         \Magento\Framework\App\Cache\TypeListInterface $cacheTypesList,
         \Magento\Framework\Stdlib\DateTime $dateTime,
+        \Magento\CatalogRule\Model\Indexer\Rule\RuleProductProcessor $ruleProductProcessor,
         \Magento\Framework\Model\Resource\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\Db $resourceCollection = null,
         array $relatedCacheTypes = [],
@@ -192,6 +202,7 @@ class Rule extends \Magento\Rule\Model\AbstractModel
         $this->_cacheTypesList = $cacheTypesList;
         $this->_relatedCacheTypes = $relatedCacheTypes;
         $this->dateTime = $dateTime;
+        $this->_ruleProductProcessor = $ruleProductProcessor;
         parent::__construct($context, $registry, $formFactory, $localeDate, $resource, $resourceCollection, $data);
     }
 
@@ -249,7 +260,7 @@ class Rule extends \Magento\Rule\Model\AbstractModel
     public function getNow()
     {
         if (!$this->_now) {
-            return $this->dateTime->now();
+            return (new \DateTime())->format(\Magento\Framework\Stdlib\DateTime::DATETIME_PHP_FORMAT);
         }
         return $this->_now;
     }
@@ -272,7 +283,7 @@ class Rule extends \Magento\Rule\Model\AbstractModel
      */
     public function getMatchingProductIds()
     {
-        if (is_null($this->_productIds)) {
+        if ($this->_productIds === null) {
             $this->_productIds = [];
             $this->setCollectedAttributes([]);
 
@@ -341,6 +352,7 @@ class Rule extends \Magento\Rule\Model\AbstractModel
      * @param Product $product
      * @param float $price
      * @return float|null
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function calcProductPriceRule(Product $product, $price)
     {
@@ -440,5 +452,34 @@ class Rule extends \Magento\Rule\Model\AbstractModel
             $this->_cacheTypesList->invalidate($this->_relatedCacheTypes);
         }
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @return $this
+     */
+    public function afterSave()
+    {
+        if ($this->isObjectNew()) {
+            $this->getMatchingProductIds();
+            if (!empty($this->_productIds) && is_array($this->_productIds)) {
+                $this->_ruleProductProcessor->reindexList($this->_productIds);
+            }
+        } else {
+            $this->_ruleProductProcessor->getIndexer()->invalidate();
+        }
+        return parent::afterSave();
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @return $this
+     */
+    public function afterDelete()
+    {
+        $this->_ruleProductProcessor->getIndexer()->invalidate();
+        return parent::afterDelete();
     }
 }

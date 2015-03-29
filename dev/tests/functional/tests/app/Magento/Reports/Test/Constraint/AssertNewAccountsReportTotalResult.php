@@ -7,7 +7,7 @@
 namespace Magento\Reports\Test\Constraint;
 
 use Magento\Reports\Test\Page\Adminhtml\CustomerAccounts;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertNewAccountsReportTotalResult
@@ -15,10 +15,6 @@ use Mtf\Constraint\AbstractConstraint;
  */
 class AssertNewAccountsReportTotalResult extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Assert that new account total result is equals to data from dataSet
      *

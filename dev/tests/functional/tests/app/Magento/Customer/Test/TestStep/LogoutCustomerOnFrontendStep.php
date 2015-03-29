@@ -7,7 +7,7 @@
 namespace Magento\Customer\Test\TestStep;
 
 use Magento\Cms\Test\Page\CmsIndex;
-use Mtf\TestStep\TestStepInterface;
+use Magento\Mtf\TestStep\TestStepInterface;
 
 /**
  * Class LogoutCustomerOnFrontendStep
@@ -39,6 +39,7 @@ class LogoutCustomerOnFrontendStep implements TestStepInterface
     public function run()
     {
         $this->cmsIndex->open();
+        $this->cmsIndex->getCmsPageBlock()->waitPageInit();
         if ($this->cmsIndex->getLinksBlock()->isLinkVisible("Log Out")) {
             $this->cmsIndex->getLinksBlock()->openLink("Log Out");
             $this->cmsIndex->getCmsPageBlock()->waitUntilTextIsVisible('Home Page');

@@ -7,7 +7,7 @@
 namespace Magento\Catalog\Test\Constraint;
 
 use Magento\Catalog\Test\Page\Product\CatalogProductCompare;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertProductCompareRemoveLastProductMessage
@@ -15,10 +15,6 @@ use Mtf\Constraint\AbstractConstraint;
  */
 class AssertProductCompareRemoveLastProductMessage extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     const SUCCESS_MESSAGE = 'You have no items to compare.';
 
     /**

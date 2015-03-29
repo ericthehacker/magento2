@@ -7,8 +7,8 @@
 namespace Magento\Catalog\Test\Fixture\CatalogProductSimple;
 
 use Magento\Catalog\Test\Fixture\CatalogProductAttribute;
-use Mtf\Fixture\FixtureFactory;
-use Mtf\Fixture\FixtureInterface;
+use Magento\Mtf\Fixture\FixtureFactory;
+use Magento\Mtf\Fixture\FixtureInterface;
 
 /**
  * Source for attribute field.
@@ -58,6 +58,7 @@ class CustomAttribute implements FixtureInterface
 
     /**
      * Get default value of custom attribute considering to it's type.
+     * In case if default value isn't set for dropdown and multiselect return first option, for other types null.
      *
      * @param CatalogProductAttribute $attribute
      * @return string|null
@@ -65,16 +66,22 @@ class CustomAttribute implements FixtureInterface
     protected function getDefaultAttributeValue(CatalogProductAttribute $attribute)
     {
         $data = $attribute->getData();
+        $value = '';
         if (isset($data['options'])) {
             foreach ($data['options'] as $option) {
-                if ($option['is_default'] == 'Yes') {
-                    return $option['admin'];
+                if (isset($option['is_default']) && $option['is_default'] == 'Yes') {
+                    $value = $option['admin'];
                 }
+            }
+            if ($value == '') {
+                $value = $data['options'][0]['admin'];
             }
         } else {
             $defaultValue = preg_grep('/^default_value/', array_keys($data));
-            return !empty($defaultValue) ? $data[array_shift($defaultValue)] : null;
+            $value = !empty($defaultValue) ? $data[array_shift($defaultValue)] : null;
         }
+
+        return $value;
     }
 
     /**

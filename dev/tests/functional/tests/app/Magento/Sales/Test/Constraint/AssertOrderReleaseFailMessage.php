@@ -7,7 +7,7 @@
 namespace Magento\Sales\Test\Constraint;
 
 use Magento\Sales\Test\Page\Adminhtml\OrderIndex;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertOrderReleaseFailMessage
@@ -15,10 +15,6 @@ use Mtf\Constraint\AbstractConstraint;
  */
 class AssertOrderReleaseFailMessage extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Text value to be checked
      */

@@ -4,6 +4,8 @@
  * See COPYING.txt for license details.
  */
 
+// @codingStandardsIgnoreFile
+
 /**
  * Test for abstract export model
  */
@@ -65,7 +67,7 @@ class EntityAbstractTest extends \PHPUnit_Framework_TestCase
     /**
      * Check that method throw exception when writer was not defined
      *
-     * @expectedException \Magento\Framework\Model\Exception
+     * @expectedException \Magento\Framework\Exception\LocalizedException
      */
     public function testGetWriterThrowsException()
     {

@@ -7,7 +7,7 @@
 namespace Magento\Checkout\Test\Constraint;
 
 use Magento\Checkout\Test\Page\CheckoutCart;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertProductIsNotEditable
@@ -15,10 +15,6 @@ use Mtf\Constraint\AbstractConstraint;
  */
 class AssertProductIsNotEditable extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Assert that after adding products by sku to shopping cart products are not editable
      *

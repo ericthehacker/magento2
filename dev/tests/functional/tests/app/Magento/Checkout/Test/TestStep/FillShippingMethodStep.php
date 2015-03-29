@@ -7,7 +7,7 @@
 namespace Magento\Checkout\Test\TestStep;
 
 use Magento\Checkout\Test\Page\CheckoutOnepage;
-use Mtf\TestStep\TestStepInterface;
+use Magento\Mtf\TestStep\TestStepInterface;
 
 /**
  * Class FillShippingMethodStep
@@ -34,7 +34,7 @@ class FillShippingMethodStep implements TestStepInterface
      * @param CheckoutOnepage $checkoutOnepage
      * @param array $shipping
      */
-    public function __construct(CheckoutOnepage $checkoutOnepage, array $shipping)
+    public function __construct(CheckoutOnepage $checkoutOnepage, array $shipping = [])
     {
         $this->checkoutOnepage = $checkoutOnepage;
         $this->shipping = $shipping;
@@ -47,7 +47,7 @@ class FillShippingMethodStep implements TestStepInterface
      */
     public function run()
     {
-        if ($this->shipping['shipping_service'] !== '-') {
+        if (!empty($this->shipping)) {
             $this->checkoutOnepage->getShippingMethodBlock()->selectShippingMethod($this->shipping);
             $this->checkoutOnepage->getShippingMethodBlock()->clickContinue();
         }

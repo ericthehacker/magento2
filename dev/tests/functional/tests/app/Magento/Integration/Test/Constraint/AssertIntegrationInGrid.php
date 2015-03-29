@@ -8,7 +8,7 @@ namespace Magento\Integration\Test\Constraint;
 
 use Magento\Integration\Test\Fixture\Integration;
 use Magento\Integration\Test\Page\Adminhtml\IntegrationIndex;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertIntegrationInGrid
@@ -16,10 +16,6 @@ use Mtf\Constraint\AbstractConstraint;
  */
 class AssertIntegrationInGrid extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'high';
-    /* end tags */
-
     /**
      * Assert that data in grid on Integrations page according to fixture by name field
      *

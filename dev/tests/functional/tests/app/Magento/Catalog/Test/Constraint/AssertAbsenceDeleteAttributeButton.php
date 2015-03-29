@@ -7,7 +7,7 @@
 namespace Magento\Catalog\Test\Constraint;
 
 use Magento\Catalog\Test\Page\Adminhtml\CatalogProductAttributeNew;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertAbsenceDeleteAttributeButton
@@ -15,10 +15,6 @@ use Mtf\Constraint\AbstractConstraint;
  */
 class AssertAbsenceDeleteAttributeButton extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'high';
-    /* end tags */
-
     /**
      * Assert that Delete Attribute button is absent for system attribute on attribute edit page.
      *

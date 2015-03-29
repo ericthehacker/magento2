@@ -8,7 +8,7 @@ namespace Magento\Backend\Test\Constraint;
 
 use Magento\Backend\Test\Fixture\GlobalSearch;
 use Magento\Backend\Test\Page\Adminhtml\Dashboard;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertGlobalSearchOrderId
@@ -16,10 +16,6 @@ use Mtf\Constraint\AbstractConstraint;
  */
 class AssertGlobalSearchOrderId extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Assert that order Id is present in search results
      *

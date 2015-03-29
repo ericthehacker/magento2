@@ -6,9 +6,9 @@
 
 namespace Magento\UrlRewrite\Test\Constraint;
 
-use Magento\Catalog\Test\Fixture\CatalogCategory;
+use Magento\Catalog\Test\Fixture\Category;
 use Magento\UrlRewrite\Test\Page\Adminhtml\UrlRewriteIndex;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertUrlRewriteCategoryInGrid
@@ -16,18 +16,14 @@ use Mtf\Constraint\AbstractConstraint;
  */
 class AssertUrlRewriteCategoryInGrid extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Assert that url rewrite category in grid
      *
-     * @param CatalogCategory $category
+     * @param Category $category
      * @param UrlRewriteIndex $urlRewriteIndex
      * @return void
      */
-    public function processAssert(CatalogCategory $category, UrlRewriteIndex $urlRewriteIndex)
+    public function processAssert(Category $category, UrlRewriteIndex $urlRewriteIndex)
     {
         $urlRewriteIndex->open();
         $filter = ['target_path' => strtolower($category->getUrlKey())];

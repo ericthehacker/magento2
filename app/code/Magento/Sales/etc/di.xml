@@ -96,14 +96,7 @@
     <type name="Magento\Catalog\Helper\Product\Flat\Indexer">
         <arguments>
             <argument name="flatAttributeGroups" xsi:type="array">
-                <item name="sales_quote_item" xsi:type="string">sales_quote_item</item>
-            </argument>
-        </arguments>
-    </type>
-    <type name="Magento\Framework\Module\Updater\SetupFactory">
-        <arguments>
-            <argument name="resourceTypes" xsi:type="array">
-                <item name="sales_setup" xsi:type="string">Magento\Sales\Model\Resource\Setup</item>
+                <item name="quote_item" xsi:type="string">quote_item</item>
             </argument>
         </arguments>
     </type>

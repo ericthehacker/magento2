@@ -4,12 +4,12 @@
  * See COPYING.txt for license details.
  */
 
+// @codingStandardsIgnoreFile
+
 /**
  * Abstract Rule entity data model
  */
 namespace Magento\Rule\Model;
-
-use Magento\Framework\Model\Exception;
 
 abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel
 {
@@ -99,14 +99,15 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel
      * Prepare data before saving
      *
      * @return $this
-     * @throws \Magento\Framework\Model\Exception
+     * @throws \Magento\Framework\Exception\LocalizedException
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function beforeSave()
     {
         // Check if discount amount not negative
         if ($this->hasDiscountAmount()) {
             if ((int)$this->getDiscountAmount() < 0) {
-                throw new \Magento\Framework\Model\Exception(__('Invalid discount amount.'));
+                throw new \Magento\Framework\Exception\LocalizedException(__('Invalid discount amount.'));
             }
         }
 
@@ -293,10 +294,11 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel
     /**
      * Set specified data to current rule.
      * Set conditions and actions recursively.
-     * Convert dates into \Zend_Date.
+     * Convert dates into \DateTime.
      *
      * @param array $data
      * @return array
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     protected function _convertFlatToRecursive(array $data)
     {
@@ -318,15 +320,10 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel
                 }
             } else {
                 /**
-                 * Convert dates into \Zend_Date
+                 * Convert dates into \DateTime
                  */
                 if (in_array($key, ['from_date', 'to_date']) && $value) {
-                    $value = $this->_localeDate->date(
-                        $value,
-                        \Magento\Framework\Stdlib\DateTime::DATE_INTERNAL_FORMAT,
-                        null,
-                        false
-                    );
+                    $value = new \DateTime($value);
                 }
                 $this->setData($key, $value);
             }
@@ -351,6 +348,8 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel
      *
      * @param \Magento\Framework\Object $object
      * @return bool|string[] - return true if validation passed successfully. Array with errors description otherwise
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     public function validateData(\Magento\Framework\Object $object)
     {
@@ -363,10 +362,10 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel
         }
 
         if ($fromDate && $toDate) {
-            $fromDate = new \Magento\Framework\Stdlib\DateTime\Date($fromDate, \Magento\Framework\Stdlib\DateTime::DATE_INTERNAL_FORMAT);
-            $toDate = new \Magento\Framework\Stdlib\DateTime\Date($toDate, \Magento\Framework\Stdlib\DateTime::DATE_INTERNAL_FORMAT);
+            $fromDate = new \DateTime($fromDate);
+            $toDate = new \DateTime($toDate);
 
-            if ($fromDate->compare($toDate) === 1) {
+            if ($fromDate > $toDate) {
                 $result[] = __('End Date must follow Start Date.');
             }
         }

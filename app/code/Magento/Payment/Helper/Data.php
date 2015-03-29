@@ -6,7 +6,7 @@
 namespace Magento\Payment\Helper;
 
 use Magento\Payment\Model\Method\Substitution;
-use Magento\Sales\Model\Quote;
+use Magento\Quote\Model\Quote;
 use Magento\Store\Model\Store;
 use Magento\Payment\Block\Form;
 use Magento\Payment\Model\Info;
@@ -18,17 +18,11 @@ use Magento\Payment\Model\MethodInterface;
 
 /**
  * Payment module base helper
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Data extends \Magento\Framework\App\Helper\AbstractHelper
 {
     const XML_PATH_PAYMENT_METHODS = 'payment';
-
-    /**
-     * Core store config
-     *
-     * @var \Magento\Framework\App\Config\ScopeConfigInterface
-     */
-    protected $_scopeConfig;
 
     /**
      * @var \Magento\Payment\Model\Config
@@ -52,7 +46,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     /**
      * App emulation model
      *
-     * @var \Magento\Core\Model\App\Emulation
+     * @var \Magento\Store\Model\App\Emulation
      */
     protected $_appEmulation;
 
@@ -65,24 +59,21 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * Construct
      *
      * @param \Magento\Framework\App\Helper\Context $context
-     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param LayoutFactory $layoutFactory
      * @param \Magento\Payment\Model\Method\Factory $paymentMethodFactory
-     * @param \Magento\Core\Model\App\Emulation $appEmulation
+     * @param \Magento\Store\Model\App\Emulation $appEmulation
      * @param \Magento\Payment\Model\Config $paymentConfig
      * @param \Magento\Framework\App\Config\Initial $initialConfig
      */
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         LayoutFactory $layoutFactory,
         \Magento\Payment\Model\Method\Factory $paymentMethodFactory,
-        \Magento\Core\Model\App\Emulation $appEmulation,
+        \Magento\Store\Model\App\Emulation $appEmulation,
         \Magento\Payment\Model\Config $paymentConfig,
         \Magento\Framework\App\Config\Initial $initialConfig
     ) {
         parent::__construct($context);
-        $this->_scopeConfig = $scopeConfig;
         $this->_layout = $layoutFactory->create();
         $this->_methodFactory = $paymentMethodFactory;
         $this->_appEmulation = $appEmulation;
@@ -104,12 +95,12 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      *
      * @param string $code
      *
-     * @throws \Magento\Framework\Model\Exception
+     * @throws \Magento\Framework\Exception\LocalizedException
      * @return MethodInterface
      */
     public function getMethodInstance($code)
     {
-        $class = $this->_scopeConfig->getValue(
+        $class = $this->scopeConfig->getValue(
             $this->getMethodModelConfigName($code),
             \Magento\Store\Model\ScopeInterface::SCOPE_STORE
         );
@@ -134,7 +125,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $methods = $this->getPaymentMethods();
 
         foreach (array_keys($methods) as $code) {
-            $model = $this->_scopeConfig->getValue(
+            $model = $this->scopeConfig->getValue(
                 $this->getMethodModelConfigName($code),
                 \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
                 $store
@@ -265,6 +256,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * @param bool $withGroups
      * @param Store|null $store
      * @return array
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     public function getPaymentMethodList($sorted = true, $asLabelValue = false, $withGroups = false, $store = null)
     {
@@ -320,7 +313,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function isZeroSubTotal($store = null)
     {
-        return $this->_scopeConfig->getValue(
+        return $this->scopeConfig->getValue(
             \Magento\Payment\Model\Method\Free::XML_PATH_PAYMENT_FREE_ACTIVE,
             \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
             $store
@@ -335,7 +328,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function getZeroSubTotalOrderStatus($store = null)
     {
-        return $this->_scopeConfig->getValue(
+        return $this->scopeConfig->getValue(
             \Magento\Payment\Model\Method\Free::XML_PATH_PAYMENT_FREE_ORDER_STATUS,
             \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
             $store
@@ -350,7 +343,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function getZeroSubTotalPaymentAutomaticInvoice($store = null)
     {
-        return $this->_scopeConfig->getValue(
+        return $this->scopeConfig->getValue(
             \Magento\Payment\Model\Method\Free::XML_PATH_PAYMENT_FREE_PAYMENT_ACTION,
             \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
             $store

@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
 namespace Magento\Framework\View\Layout\Reader;
 
 class BlockTest extends \PHPUnit_Framework_TestCase
@@ -17,7 +20,14 @@ class BlockTest extends \PHPUnit_Framework_TestCase
      */
     private $readerContext;
 
+    /**
+     * @var string
+     */
     private $blockName = 'test.block';
+
+    /**
+     * @var string
+     */
     private $childBlockName = 'test.child.block';
 
     public function setUp()
@@ -25,7 +35,6 @@ class BlockTest extends \PHPUnit_Framework_TestCase
         $this->block = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
             'Magento\Framework\View\Layout\Reader\Block'
         );
-        
         $this->readerContext = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
             'Magento\Framework\View\Layout\Reader\Context'
         );
@@ -33,12 +42,15 @@ class BlockTest extends \PHPUnit_Framework_TestCase
 
     public function testInterpretBlockDirective()
     {
-        $pageXml = new \Magento\Framework\View\Layout\Element(__DIR__ . '/_files/_layout_update_block.xml', 0, true);
+        $pageXml = new \Magento\Framework\View\Layout\Element(
+            __DIR__ . '/_files/_layout_update_block.xml',
+            0,
+            true
+        );
         $parentElement = new \Magento\Framework\View\Layout\Element('<page></page>');
 
         foreach ($pageXml->xpath('body/block') as $blockElement) {
             $this->assertTrue(in_array($blockElement->getName(), $this->block->getSupportedNodes()));
-
             $this->block->interpret($this->readerContext, $blockElement, $parentElement);
         }
 
@@ -53,7 +65,7 @@ class BlockTest extends \PHPUnit_Framework_TestCase
             $resultElementData['attributes']
         );
         $this->assertEquals(
-            ['test_arg' => ['name' => 'test_arg', 'xsi:type' => 'string', 'value' => 'test-argument-value']],
+            ['test_arg' => 'test-argument-value'],
             $resultElementData['arguments']
         );
 
@@ -61,19 +73,17 @@ class BlockTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->blockName, $structure->getStructure()[$this->childBlockName][self::IDX_PARENT]);
     }
 
-    /**
-     * @depends testInterpretBlockDirective
-     */
     public function testInterpretReferenceBlockDirective()
     {
         $pageXml = new \Magento\Framework\View\Layout\Element(
-            __DIR__ . '/_files/_layout_update_reference.xml', 0, true
+            __DIR__ . '/_files/_layout_update_reference.xml',
+            0,
+            true
         );
         $parentElement = new \Magento\Framework\View\Layout\Element('<page></page>');
 
         foreach ($pageXml->xpath('body/*') as $element) {
             $this->assertTrue(in_array($element->getName(), $this->block->getSupportedNodes()));
-
             $this->block->interpret($this->readerContext, $element, $parentElement);
         }
 
@@ -84,8 +94,8 @@ class BlockTest extends \PHPUnit_Framework_TestCase
         $resultElementData = $structure->getStructureElementData($this->blockName);
 
         $this->assertEquals(
-            ['test_arg' => ['name' => 'test_arg', 'xsi:type' => 'string', 'value' => 'test-argument-value']],
+            ['test_arg' => 'test-argument-value'],
             $resultElementData['arguments']
         );
     }
-} 
+}

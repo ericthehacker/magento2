@@ -7,8 +7,8 @@
 namespace Magento\CatalogSearch\Test\Constraint;
 
 use Magento\Cms\Test\Page\CmsIndex;
-use Mtf\Client\Browser;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Client\BrowserInterface;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertSearchSynonymMassActionNotOnFrontend
@@ -16,23 +16,19 @@ use Mtf\Constraint\AbstractConstraint;
  */
 class AssertSearchSynonymMassActionNotOnFrontend extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'high';
-    /* end tags */
-
     /**
      * Assert that you will be not redirected to url from dataset after mass delete search term
      *
      * @param array $searchTerms
      * @param CmsIndex $cmsIndex
-     * @param Browser $browser
+     * @param BrowserInterface $browser
      * @param AssertSearchSynonymNotOnFrontend $assertSearchSynonymNotOnFrontend
      * @return void
      */
     public function processAssert(
         array $searchTerms,
         CmsIndex $cmsIndex,
-        Browser $browser,
+        BrowserInterface $browser,
         AssertSearchSynonymNotOnFrontend $assertSearchSynonymNotOnFrontend
     ) {
         foreach ($searchTerms as $term) {

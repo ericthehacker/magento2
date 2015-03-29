@@ -11,6 +11,9 @@ use Magento\Framework\App\Action\NotFoundException;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Wishlist\Controller\IndexInterface;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class Send extends Action\Action implements IndexInterface
 {
     /**
@@ -44,13 +47,13 @@ class Send extends Action\Action implements IndexInterface
     protected $_customerSession;
 
     /**
-     * @var \Magento\Core\App\Action\FormKeyValidator
+     * @var \Magento\Framework\Data\Form\FormKey\Validator
      */
     protected $_formKeyValidator;
 
     /**
      * @param Action\Context $context
-     * @param \Magento\Core\App\Action\FormKeyValidator $formKeyValidator
+     * @param \Magento\Framework\Data\Form\FormKey\Validator $formKeyValidator
      * @param \Magento\Customer\Model\Session $customerSession
      * @param \Magento\Wishlist\Controller\WishlistProviderInterface $wishlistProvider
      * @param \Magento\Wishlist\Model\Config $wishlistConfig
@@ -60,7 +63,7 @@ class Send extends Action\Action implements IndexInterface
      */
     public function __construct(
         Action\Context $context,
-        \Magento\Core\App\Action\FormKeyValidator $formKeyValidator,
+        \Magento\Framework\Data\Form\FormKey\Validator $formKeyValidator,
         \Magento\Customer\Model\Session $customerSession,
         \Magento\Wishlist\Controller\WishlistProviderInterface $wishlistProvider,
         \Magento\Wishlist\Model\Config $wishlistConfig,
@@ -83,6 +86,9 @@ class Send extends Action\Action implements IndexInterface
      *
      * @return ResponseInterface|void
      * @throws NotFoundException
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
+     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     public function execute()
     {
@@ -128,7 +134,7 @@ class Send extends Action\Action implements IndexInterface
             $this->_objectManager->get(
                 'Magento\Wishlist\Model\Session'
             )->setSharingForm(
-                $this->getRequest()->getPost()
+                $this->getRequest()->getPostValue()
             );
             $this->_redirect('*/*/share');
             return;
@@ -204,7 +210,7 @@ class Send extends Action\Action implements IndexInterface
             $this->_objectManager->get(
                 'Magento\Wishlist\Model\Session'
             )->setSharingForm(
-                $this->getRequest()->getPost()
+                $this->getRequest()->getPostValue()
             );
             $this->_redirect('*/*/share');
         }

@@ -9,6 +9,7 @@ namespace Magento\ProductAlert\Model;
  * ProductAlert observer
  *
  * @author     Magento Core Team <core@magentocommerce.com>
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Observer
 {
@@ -124,6 +125,7 @@ class Observer
      * @param \Magento\Framework\Mail\Template\TransportBuilder $transportBuilder
      * @param \Magento\ProductAlert\Model\EmailFactory $emailFactory
      * @param \Magento\Framework\Translate\Inline\StateInterface $inlineTranslation
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         \Magento\Catalog\Helper\Data $catalogData,
@@ -158,7 +160,7 @@ class Observer
      */
     protected function _getWebsites()
     {
-        if (is_null($this->_websites)) {
+        if ($this->_websites === null) {
             try {
                 $this->_websites = $this->_storeManager->getWebsites();
             } catch (\Exception $e) {
@@ -173,6 +175,8 @@ class Observer
      *
      * @param \Magento\ProductAlert\Model\Email $email
      * @return $this
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     protected function _processPrice(\Magento\ProductAlert\Model\Email $email)
     {
@@ -258,6 +262,8 @@ class Observer
      *
      * @param \Magento\ProductAlert\Model\Email $email
      * @return $this
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     protected function _processStock(\Magento\ProductAlert\Model\Email $email)
     {

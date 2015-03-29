@@ -3,12 +3,15 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
+
+// @codingStandardsIgnoreFile
+
 namespace Magento\Dhl\Block\Adminhtml;
 
 /**
  * Frontend model for DHL shipping methods for documentation
  */
-class Unitofmeasure extends \Magento\Backend\Block\System\Config\Form\Field
+class Unitofmeasure extends \Magento\Config\Block\System\Config\Form\Field
 {
     /**
      * Carrier helper

@@ -3,6 +3,9 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
+
+// @codingStandardsIgnoreFile
+
 namespace Magento\Reports\Block\Adminhtml;
 
 /**
@@ -72,6 +75,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid
      * Apply sorting and filtering to collection
      *
      * @return $this
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     protected function _prepareCollection()
     {
@@ -88,14 +92,22 @@ class Grid extends \Magento\Backend\Block\Widget\Grid
 
             if (!isset($data['report_from'])) {
                 // getting all reports from 2001 year
-                $date = new \Magento\Framework\Stdlib\DateTime\Date(mktime(0, 0, 0, 1, 1, 2001));
-                $data['report_from'] = $date->toString($this->_localeDate->getDateFormat('short'));
+                $date = (new \DateTime())->setTimestamp(mktime(0, 0, 0, 1, 1, 2001));
+                $data['report_from'] = $this->_localeDate->formatDateTime(
+                    $date,
+                    \IntlDateFormatter::SHORT,
+                    \IntlDateFormatter::NONE
+                );
             }
 
             if (!isset($data['report_to'])) {
                 // getting all reports from 2001 year
-                $date = new \Magento\Framework\Stdlib\DateTime\Date();
-                $data['report_to'] = $date->toString($this->_localeDate->getDateFormat('short'));
+                $date = new \DateTime();
+                $data['report_to'] = $this->_localeDate->formatDateTime(
+                    $date,
+                    \IntlDateFormatter::SHORT,
+                    \IntlDateFormatter::NONE
+                );
             }
 
             $this->_setFilterValues($data);
@@ -117,11 +129,10 @@ class Grid extends \Magento\Backend\Block\Widget\Grid
                 try {
                     $from = $this->_localeDate->date(
                         $this->getFilter('report_from'),
-                        \Zend_Date::DATE_SHORT,
                         null,
                         false
                     );
-                    $to = $this->_localeDate->date($this->getFilter('report_to'), \Zend_Date::DATE_SHORT, null, false);
+                    $to = $this->_localeDate->date($this->getFilter('report_to'), null, false);
 
                     $collection->setInterval($from, $to);
                 } catch (\Exception $e) {
@@ -184,6 +195,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid
      *
      * @param array $data
      * @return $this
+     * @SuppressWarnings(PHPMD.UnusedLocalVariable)
      */
     protected function _setFilterValues($data)
     {
@@ -209,6 +221,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid
      * Return visibility of store switcher
      *
      * @return bool
+     * @SuppressWarnings(PHPMD.BooleanGetMethodName)
      */
     public function getStoreSwitcherVisibility()
     {
@@ -241,6 +254,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid
      * Return visibility of date filter
      *
      * @return bool
+     * @SuppressWarnings(PHPMD.BooleanGetMethodName)
      */
     public function getDateFilterVisibility()
     {
@@ -274,7 +288,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid
      */
     public function getDateFormat()
     {
-        return $this->_localeDate->getDateFormat(\Magento\Framework\Stdlib\DateTime\TimezoneInterface::FORMAT_TYPE_SHORT);
+        return $this->_localeDate->getDateFormat(\IntlDateFormatter::SHORT);
     }
 
     /**

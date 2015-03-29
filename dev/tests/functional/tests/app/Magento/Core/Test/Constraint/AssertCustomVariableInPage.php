@@ -9,19 +9,15 @@ namespace Magento\Core\Test\Constraint;
 use Magento\Cms\Test\Page\CmsIndex;
 use Magento\Core\Test\Fixture\SystemVariable;
 use Magento\Store\Test\Fixture\Store;
-use Mtf\Client\Browser;
-use Mtf\Constraint\AbstractConstraint;
-use Mtf\Fixture\FixtureFactory;
+use Magento\Mtf\Client\BrowserInterface;
+use Magento\Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Fixture\FixtureFactory;
 
 /**
  * Class AssertCustomVariableInPage
  */
 class AssertCustomVariableInPage extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Add created variable to page and assert that Custom Variable is displayed on frontend page and has
      * correct data according to dataset.
@@ -30,7 +26,7 @@ class AssertCustomVariableInPage extends AbstractConstraint
      * @param CmsIndex $cmsIndex
      * @param SystemVariable $variable
      * @param FixtureFactory $fixtureFactory
-     * @param Browser $browser
+     * @param BrowserInterface $browser
      * @param Store $storeOrigin
      * @param SystemVariable $customVariableOrigin
      * @return void
@@ -40,7 +36,7 @@ class AssertCustomVariableInPage extends AbstractConstraint
         CmsIndex $cmsIndex,
         SystemVariable $variable,
         FixtureFactory $fixtureFactory,
-        Browser $browser,
+        BrowserInterface $browser,
         Store $storeOrigin = null,
         SystemVariable $customVariableOrigin = null
     ) {

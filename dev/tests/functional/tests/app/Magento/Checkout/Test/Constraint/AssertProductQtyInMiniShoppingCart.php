@@ -10,8 +10,8 @@ use Magento\Catalog\Test\Fixture\CatalogProductSimple;
 use Magento\Checkout\Test\Fixture\Cart;
 use Magento\Checkout\Test\Fixture\Cart\Items;
 use Magento\Cms\Test\Page\CmsIndex;
-use Mtf\Constraint\AbstractAssertForm;
-use Mtf\Fixture\FixtureInterface;
+use Magento\Mtf\Constraint\AbstractAssertForm;
+use Magento\Mtf\Fixture\FixtureInterface;
 
 /**
  * Class AssertProductQtyInMiniShoppingCart
@@ -19,10 +19,6 @@ use Mtf\Fixture\FixtureInterface;
  */
 class AssertProductQtyInMiniShoppingCart extends AbstractAssertForm
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Assert that product quantity in the mini shopping cart is equals to expected quantity from data set
      *

@@ -7,17 +7,13 @@
 namespace Magento\Tax\Test\Constraint;
 
 use Magento\Tax\Test\Page\Adminhtml\TaxRuleIndex;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertTaxRuleSuccessDeleteMessage
  */
 class AssertTaxRuleSuccessDeleteMessage extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'high';
-    /* end tags */
-
     const SUCCESS_DELETE_MESSAGE = 'The tax rule has been deleted.';
 
     /**

@@ -3,6 +3,9 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
+
+// @codingStandardsIgnoreFile
+
 namespace Magento\Catalog\Model\Resource\Product;
 
 use Magento\Catalog\Model\Product\Attribute\Source\Status as ProductStatus;
@@ -13,6 +16,11 @@ use Magento\Store\Model\Store;
 
 /**
  * Product collection
+ * @SuppressWarnings(PHPMD.ExcessivePublicCount)
+ * @SuppressWarnings(PHPMD.TooManyFields)
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
+ * @SuppressWarnings(PHPMD.NumberOfChildren)
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Collection extends \Magento\Catalog\Model\Resource\Collection\AbstractCollection
 {
@@ -248,7 +256,7 @@ class Collection extends \Magento\Catalog\Model\Resource\Collection\AbstractColl
     protected $_groupManagement;
 
     /**
-     * @param \Magento\Core\Model\EntityFactory $entityFactory
+     * @param \Magento\Framework\Data\Collection\EntityFactory $entityFactory
      * @param \Psr\Log\LoggerInterface $logger
      * @param \Magento\Framework\Data\Collection\Db\FetchStrategyInterface $fetchStrategy
      * @param \Magento\Framework\Event\ManagerInterface $eventManager
@@ -272,7 +280,7 @@ class Collection extends \Magento\Catalog\Model\Resource\Collection\AbstractColl
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
-        \Magento\Core\Model\EntityFactory $entityFactory,
+        \Magento\Framework\Data\Collection\EntityFactory $entityFactory,
         \Psr\Log\LoggerInterface $logger,
         \Magento\Framework\Data\Collection\Db\FetchStrategyInterface $fetchStrategy,
         \Magento\Framework\Event\ManagerInterface $eventManager,
@@ -1390,6 +1398,7 @@ class Collection extends \Magento\Catalog\Model\Resource\Collection\AbstractColl
      * @param array $condition
      * @param string $joinType
      * @return $this
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function addAttributeToFilter($attribute, $condition = null, $joinType = 'inner')
     {
@@ -1529,6 +1538,8 @@ class Collection extends \Magento\Catalog\Model\Resource\Collection\AbstractColl
      * @param string $attribute
      * @param string $dir
      * @return $this
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     public function addAttributeToSort($attribute, $dir = self::SORT_ORDER_ASC)
     {
@@ -1626,6 +1637,7 @@ class Collection extends \Magento\Catalog\Model\Resource\Collection\AbstractColl
      * Join website product limitation
      *
      * @return $this
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     protected function _productLimitationJoinWebsite()
     {
@@ -1678,6 +1690,8 @@ class Collection extends \Magento\Catalog\Model\Resource\Collection\AbstractColl
      * Join additional (alternative) store visibility filter
      *
      * @return $this
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     protected function _productLimitationJoinStore()
     {
@@ -1977,6 +1991,8 @@ class Collection extends \Magento\Catalog\Model\Resource\Collection\AbstractColl
      * Add tier price data to loaded items
      *
      * @return $this
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     public function addTierPriceData()
     {

@@ -8,8 +8,10 @@ namespace Magento\ConfigurableProduct\Test\Block\Adminhtml\Product\Edit\Tab\Supe
 
 use Magento\Backend\Test\Block\Template;
 use Magento\Backend\Test\Block\Widget\Tab;
-use Mtf\Client\Element;
-use Mtf\Client\Element\Locator;
+use Magento\Catalog\Test\Fixture\CatalogCategory;
+use Magento\Mtf\Client\Element\SimpleElement;
+use Magento\Mtf\Client\Element;
+use Magento\Mtf\Client\Locator;
 
 /**
  * Class Config
@@ -84,20 +86,25 @@ class Config extends Tab
      * Fill variations fieldset
      *
      * @param array $fields
-     * @param Element|null $element
+     * @param SimpleElement|null $element
      * @return $this
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function fillFormTab(array $fields, Element $element = null)
+    public function fillFormTab(array $fields, SimpleElement $element = null)
     {
-        $attributes = isset($fields['configurable_attributes_data']['value'])
+        $attributes = isset($fields['configurable_attributes_data']['source'])
             ? $fields['configurable_attributes_data']['value']
             : [];
 
         $this->showContent();
-
-        if (!empty($attributes['attributes_data'])) {
-            $this->getAttributeBlock()->fillAttributes($attributes['attributes_data']);
+        $attributesValue = isset($fields['configurable_attributes_data']['source'])
+            ? $fields['configurable_attributes_data']['source']->getAttributesData()
+            : [];
+        foreach ($attributesValue as $key => $value) {
+            $attributesValue[$key] = array_merge($value, $attributes['attributes_data'][$key]);
         }
+        $this->getAttributeBlock()->fillAttributes($attributesValue);
         if (!empty($attributes['matrix'])) {
             $this->generateVariations();
             $this->getVariationsBlock()->fillVariations($attributes['matrix']);
@@ -175,10 +182,12 @@ class Config extends Tab
      * Get data of tab
      *
      * @param array|null $fields
-     * @param Element|null $element
+     * @param SimpleElement|null $element
      * @return array
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function getDataFormTab($fields = null, Element $element = null)
+    public function getDataFormTab($fields = null, SimpleElement $element = null)
     {
         $data = [];
 
@@ -196,9 +205,9 @@ class Config extends Tab
      */
     public function deleteAttributes()
     {
-        $attributeElements = $this->_rootElement->find($this->attributeElement)->getElements();
+        $attributeElements = $this->_rootElement->getElements($this->attributeElement);
         $this->_rootElement->find($this->variationsContent)->click();
-        foreach ($attributeElements as $element) {
+        foreach (array_reverse($attributeElements) as $element) {
             $element->find($this->deleteVariationButton)->click();
         }
     }

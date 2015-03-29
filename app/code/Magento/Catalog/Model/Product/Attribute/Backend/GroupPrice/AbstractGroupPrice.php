@@ -3,6 +3,9 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
+
+// @codingStandardsIgnoreFile
+
 namespace Magento\Catalog\Model\Product\Attribute\Backend\GroupPrice;
 
 use Magento\Catalog\Model\Product\Attribute\Backend\Price;
@@ -109,6 +112,7 @@ abstract class AbstractGroupPrice extends Price
      *
      * @param array $objectArray
      * @return array
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     protected function _getAdditionalUniqueFields($objectArray)
     {
@@ -130,8 +134,10 @@ abstract class AbstractGroupPrice extends Price
      * Validate group price data
      *
      * @param \Magento\Catalog\Model\Product $object
-     * @throws \Magento\Framework\Model\Exception
-     * @return bool
+     * @throws \Magento\Framework\Exception\LocalizedException
+     * @return \Magento\Framework\Phrase|bool
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     public function validate($object)
     {
@@ -155,7 +161,7 @@ abstract class AbstractGroupPrice extends Price
                 )
             );
             if (isset($duplicates[$compare])) {
-                throw new \Magento\Framework\Model\Exception($this->_getDuplicateErrorMessage());
+                throw new \Magento\Framework\Exception\LocalizedException(__($this->_getDuplicateErrorMessage()));
             }
 
             if (!preg_match('/^\d*(\.|,)?\d{0,4}$/i', $priceRow['price']) || $priceRow['price'] < 0) {
@@ -203,7 +209,7 @@ abstract class AbstractGroupPrice extends Price
             $websiteCurrency = $rates[$priceRow['website_id']]['code'];
 
             if ($baseCurrency == $websiteCurrency && isset($duplicates[$globalCompare])) {
-                throw new \Magento\Framework\Model\Exception($this->_getDuplicateErrorMessage());
+                throw new \Magento\Framework\Exception\LocalizedException(__($this->_getDuplicateErrorMessage()));
             }
         }
 
@@ -284,6 +290,9 @@ abstract class AbstractGroupPrice extends Price
      *
      * @param \Magento\Catalog\Model\Product $object
      * @return $this
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
+     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     public function afterSave($object)
     {

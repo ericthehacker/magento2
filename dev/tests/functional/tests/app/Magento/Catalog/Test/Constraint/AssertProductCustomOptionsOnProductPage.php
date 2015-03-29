@@ -7,62 +7,58 @@
 namespace Magento\Catalog\Test\Constraint;
 
 use Magento\Catalog\Test\Page\Product\CatalogProductView;
-use Mtf\Client\Browser;
-use Mtf\Constraint\AbstractAssertForm;
-use Mtf\Fixture\FixtureInterface;
+use Magento\Mtf\Client\BrowserInterface;
+use Magento\Mtf\Constraint\AbstractAssertForm;
+use Magento\Mtf\Fixture\FixtureInterface;
 
 /**
  * Class AssertProductCustomOptionsOnProductPage
  */
 class AssertProductCustomOptionsOnProductPage extends AbstractAssertForm
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Skipped field for custom options
      *
      * @var array
      */
     protected $skippedFieldOptions = [
-        'Field' => [
+        'Text/Field' => [
             'price_type',
             'sku',
         ],
-        'Area' => [
+        'Text/Area' => [
             'price_type',
             'sku',
         ],
-        'Drop-down' => [
+        'Select/Drop-down' => [
             'price_type',
             'sku',
         ],
-        'File' => [
+        'File/File' => [
             'price_type',
             'sku',
         ],
-        'Radio Buttons' => [
+        'Select/Radio Buttons' => [
             'price_type',
             'sku',
         ],
-        'Checkbox' => [
+        'Select/Checkbox' => [
             'price_type',
             'sku',
         ],
-        'Multiple Select' => [
+        'Select/Multiple Select' => [
             'price_type',
             'sku',
         ],
-        'Date' => [
+        'Date/Date' => [
             'price_type',
             'sku',
         ],
-        'Date & Time' => [
+        'Date/Date & Time' => [
             'price_type',
             'sku',
         ],
-        'Time' => [
+        'Date/Time' => [
             'price_type',
             'sku',
         ],
@@ -80,11 +76,14 @@ class AssertProductCustomOptionsOnProductPage extends AbstractAssertForm
      *
      * @param CatalogProductView $catalogProductView
      * @param FixtureInterface $product
-     * @param Browser $browser
+     * @param BrowserInterface $browser
      * @return void
      */
-    public function processAssert(CatalogProductView $catalogProductView, FixtureInterface $product, Browser $browser)
-    {
+    public function processAssert(
+        CatalogProductView $catalogProductView,
+        FixtureInterface $product,
+        BrowserInterface $browser
+    ) {
         $browser->open($_ENV['app_frontend_url'] . $product->getUrlKey() . '.html');
 
         $actualPrice = null;

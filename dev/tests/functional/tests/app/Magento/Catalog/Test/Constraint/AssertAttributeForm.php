@@ -9,17 +9,13 @@ namespace Magento\Catalog\Test\Constraint;
 use Magento\Catalog\Test\Fixture\CatalogProductAttribute;
 use Magento\Catalog\Test\Page\Adminhtml\CatalogProductAttributeIndex;
 use Magento\Catalog\Test\Page\Adminhtml\CatalogProductAttributeNew;
-use Mtf\Constraint\AbstractAssertForm;
+use Magento\Mtf\Constraint\AbstractAssertForm;
 
 /**
  * Assert that displayed attribute data on edit page equals passed from fixture.
  */
 class AssertAttributeForm extends AbstractAssertForm
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Assert that displayed attribute data on edit page equals passed from fixture.
      *

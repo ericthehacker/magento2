@@ -10,8 +10,8 @@ use Magento\Catalog\Test\Fixture\CatalogAttributeSet;
 use Magento\Catalog\Test\Fixture\CatalogProductAttribute;
 use Magento\Catalog\Test\Page\Adminhtml\CatalogProductSetEdit;
 use Magento\Catalog\Test\Page\Adminhtml\CatalogProductSetIndex;
-use Mtf\Fixture\FixtureFactory;
-use Mtf\TestStep\TestStepInterface;
+use Magento\Mtf\Fixture\FixtureFactory;
+use Magento\Mtf\TestStep\TestStepInterface;
 
 /**
  * Move attribute To attribute set.
@@ -87,7 +87,6 @@ class AddAttributeToProductTemplateStep implements TestStepInterface
                 'dataSet' => 'product_with_category_with_anchor',
                 'data' => [
                     'attribute_set_id' => ['attribute_set' => $this->productTemplate],
-                    'custom_attribute' => $this->attribute,
                 ],
             ]
         );

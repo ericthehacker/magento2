@@ -3,6 +3,9 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
+
+// @codingStandardsIgnoreFile
+
 namespace Magento\Eav\Helper;
 
 /**
@@ -28,13 +31,6 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     protected $_entityTypeFrontendClasses = [];
 
     /**
-     * Core store config
-     *
-     * @var \Magento\Framework\App\Config\ScopeConfigInterface
-     */
-    protected $_scopeConfig;
-
-    /**
      * @var \Magento\Eav\Model\Entity\Attribute\Config
      */
     protected $_attributeConfig;
@@ -47,16 +43,13 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     /**
      * @param \Magento\Framework\App\Helper\Context $context
      * @param \Magento\Eav\Model\Entity\Attribute\Config $attributeConfig
-     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param \Magento\Eav\Model\Config $eavConfig
      */
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
         \Magento\Eav\Model\Entity\Attribute\Config $attributeConfig,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Eav\Model\Config $eavConfig
     ) {
-        $this->_scopeConfig = $scopeConfig;
         $this->_attributeConfig = $attributeConfig;
         $this->_eavConfig = $eavConfig;
         parent::__construct($context);
@@ -126,7 +119,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function getInputTypesValidatorData()
     {
-        return $this->_scopeConfig->getValue(self::XML_PATH_VALIDATOR_DATA_INPUT_TYPES, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        return $this->scopeConfig->getValue(self::XML_PATH_VALIDATOR_DATA_INPUT_TYPES, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
     }
 
     /**

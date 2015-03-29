@@ -6,13 +6,12 @@
 
 namespace Magento\GiftMessage\Test\Block\Adminhtml\Order\View\Items;
 
+use Magento\Mtf\Client\Locator;
 use Magento\GiftMessage\Test\Fixture\GiftMessage;
-use Mtf\Client\Element;
-use Mtf\Client\Element\Locator;
 
 /**
  * Class ItemProduct
- * Item product block on OrderView page.
+ * Item product block on SalesOrderView page.
  */
 class ItemProduct extends \Magento\Sales\Test\Block\Adminhtml\Order\Create\Items\ItemProduct
 {

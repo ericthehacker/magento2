@@ -3,6 +3,9 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
+
+// @codingStandardsIgnoreFile
+
 namespace Magento\Backend\Block\Page\System\Config\Robots;
 
 /**
@@ -10,7 +13,7 @@ namespace Magento\Backend\Block\Page\System\Config\Robots;
  *
  * @author     Magento Core Team <core@magentocommerce.com>
  */
-class Reset extends \Magento\Backend\Block\System\Config\Form\Field
+class Reset extends \Magento\Config\Block\System\Config\Form\Field
 {
     /**
      * Pasge robots default instructions
@@ -36,7 +39,7 @@ class Reset extends \Magento\Backend\Block\System\Config\Form\Field
     protected function _construct()
     {
         parent::_construct();
-        $this->setTemplate('page/system/config/robots/reset.phtml');
+        $this->setTemplate('Magento_Config::page/system/config/robots/reset.phtml');
     }
 
     /**

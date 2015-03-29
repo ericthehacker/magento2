@@ -7,17 +7,13 @@
 namespace Magento\Review\Test\Constraint;
 
 use Magento\Review\Test\Page\Adminhtml\RatingIndex;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertProductRatingSuccessDeleteMessage
  */
 class AssertProductRatingSuccessDeleteMessage extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'high';
-    /* end tags */
-
     const SUCCESS_DELETE_MESSAGE = 'You deleted the rating.';
 
     /**

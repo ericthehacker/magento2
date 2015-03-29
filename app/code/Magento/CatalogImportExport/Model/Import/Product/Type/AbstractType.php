@@ -85,7 +85,7 @@ abstract class AbstractType
      * @param \Magento\Eav\Model\Resource\Entity\Attribute\Set\CollectionFactory $attrSetColFac
      * @param \Magento\Catalog\Model\Resource\Product\Attribute\CollectionFactory $prodAttrColFac
      * @param array $params
-     * @throws \Magento\Framework\Model\Exception
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function __construct(
         \Magento\Eav\Model\Resource\Entity\Attribute\Set\CollectionFactory $attrSetColFac,
@@ -96,15 +96,12 @@ abstract class AbstractType
         $this->_prodAttrColFac = $prodAttrColFac;
 
         if ($this->isSuitable()) {
-            if (!isset(
-                $params[0]
-            ) || !isset(
-                $params[1]
-            ) || !is_object(
-                $params[0]
-            ) || !$params[0] instanceof \Magento\CatalogImportExport\Model\Import\Product
+            if (!isset($params[0])
+                || !isset($params[1])
+                || !is_object($params[0])
+                || !$params[0] instanceof \Magento\CatalogImportExport\Model\Import\Product
             ) {
-                throw new \Magento\Framework\Model\Exception(__('Please correct the parameters.'));
+                throw new \Magento\Framework\Exception\LocalizedException(__('Please correct the parameters.'));
             }
             $this->_entityModel = $params[0];
             $this->_type = $params[1];
@@ -123,6 +120,7 @@ abstract class AbstractType
      * @param array $attrParams Refined attribute parameters.
      * @param mixed $attribute
      * @return \Magento\CatalogImportExport\Model\Import\Product\Type\AbstractType
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     protected function _addAttributeParams($attrSetName, array $attrParams, $attribute)
     {
@@ -201,6 +199,7 @@ abstract class AbstractType
      *
      * @param string $attrCode
      * @return bool
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     protected function _isAttributeRequiredCheckNeeded($attrCode)
     {
@@ -213,6 +212,7 @@ abstract class AbstractType
      * @param array $rowData
      * @param int $rowNum
      * @return bool
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     protected function _isParticularAttributesValid(array $rowData, $rowNum)
     {
@@ -247,6 +247,7 @@ abstract class AbstractType
      * @param int $rowNum
      * @param bool $isNewProduct Optional
      * @return bool
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function isRowValid(array $rowData, $rowNum, $isNewProduct = true)
     {
@@ -301,6 +302,7 @@ abstract class AbstractType
      * @param bool $withDefaultValue
      *
      * @return array
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function prepareAttributesWithDefaultValueForSave(array $rowData, $withDefaultValue = true)
     {

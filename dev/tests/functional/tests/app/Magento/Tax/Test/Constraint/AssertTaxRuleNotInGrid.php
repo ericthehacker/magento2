@@ -8,17 +8,13 @@ namespace Magento\Tax\Test\Constraint;
 
 use Magento\Tax\Test\Fixture\TaxRule;
 use Magento\Tax\Test\Page\Adminhtml\TaxRuleIndex;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertTaxRuleNotInGrid
  */
 class AssertTaxRuleNotInGrid extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'high';
-    /* end tags */
-
     /**
      * Assert that tax rule not available in Tax Rule grid
      *

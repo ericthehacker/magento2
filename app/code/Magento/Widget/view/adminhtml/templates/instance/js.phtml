@@ -4,23 +4,30 @@
  * See COPYING.txt for license details.
  */
 ?>
-<script type="text/javascript">
-require(["jquery", "prototype"], function(jQuery){
+<script>
+require([
+    'jquery',
+    'mage/template',
+    'prototype'
+], function(jQuery, mageTemplate){
 
-//<![CDATA[
 setSettings = function(urlTemplate, codeElement, themeElement) {
+    var url;
+
     if (!jQuery('#edit_form').valid()) {
         return false;
     }
     codeElement = $F(codeElement);
     themeElement = $F(themeElement);
 
-    setLocation(new Template(urlTemplate, /(^|.|\r|\n)({{(\w+)}})/).evaluate({
-        'code': codeElement,
-        'theme_id': themeElement
-    }));
-}
-//]]>
+    url = mageTemplate(urlTemplate, {
+        data: {
+            'code': codeElement,
+            'theme_id': themeElement
+        }
+    });
 
+    setLocation(url);
+};
 });
 </script>

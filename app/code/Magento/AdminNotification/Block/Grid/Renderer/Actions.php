@@ -5,23 +5,26 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
+
+// @codingStandardsIgnoreFile
+
 namespace Magento\AdminNotification\Block\Grid\Renderer;
 
 class Actions extends \Magento\Backend\Block\Widget\Grid\Column\Renderer\AbstractRenderer
 {
     /**
-     * @var \Magento\Core\Helper\Url
+     * @var \Magento\Framework\Url\Helper\Data
      */
     protected $_urlHelper;
 
     /**
      * @param \Magento\Backend\Block\Context $context
-     * @param \Magento\Core\Helper\Url $urlHelper
+     * @param \Magento\Framework\Url\Helper\Data $urlHelper
      * @param array $data
      */
     public function __construct(
         \Magento\Backend\Block\Context $context,
-        \Magento\Core\Helper\Url $urlHelper,
+        \Magento\Framework\Url\Helper\Data $urlHelper,
         array $data = []
     ) {
         $this->_urlHelper = $urlHelper;

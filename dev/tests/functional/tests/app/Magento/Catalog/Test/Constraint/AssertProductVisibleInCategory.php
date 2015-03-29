@@ -6,21 +6,17 @@
 
 namespace Magento\Catalog\Test\Constraint;
 
-use Magento\Catalog\Test\Fixture\CatalogCategory;
+use Magento\Catalog\Test\Fixture\Category;
 use Magento\Catalog\Test\Page\Category\CatalogCategoryView;
 use Magento\Cms\Test\Page\CmsIndex;
-use Mtf\Constraint\AbstractConstraint;
-use Mtf\Fixture\FixtureInterface;
+use Magento\Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Fixture\FixtureInterface;
 
 /**
  * Class AssertProductVisibleInCategory
  */
 class AssertProductVisibleInCategory extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Displays an error message
      *
@@ -41,7 +37,7 @@ class AssertProductVisibleInCategory extends AbstractConstraint
      * @param CatalogCategoryView $catalogCategoryView
      * @param CmsIndex $cmsIndex
      * @param FixtureInterface $product
-     * @param CatalogCategory|null $category
+     * @param Category|null $category
      * @return void
      *
      * @SuppressWarnings(PHPMD.NPathComplexity)
@@ -50,7 +46,7 @@ class AssertProductVisibleInCategory extends AbstractConstraint
         CatalogCategoryView $catalogCategoryView,
         CmsIndex $cmsIndex,
         FixtureInterface $product,
-        CatalogCategory $category = null
+        Category $category = null
     ) {
         $categoryName = $product->hasData('category_ids') ? $product->getCategoryIds()[0] : $category->getName();
         $cmsIndex->open();

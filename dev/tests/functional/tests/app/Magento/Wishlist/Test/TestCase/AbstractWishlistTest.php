@@ -8,11 +8,11 @@ namespace Magento\Wishlist\Test\TestCase;
 
 use Magento\Catalog\Test\Page\Product\CatalogProductView;
 use Magento\Cms\Test\Page\CmsIndex;
-use Magento\Customer\Test\Fixture\CustomerInjectable;
+use Magento\Customer\Test\Fixture\Customer;
 use Magento\Wishlist\Test\Page\WishlistIndex;
-use Mtf\Fixture\FixtureFactory;
-use Mtf\ObjectManager;
-use Mtf\TestCase\Injectable;
+use Magento\Mtf\Fixture\FixtureFactory;
+use Magento\Mtf\ObjectManager;
+use Magento\Mtf\TestCase\Injectable;
 
 /**
  * Class AbstractWishlistTest
@@ -82,10 +82,10 @@ abstract class AbstractWishlistTest extends Injectable
     /**
      * Login customer.
      *
-     * @param CustomerInjectable $customer
+     * @param Customer $customer
      * @return void
      */
-    protected function loginCustomer(CustomerInjectable $customer)
+    protected function loginCustomer(Customer $customer)
     {
         $loginCustomerOnFrontendStep = $this->objectManager->create(
             'Magento\Customer\Test\TestStep\LoginCustomerOnFrontendStep',

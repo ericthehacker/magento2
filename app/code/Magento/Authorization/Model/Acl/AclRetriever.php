@@ -17,6 +17,7 @@ use Psr\Log\LoggerInterface as Logger;
 
 /**
  * Permission tree retriever
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class AclRetriever
 {
@@ -74,7 +75,9 @@ class AclRetriever
         try {
             $role = $this->_getUserRole($userType, $userId);
             if (!$role) {
-                throw new AuthorizationException('The role associated with the specified user cannot be found.');
+                throw new AuthorizationException(
+                    __('The role associated with the specified user cannot be found.')
+                );
             }
             $allowedResources = $this->getAllowedResourcesByRole($role->getId());
         } catch (AuthorizationException $e) {
@@ -82,7 +85,7 @@ class AclRetriever
         } catch (\Exception $e) {
             $this->logger->critical($e);
             throw new LocalizedException(
-                'Error happened while getting a list of allowed resources. Check exception log for details.'
+                __('Error happened while getting a list of allowed resources. Check exception log for details.')
             );
         }
         return $allowedResources;

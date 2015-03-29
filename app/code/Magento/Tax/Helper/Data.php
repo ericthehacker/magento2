@@ -3,15 +3,15 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
+
+// @codingStandardsIgnoreFile
+
 namespace Magento\Tax\Helper;
 
 use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Magento\Store\Model\Store;
 use Magento\Customer\Model\Address;
 use Magento\Tax\Model\Config;
-use Magento\Tax\Api\Data\QuoteDetailsDataBuilder;
-use Magento\Tax\Api\Data\QuoteDetailsItemDataBuilder;
-use Magento\Tax\Api\Data\TaxClassKeyDataBuilder;
 use Magento\Tax\Api\TaxCalculationInterface;
 use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Tax\Api\OrderTaxManagementInterface;
@@ -22,6 +22,8 @@ use Magento\Sales\Model\EntityInterface;
 
 /**
  * Catalog data helper
+ * @SuppressWarnings(PHPMD.TooManyFields)
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Data extends \Magento\Framework\App\Helper\AbstractHelper
 {
@@ -50,11 +52,11 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     protected $_postCodeSubStringLength = 10;
 
     /**
-     * Core data
+     * Json Helper
      *
-     * @var \Magento\Core\Helper\Data
+     * @var \Magento\Framework\Json\Helper\Data
      */
-    protected $_coreData;
+    protected $jsonHelper;
 
     /**
      * Core registry
@@ -62,13 +64,6 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * @var \Magento\Framework\Registry
      */
     protected $_coreRegistry;
-
-    /**
-     * Core store config
-     *
-     * @var \Magento\Framework\App\Config\ScopeConfigInterface
-     */
-    protected $_scopeConfig;
 
     /**
      * @var \Magento\Store\Model\StoreManagerInterface
@@ -101,20 +96,6 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     protected $_localeResolver;
 
     /**
-     * Quote details builder
-     *
-     * @var QuoteDetailsBuilder
-     */
-    protected $quoteDetailsBuilder;
-
-    /**
-     * Quote details item builder
-     *
-     * @var QuoteDetailsItemDataBuilder
-     */
-    protected $quoteDetailsItemBuilder;
-
-    /**
      * Tax calculation service
      *
      * @var TaxCalculationInterface
@@ -125,13 +106,6 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * @var CustomerSession
      */
     protected $customerSession;
-
-    /**
-     * TaxClassKey builder
-     *
-     * @var TaxClassKeyDataBuilder
-     */
-    protected $taxClassKeyBuilder;
 
     /**
      * \Magento\Catalog\Helper\Data
@@ -152,9 +126,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 
     /**
      * @param \Magento\Framework\App\Helper\Context                         $context
-     * @param \Magento\Core\Helper\Data                                     $coreData
+     * @param \Magento\Framework\Json\Helper\Data                                     $jsonHelper
      * @param \Magento\Framework\Registry                                   $coreRegistry
-     * @param \Magento\Framework\App\Config\ScopeConfigInterface            $scopeConfig
      * @param Config                                                        $taxConfig
      * @param \Magento\Store\Model\StoreManagerInterface                    $storeManager
      * @param \Magento\Framework\Locale\FormatInterface                     $localeFormat
@@ -162,20 +135,17 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * @param \Magento\Tax\Model\Resource\Sales\Order\Tax\ItemFactory       $taxItemFactory
      * @param \Magento\Tax\Model\Resource\Sales\Order\Tax\CollectionFactory $orderTaxCollectionFactory
      * @param \Magento\Framework\Locale\ResolverInterface                   $localeResolver
-     * @param QuoteDetailsDataBuilder                                       $quoteDetailsBuilder
-     * @param QuoteDetailsItemDataBuilder                                   $quoteDetailsItemBuilder
-     * @param TaxClassKeyDataBuilder                                        $taxClassKeyBuilder
      * @param TaxCalculationInterface                                       $taxCalculation
      * @param CustomerSession                                               $customerSession
      * @param \Magento\Catalog\Helper\Data                                  $catalogHelper
      * @param OrderTaxManagementInterface                                   $orderTaxManagement
      * @param PriceCurrencyInterface                                        $priceCurrency
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
-        \Magento\Core\Helper\Data $coreData,
+        \Magento\Framework\Json\Helper\Data $jsonHelper,
         \Magento\Framework\Registry $coreRegistry,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         Config $taxConfig,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Framework\Locale\FormatInterface $localeFormat,
@@ -183,9 +153,6 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         \Magento\Tax\Model\Resource\Sales\Order\Tax\ItemFactory $taxItemFactory,
         \Magento\Tax\Model\Resource\Sales\Order\Tax\CollectionFactory $orderTaxCollectionFactory,
         \Magento\Framework\Locale\ResolverInterface $localeResolver,
-        QuoteDetailsDataBuilder $quoteDetailsBuilder,
-        QuoteDetailsItemDataBuilder $quoteDetailsItemBuilder,
-        TaxClassKeyDataBuilder $taxClassKeyBuilder,
         TaxCalculationInterface $taxCalculation,
         CustomerSession $customerSession,
         \Magento\Catalog\Helper\Data $catalogHelper,
@@ -194,9 +161,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     ) {
         parent::__construct($context);
         $this->priceCurrency = $priceCurrency;
-        $this->_scopeConfig = $scopeConfig;
         $this->_config = $taxConfig;
-        $this->_coreData = $coreData;
+        $this->jsonHelper = $jsonHelper;
         $this->_coreRegistry = $coreRegistry;
         $this->_storeManager = $storeManager;
         $this->_localeFormat = $localeFormat;
@@ -204,9 +170,6 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $this->_taxItemFactory = $taxItemFactory;
         $this->_orderTaxCollectionFactory = $orderTaxCollectionFactory;
         $this->_localeResolver = $localeResolver;
-        $this->quoteDetailsBuilder = $quoteDetailsBuilder;
-        $this->quoteDetailsItemBuilder = $quoteDetailsItemBuilder;
-        $this->taxClassKeyBuilder = $taxClassKeyBuilder;
         $this->taxCalculation = $taxCalculation;
         $this->customerSession = $customerSession;
         $this->catalogHelper = $catalogHelper;
@@ -422,7 +385,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
             $priceFormat['pattern'] = $this->_storeManager->getStore($store)->getCurrentCurrency()->getOutputFormat();
         }
 
-        return $this->_coreData->jsonEncode($priceFormat);
+        return $this->jsonHelper->jsonEncode($priceFormat);
     }
 
     /**
@@ -572,7 +535,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function getTaxBasedOn($store = null)
     {
-        return $this->_scopeConfig->getValue(
+        return $this->scopeConfig->getValue(
             Config::CONFIG_XML_PATH_BASED_ON,
             \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
             $store
@@ -587,7 +550,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function applyTaxOnCustomPrice($store = null)
     {
-        return (int) $this->_scopeConfig->getValue(
+        return (int) $this->scopeConfig->getValue(
             Config::CONFIG_XML_PATH_APPLY_ON,
             \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
             $store
@@ -602,7 +565,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function applyTaxOnOriginalPrice($store = null)
     {
-        return (int) $this->_scopeConfig->getValue(
+        return (int) $this->scopeConfig->getValue(
             Config::CONFIG_XML_PATH_APPLY_ON,
             \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
             $store
@@ -629,7 +592,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * @param  null|string|bool|int|Store $store
      * @return string
      */
-    public function getCalculationAgorithm($store = null)
+    public function getCalculationAlgorithm($store = null)
     {
         return $this->_config->getAlgorithm($store);
     }
@@ -735,7 +698,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function getDefaultCustomerTaxClass()
     {
-        return $this->_scopeConfig->getValue(
+        return $this->scopeConfig->getValue(
             self::CONFIG_DEFAULT_CUSTOMER_TAX_CLASS,
             \Magento\Store\Model\ScopeInterface::SCOPE_STORE
         );
@@ -748,7 +711,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function getDefaultProductTaxClass()
     {
-        return $this->_scopeConfig->getValue(
+        return $this->scopeConfig->getValue(
             self::CONFIG_DEFAULT_PRODUCT_TAX_CLASS,
             \Magento\Store\Model\ScopeInterface::SCOPE_STORE
         );
@@ -790,29 +753,13 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * @param  EntityInterface $order
      * @param  EntityInterface $salesItem
      * @return array
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     protected function calculateTaxForItems(EntityInterface $order, EntityInterface $salesItem)
     {
         $taxClassAmount = [];
 
         $orderTaxDetails = $this->orderTaxManagement->getOrderTaxDetails($order->getId());
-
-        // Apply any taxes for shipping
-        $shippingTaxAmount = $salesItem->getShippingTaxAmount();
-        $originalShippingTaxAmount = $order->getShippingTaxAmount();
-        if ($shippingTaxAmount && $originalShippingTaxAmount &&
-            $shippingTaxAmount != 0 && floatval($originalShippingTaxAmount)
-        ) {
-            //An invoice or credit memo can have a different qty than its order
-            $shippingRatio = $shippingTaxAmount / $originalShippingTaxAmount;
-            $itemTaxDetails = $orderTaxDetails->getItems();
-            foreach ($itemTaxDetails as $itemTaxDetail) {
-                //Aggregate taxable items associated with shipping
-                if ($itemTaxDetail->getType() == \Magento\Sales\Model\Quote\Address::TYPE_SHIPPING) {
-                    $taxClassAmount = $this->_aggregateTaxes($taxClassAmount, $itemTaxDetail, $shippingRatio);
-                }
-            }
-        }
 
         // Apply any taxes for the items
         /** @var $item \Magento\Sales\Model\Order\Invoice\Item|\Magento\Sales\Model\Order\Creditmemo\Item */
@@ -841,6 +788,23 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
                         }
                     }
                     $taxClassAmount = $this->_aggregateTaxes($taxClassAmount, $itemTaxDetail, $ratio);
+                }
+            }
+        }
+
+        // Apply any taxes for shipping
+        $shippingTaxAmount = $salesItem->getShippingTaxAmount();
+        $originalShippingTaxAmount = $order->getShippingTaxAmount();
+        if ($shippingTaxAmount && $originalShippingTaxAmount &&
+            $shippingTaxAmount != 0 && floatval($originalShippingTaxAmount)
+        ) {
+            //An invoice or credit memo can have a different qty than its order
+            $shippingRatio = $shippingTaxAmount / $originalShippingTaxAmount;
+            $itemTaxDetails = $orderTaxDetails->getItems();
+            foreach ($itemTaxDetails as $itemTaxDetail) {
+                //Aggregate taxable items associated with shipping
+                if ($itemTaxDetail->getType() == \Magento\Quote\Model\Quote\Address::TYPE_SHIPPING) {
+                    $taxClassAmount = $this->_aggregateTaxes($taxClassAmount, $itemTaxDetail, $shippingRatio);
                 }
             }
         }

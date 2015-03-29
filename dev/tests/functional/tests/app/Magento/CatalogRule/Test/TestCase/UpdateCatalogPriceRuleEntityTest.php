@@ -30,6 +30,11 @@ use Magento\CatalogRule\Test\Fixture\CatalogRule;
  */
 class UpdateCatalogPriceRuleEntityTest extends AbstractCatalogRuleEntityTest
 {
+    /* tags */
+    const MVP = 'yes';
+    const DOMAIN = 'MX';
+    /* end tags */
+
     /**
      * Update catalog price rule
      *
@@ -75,12 +80,12 @@ class UpdateCatalogPriceRuleEntityTest extends AbstractCatalogRuleEntityTest
         $this->catalogRuleNew->getEditForm()->fill($catalogPriceRule, null, $replace);
         $this->catalogRuleNew->getFormPageActions()->$saveAction();
 
-        // Create simple product with category
-        $productSimple->persist();
-
         // Prepare data for tear down
         $this->catalogRules[] = $catalogPriceRule;
 
-        return ['product' => $productSimple];
+        // Create simple product with category
+        $productSimple->persist();
+
+        return ['products' => [$productSimple]];
     }
 }

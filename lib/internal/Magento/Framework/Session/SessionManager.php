@@ -332,7 +332,7 @@ class SessionManager implements SessionManagerInterface
     public function setSessionId($sessionId)
     {
         $this->_addHost();
-        if (!is_null($sessionId) && preg_match('#^[0-9a-zA-Z,-]+$#', $sessionId)) {
+        if ($sessionId !== null && preg_match('#^[0-9a-zA-Z,-]+$#', $sessionId)) {
             session_id($sessionId);
         }
         return $this;
@@ -343,6 +343,7 @@ class SessionManager implements SessionManagerInterface
      *
      * @param string $urlHost can be host or url
      * @return string {session_id_key}={session_id_encrypted}
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     public function getSessionIdForHost($urlHost)
     {

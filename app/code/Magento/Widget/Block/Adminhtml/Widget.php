@@ -4,6 +4,8 @@
  * See COPYING.txt for license details.
  */
 
+// @codingStandardsIgnoreFile
+
 /**
  * WYSIWYG widget plugin main block
  *
@@ -28,7 +30,7 @@ class Widget extends \Magento\Backend\Block\Widget\Form\Container
         $this->removeButton('reset');
         $this->removeButton('back');
         $this->buttonList->update('save', 'label', __('Insert Widget'));
-        $this->buttonList->update('save', 'class', 'add-widget');
+        $this->buttonList->update('save', 'class', 'action-primary add-widget');
         $this->buttonList->update('save', 'id', 'insert_button');
         $this->buttonList->update('save', 'onclick', 'wWidget.insertWidget()');
         $this->buttonList->update('save', 'region', 'footer');

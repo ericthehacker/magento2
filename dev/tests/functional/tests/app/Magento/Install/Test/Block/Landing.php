@@ -6,8 +6,8 @@
 
 namespace Magento\Install\Test\Block;
 
-use Mtf\Block\Block;
-use Mtf\Client\Element\Locator;
+use Magento\Mtf\Block\Block;
+use Magento\Mtf\Client\Locator;
 
 /**
  * Landing block.
@@ -19,7 +19,7 @@ class Landing extends Block
      *
      * @var string
      */
-    protected $agreeAndSetup = '.btn-lg.btn-primary';
+    protected $agreeAndSetup = '.btn-prime.btn-submit';
 
     /**
      * 'Terms & Agreement' link.

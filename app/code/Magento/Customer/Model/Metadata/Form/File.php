@@ -12,12 +12,15 @@ use Magento\Framework\Filesystem;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Api\ArrayObjectSearch;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class File extends AbstractData
 {
     /**
      * Validator for check not protected extensions
      *
-     * @var \Magento\Core\Model\File\Validator\NotProtectedExtension
+     * @var \Magento\MediaStorage\Model\File\Validator\NotProtectedExtension
      */
     protected $_validatorNotProtectedExtensions;
 
@@ -29,7 +32,7 @@ class File extends AbstractData
     protected $urlEncoder;
 
     /**
-     * @var \Magento\Core\Model\File\Validator\NotProtectedExtension
+     * @var \Magento\MediaStorage\Model\File\Validator\NotProtectedExtension
      */
     protected $_fileValidator;
 
@@ -52,9 +55,10 @@ class File extends AbstractData
      * @param string $entityTypeCode
      * @param bool $isAjax
      * @param \Magento\Framework\Url\EncoderInterface $urlEncoder
-     * @param \Magento\Core\Model\File\Validator\NotProtectedExtension $fileValidator
+     * @param \Magento\MediaStorage\Model\File\Validator\NotProtectedExtension $fileValidator
      * @param Filesystem $fileSystem
      * @param UploaderFactory $uploaderFactory
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         \Magento\Framework\Stdlib\DateTime\TimezoneInterface $localeDate,
@@ -65,7 +69,7 @@ class File extends AbstractData
         $entityTypeCode,
         $isAjax,
         \Magento\Framework\Url\EncoderInterface $urlEncoder,
-        \Magento\Core\Model\File\Validator\NotProtectedExtension $fileValidator,
+        \Magento\MediaStorage\Model\File\Validator\NotProtectedExtension $fileValidator,
         Filesystem $fileSystem,
         UploaderFactory $uploaderFactory
     ) {
@@ -78,6 +82,7 @@ class File extends AbstractData
 
     /**
      * {@inheritdoc}
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function extractValue(\Magento\Framework\App\RequestInterface $request)
     {
@@ -146,7 +151,7 @@ class File extends AbstractData
             $rules,
             'file_extensions'
         );
-        if (!is_null($fileExtensions)) {
+        if ($fileExtensions !== null) {
             $extensions = explode(',', $fileExtensions);
             $extensions = array_map('trim', $extensions);
             if (!in_array($extension, $extensions)) {
@@ -169,7 +174,7 @@ class File extends AbstractData
             $rules,
             'max_file_size'
         );
-        if (!is_null($maxFileSize)) {
+        if ($maxFileSize !== null) {
             $size = $value['size'];
             if ($maxFileSize < $size) {
                 return [__('"%1" exceeds the allowed file size.', $label)];
@@ -194,6 +199,8 @@ class File extends AbstractData
 
     /**
      * {@inheritdoc}
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     public function validateValue($value)
     {

@@ -14,6 +14,7 @@ use Magento\Review\Model\Review;
  * Review controller
  *
  * @author     Magento Core Team <core@magentocommerce.com>
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Product extends \Magento\Framework\App\Action\Action
 {
@@ -90,7 +91,7 @@ class Product extends \Magento\Framework\App\Action\Action
     /**
      * Core form key validator
      *
-     * @var \Magento\Core\App\Action\FormKeyValidator
+     * @var \Magento\Framework\Data\Form\FormKey\Validator
      */
     protected $_formKeyValidator;
 
@@ -106,7 +107,8 @@ class Product extends \Magento\Framework\App\Action\Action
      * @param \Magento\Catalog\Model\Design $catalogDesign
      * @param \Magento\Framework\Session\Generic $reviewSession
      * @param \Magento\Store\Model\StoreManagerInterface $storeManager
-     * @param \Magento\Core\App\Action\FormKeyValidator $formKeyValidator
+     * @param \Magento\Framework\Data\Form\FormKey\Validator $formKeyValidator
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
@@ -120,7 +122,7 @@ class Product extends \Magento\Framework\App\Action\Action
         \Magento\Catalog\Model\Design $catalogDesign,
         \Magento\Framework\Session\Generic $reviewSession,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Magento\Core\App\Action\FormKeyValidator $formKeyValidator
+        \Magento\Framework\Data\Form\FormKey\Validator $formKeyValidator
     ) {
         $this->_storeManager = $storeManager;
         $this->_coreRegistry = $coreRegistry;
@@ -155,7 +157,7 @@ class Product extends \Magento\Framework\App\Action\Action
                 $this->_actionFlag->set('', self::FLAG_NO_DISPATCH, true);
                 $this->_customerSession->setBeforeAuthUrl($this->_url->getUrl('*/*/*', ['_current' => true]));
                 $this->_reviewSession->setFormData(
-                    $request->getPost()
+                    $request->getPostValue()
                 )->setRedirectUrl(
                     $this->_redirect->getRefererUrl()
                 );
@@ -195,7 +197,7 @@ class Product extends \Magento\Framework\App\Action\Action
                 'review_controller_product_init_after',
                 ['product' => $product, 'controller_action' => $this]
             );
-        } catch (\Magento\Framework\Model\Exception $e) {
+        } catch (\Magento\Framework\Exception\LocalizedException $e) {
             $this->_logger->critical($e);
             return false;
         }

@@ -6,10 +6,10 @@
 
 namespace Magento\Review\Test\Constraint;
 
-use Magento\Review\Test\Fixture\ReviewInjectable;
+use Magento\Review\Test\Fixture\Review;
 use Magento\Review\Test\Page\Adminhtml\ReviewIndex;
-use Mtf\Constraint\AbstractConstraint;
-use Mtf\Fixture\FixtureInterface;
+use Magento\Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Fixture\FixtureInterface;
 
 /**
  * Class AssertProductReviewInGrid
@@ -17,10 +17,6 @@ use Mtf\Fixture\FixtureInterface;
  */
 class AssertProductReviewInGrid extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Filter params
      *
@@ -42,14 +38,14 @@ class AssertProductReviewInGrid extends AbstractConstraint
      * Assert that review is displayed in grid
      *
      * @param ReviewIndex $reviewIndex
-     * @param ReviewInjectable $review ,
+     * @param Review $review ,
      * @param FixtureInterface $product
      * @param string $gridStatus
      * @return void
      */
     public function processAssert(
         ReviewIndex $reviewIndex,
-        ReviewInjectable $review,
+        Review $review,
         FixtureInterface $product,
         $gridStatus = ''
     ) {

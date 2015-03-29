@@ -81,6 +81,7 @@ abstract class AbstractBlock extends \Magento\Catalog\Block\Product\AbstractProd
      *
      * @param \Magento\Wishlist\Model\Resource\Item\Collection $collection
      * @return \Magento\Wishlist\Block\Customer\Wishlist
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     protected function _prepareCollection($collection)
     {
@@ -104,7 +105,7 @@ abstract class AbstractBlock extends \Magento\Catalog\Block\Product\AbstractProd
      */
     public function getWishlistItems()
     {
-        if (is_null($this->_collection)) {
+        if ($this->_collection === null) {
             $this->_collection = $this->_createWishlistItemCollection();
             $this->_prepareCollection($this->_collection);
         }
@@ -212,7 +213,7 @@ abstract class AbstractBlock extends \Magento\Catalog\Block\Product\AbstractProd
      */
     public function getFormatedDate($date)
     {
-        return $this->formatDate($date, \Magento\Framework\Stdlib\DateTime\TimezoneInterface::FORMAT_TYPE_MEDIUM);
+        return $this->formatDate($date, \IntlDateFormatter::MEDIUM);
     }
 
     /**

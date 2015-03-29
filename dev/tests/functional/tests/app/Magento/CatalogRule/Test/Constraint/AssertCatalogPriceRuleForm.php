@@ -9,17 +9,13 @@ namespace Magento\CatalogRule\Test\Constraint;
 use Magento\CatalogRule\Test\Fixture\CatalogRule;
 use Magento\CatalogRule\Test\Page\Adminhtml\CatalogRuleIndex;
 use Magento\CatalogRule\Test\Page\Adminhtml\CatalogRuleNew;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertCatalogPriceRuleForm
  */
 class AssertCatalogPriceRuleForm extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Assert that displayed Catalog Price Rule data on edit page equals passed from fixture.
      *

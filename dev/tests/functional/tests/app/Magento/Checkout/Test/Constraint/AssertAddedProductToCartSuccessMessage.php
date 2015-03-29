@@ -7,8 +7,8 @@
 namespace Magento\Checkout\Test\Constraint;
 
 use Magento\Checkout\Test\Page\CheckoutCart;
-use Mtf\Constraint\AbstractConstraint;
-use Mtf\Fixture\FixtureInterface;
+use Magento\Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Fixture\FixtureInterface;
 
 /**
  * Class AssertAddedProductToCartSuccessMessage
@@ -16,10 +16,6 @@ use Mtf\Fixture\FixtureInterface;
  */
 class AssertAddedProductToCartSuccessMessage extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Success add to cart message
      */

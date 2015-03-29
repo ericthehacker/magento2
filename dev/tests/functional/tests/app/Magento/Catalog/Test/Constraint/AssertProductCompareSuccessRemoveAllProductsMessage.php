@@ -7,17 +7,13 @@
 namespace Magento\Catalog\Test\Constraint;
 
 use Magento\Catalog\Test\Page\Product\CatalogProductView;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertProductCompareSuccessRemoveAllProductsMessage
  */
 class AssertProductCompareSuccessRemoveAllProductsMessage extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'high';
-    /* end tags */
-
     const SUCCESS_MESSAGE = 'You cleared the comparison list.';
 
     /**

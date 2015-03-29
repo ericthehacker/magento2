@@ -9,12 +9,10 @@ namespace Magento\Tax\Test\TestCase;
 use Magento\Tax\Test\Fixture\TaxRule;
 use Magento\Tax\Test\Page\Adminhtml\TaxRuleIndex;
 use Magento\Tax\Test\Page\Adminhtml\TaxRuleNew;
-use Mtf\ObjectManager;
-use Mtf\TestCase\Injectable;
+use Magento\Mtf\TestCase\Injectable;
 
 /**
- * Test Flow:
- *
+ * Steps:
  * 1. Log in as default admin user.
  * 2. Go to Stores > Tax Rules.
  * 3. Click 'Add New Tax Rule' button.
@@ -27,6 +25,13 @@ use Mtf\TestCase\Injectable;
  */
 class CreateTaxRuleEntityTest extends Injectable
 {
+    /* tags */
+    const MVP = 'yes';
+    const DOMAIN = 'CS';
+    const TEST_TYPE = 'acceptance_test';
+    const STABLE = 'no';
+    /* end tags */
+
     /**
      * Tax rule index page.
      *
@@ -76,8 +81,8 @@ class CreateTaxRuleEntityTest extends Injectable
      *
      * @return void
      */
-    public static function tearDownAfterClass()
+    public function tearDown()
     {
-        ObjectManager::getInstance()->create('Magento\Tax\Test\TestStep\DeleteAllTaxRulesStep', [])->run();
+        $this->objectManager->create('Magento\Tax\Test\TestStep\DeleteAllTaxRulesStep', [])->run();
     }
 }

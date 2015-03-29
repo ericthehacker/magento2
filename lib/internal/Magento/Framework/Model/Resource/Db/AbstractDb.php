@@ -6,10 +6,13 @@
 
 namespace Magento\Framework\Model\Resource\Db;
 
-use Magento\Framework\Model\Exception as ModelException;
+use Magento\Framework\Exception\AlreadyExistsException;
+use Magento\Framework\Exception\LocalizedException;
 
 /**
  * Abstract resource model class
+ * @SuppressWarnings(PHPMD.NumberOfChildren)
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 abstract class AbstractDb extends \Magento\Framework\Model\Resource\AbstractResource
 {
@@ -115,13 +118,29 @@ abstract class AbstractDb extends \Magento\Framework\Model\Resource\AbstractReso
     protected $_serializableFields = [];
 
     /**
+     * @var TransactionManagerInterface
+     */
+    protected $transactionManager;
+
+    /**
+     * @var ObjectRelationProcessor
+     */
+    protected $objectRelationProcessor;
+
+    /**
      * Class constructor
      *
-     * @param \Magento\Framework\App\Resource $resource
+     * @param \Magento\Framework\Model\Resource\Db\Context $context
+     * @param string|null $resourcePrefix
      */
-    public function __construct(\Magento\Framework\App\Resource $resource)
+    public function __construct(\Magento\Framework\Model\Resource\Db\Context $context, $resourcePrefix = null)
     {
-        $this->_resources = $resource;
+        $this->transactionManager = $context->getTransactionManager();
+        $this->_resources = $context->getResources();
+        $this->objectRelationProcessor = $context->getObjectRelationProcessor();
+        if ($resourcePrefix !== null) {
+            $this->_resourcePrefix = $resourcePrefix;
+        }
         parent::__construct();
     }
 
@@ -178,7 +197,7 @@ abstract class AbstractDb extends \Magento\Framework\Model\Resource\AbstractReso
             $this->_resourcePrefix = $connections;
         }
 
-        if (is_null($tables) && is_string($connections)) {
+        if ($tables === null && is_string($connections)) {
             $this->_resourceModel = $this->_resourcePrefix;
         } elseif (is_array($tables)) {
             foreach ($tables as $key => $value) {
@@ -212,13 +231,13 @@ abstract class AbstractDb extends \Magento\Framework\Model\Resource\AbstractReso
     /**
      * Get primary key field name
      *
-     * @throws ModelException
+     * @throws LocalizedException
      * @return string
      */
     public function getIdFieldName()
     {
         if (empty($this->_idFieldName)) {
-            throw new ModelException(__('Empty identifier field name'));
+            throw new LocalizedException(new \Magento\Framework\Phrase('Empty identifier field name'));
         }
         return $this->_idFieldName;
     }
@@ -227,13 +246,13 @@ abstract class AbstractDb extends \Magento\Framework\Model\Resource\AbstractReso
      * Returns main table name - extracted from "module/table" style and
      * validated by db adapter
      *
-     * @throws ModelException
+     * @throws LocalizedException
      * @return string
      */
     public function getMainTable()
     {
         if (empty($this->_mainTable)) {
-            throw new ModelException(__('Empty main table name'));
+            throw new LocalizedException(new \Magento\Framework\Phrase('Empty main table name'));
         }
         return $this->getTable($this->_mainTable);
     }
@@ -254,12 +273,13 @@ abstract class AbstractDb extends \Magento\Framework\Model\Resource\AbstractReso
             $entitySuffix = null;
         }
 
-        if (!is_null($entitySuffix)) {
+        if ($entitySuffix !== null) {
             $tableName .= '_' . $entitySuffix;
         }
 
         if (!isset($this->_tables[$cacheName])) {
-            $this->_tables[$cacheName] = $this->_resources->getTableName($tableName);
+            $connectionName = $this->_resourcePrefix . '_read';
+            $this->_tables[$cacheName] = $this->_resources->getTableName($tableName, $connectionName);
         }
         return $this->_tables[$cacheName];
     }
@@ -329,12 +349,12 @@ abstract class AbstractDb extends \Magento\Framework\Model\Resource\AbstractReso
      */
     public function load(\Magento\Framework\Model\AbstractModel $object, $value, $field = null)
     {
-        if (is_null($field)) {
+        if ($field === null) {
             $field = $this->getIdFieldName();
         }
 
         $read = $this->_getReadAdapter();
-        if ($read && !is_null($value)) {
+        if ($read && $value !== null) {
             $select = $this->_getLoadSelect($field, $value, $object);
             $data = $read->fetchRow($select);
 
@@ -356,6 +376,7 @@ abstract class AbstractDb extends \Magento\Framework\Model\Resource\AbstractReso
      * @param mixed $value
      * @param \Magento\Framework\Model\AbstractModel $object
      * @return \Zend_Db_Select
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     protected function _getLoadSelect($field, $value, $object)
     {
@@ -369,6 +390,7 @@ abstract class AbstractDb extends \Magento\Framework\Model\Resource\AbstractReso
      *
      * @param \Magento\Framework\Model\AbstractModel $object
      * @return $this
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function save(\Magento\Framework\Model\AbstractModel $object)
     {
@@ -388,7 +410,8 @@ abstract class AbstractDb extends \Magento\Framework\Model\Resource\AbstractReso
                 $this->_serializeFields($object);
                 $this->_beforeSave($object);
                 $this->_checkUnique($object);
-                if (!is_null($object->getId()) && (!$this->_useIsObjectNew || !$object->isObjectNew())) {
+                $this->objectRelationProcessor->validateDataIntegrity($this->getMainTable(), $object->getData());
+                if ($object->getId() !== null && (!$this->_useIsObjectNew || !$object->isObjectNew())) {
                     $condition = $this->_getWriteAdapter()->quoteInto($this->getIdFieldName() . '=?', $object->getId());
                     /**
                      * Not auto increment primary key support
@@ -451,25 +474,28 @@ abstract class AbstractDb extends \Magento\Framework\Model\Resource\AbstractReso
      *
      * @param \Magento\Framework\Model\AbstractModel $object
      * @return $this
+     * @throws \Exception
      */
     public function delete(\Magento\Framework\Model\AbstractModel $object)
     {
-        $this->beginTransaction();
+        $connection = $this->transactionManager->start($this->_getWriteAdapter());
         try {
             $object->beforeDelete();
             $this->_beforeDelete($object);
-            $this->_getWriteAdapter()->delete(
+            $this->objectRelationProcessor->delete(
+                $this->transactionManager,
+                $connection,
                 $this->getMainTable(),
-                $this->_getWriteAdapter()->quoteInto($this->getIdFieldName() . '=?', $object->getId())
+                $this->_getWriteAdapter()->quoteInto($this->getIdFieldName() . '=?', $object->getId()),
+                $object->getData()
             );
             $this->_afterDelete($object);
-
             $object->isDeleted(true);
             $object->afterDelete();
-            $this->commit();
+            $this->transactionManager->commit();
             $object->afterDeleteCommit();
         } catch (\Exception $e) {
-            $this->rollBack();
+            $this->transactionManager->rollBack();
             throw $e;
         }
         return $this;
@@ -483,7 +509,7 @@ abstract class AbstractDb extends \Magento\Framework\Model\Resource\AbstractReso
      */
     public function addUniqueField($field)
     {
-        if (is_null($this->_uniqueFields)) {
+        if ($this->_uniqueFields === null) {
             $this->_initUniqueFields();
         }
         if (is_array($this->_uniqueFields)) {
@@ -508,6 +534,7 @@ abstract class AbstractDb extends \Magento\Framework\Model\Resource\AbstractReso
      *
      * @param \Magento\Framework\Model\AbstractModel $object
      * @return void
+     * @SuppressWarnings(PHPMD.UnusedLocalVariable)
      */
     public function unserializeFields(\Magento\Framework\Model\AbstractModel $object)
     {
@@ -535,7 +562,7 @@ abstract class AbstractDb extends \Magento\Framework\Model\Resource\AbstractReso
      */
     public function getUniqueFields()
     {
-        if (is_null($this->_uniqueFields)) {
+        if ($this->_uniqueFields === null) {
             $this->_initUniqueFields();
         }
         return $this->_uniqueFields;
@@ -592,7 +619,8 @@ abstract class AbstractDb extends \Magento\Framework\Model\Resource\AbstractReso
      *
      * @param \Magento\Framework\Model\AbstractModel $object
      * @return $this
-     * @throws ModelException
+     * @throws AlreadyExistsException
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     protected function _checkUnique(\Magento\Framework\Model\AbstractModel $object)
     {
@@ -630,11 +658,11 @@ abstract class AbstractDb extends \Magento\Framework\Model\Resource\AbstractReso
 
         if (!empty($existent)) {
             if (count($existent) == 1) {
-                $error = __('%1 already exists.', $existent[0]);
+                $error = new \Magento\Framework\Phrase('%1 already exists.', [$existent[0]]);
             } else {
-                $error = __('%1 already exist.', implode(', ', $existent));
+                $error = new \Magento\Framework\Phrase('%1 already exist.', [implode(', ', $existent)]);
             }
-            throw new ModelException($error, ModelException::ERROR_CODE_ENTITY_ALREADY_EXISTS);
+            throw new AlreadyExistsException($error);
         }
         return $this;
     }
@@ -655,6 +683,7 @@ abstract class AbstractDb extends \Magento\Framework\Model\Resource\AbstractReso
      *
      * @param \Magento\Framework\Model\AbstractModel|\Magento\Framework\Object $object
      * @return $this
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     protected function _afterLoad(\Magento\Framework\Model\AbstractModel $object)
     {
@@ -666,6 +695,7 @@ abstract class AbstractDb extends \Magento\Framework\Model\Resource\AbstractReso
      *
      * @param \Magento\Framework\Model\AbstractModel|\Magento\Framework\Object $object
      * @return $this
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     protected function _beforeSave(\Magento\Framework\Model\AbstractModel $object)
     {
@@ -677,6 +707,7 @@ abstract class AbstractDb extends \Magento\Framework\Model\Resource\AbstractReso
      *
      * @param \Magento\Framework\Model\AbstractModel|\Magento\Framework\Object $object
      * @return $this
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     protected function _afterSave(\Magento\Framework\Model\AbstractModel $object)
     {
@@ -688,6 +719,7 @@ abstract class AbstractDb extends \Magento\Framework\Model\Resource\AbstractReso
      *
      * @param \Magento\Framework\Model\AbstractModel|\Magento\Framework\Object $object
      * @return $this
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     protected function _beforeDelete(\Magento\Framework\Model\AbstractModel $object)
     {
@@ -699,6 +731,7 @@ abstract class AbstractDb extends \Magento\Framework\Model\Resource\AbstractReso
      *
      * @param \Magento\Framework\Model\AbstractModel|\Magento\Framework\Object $object
      * @return $this
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     protected function _afterDelete(\Magento\Framework\Model\AbstractModel $object)
     {
@@ -710,6 +743,7 @@ abstract class AbstractDb extends \Magento\Framework\Model\Resource\AbstractReso
      *
      * @param \Magento\Framework\Model\AbstractModel $object
      * @return void
+     * @SuppressWarnings(PHPMD.UnusedLocalVariable)
      */
     protected function _serializeFields(\Magento\Framework\Model\AbstractModel $object)
     {

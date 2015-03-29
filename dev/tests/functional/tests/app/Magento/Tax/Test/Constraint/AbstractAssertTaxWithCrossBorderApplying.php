@@ -11,7 +11,7 @@ use Magento\Catalog\Test\Page\Category\CatalogCategoryView;
 use Magento\Catalog\Test\Page\Product\CatalogProductView;
 use Magento\Checkout\Test\Page\CheckoutCart;
 use Magento\Cms\Test\Page\CmsIndex;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AbstractAssertTaxWithCrossBorderApplying
@@ -150,6 +150,7 @@ abstract class AbstractAssertTaxWithCrossBorderApplying extends AbstractConstrai
         $actualPrices['product_page_price'] =
             $this->catalogProductView->getViewBlock()->getPriceBlock()->getEffectivePrice();
         $this->catalogProductView->getViewBlock()->clickAddToCart();
+        $this->catalogProductView->getMessagesBlock()->waitSuccessMessage();
         return $actualPrices;
     }
 
@@ -162,12 +163,13 @@ abstract class AbstractAssertTaxWithCrossBorderApplying extends AbstractConstrai
      */
     protected function getCartPrice(CatalogProductSimple $product, $actualPrices)
     {
+        $this->checkoutCart->open();
         $actualPrices['cart_item_price_incl_tax'] =
             $this->checkoutCart->getCartBlock()->getCartItem($product)->getPriceInclTax();
         $actualPrices['cart_item_subtotal_incl_tax'] =
             $this->checkoutCart->getCartBlock()->getCartItem($product)->getSubtotalPriceInclTax();
         $actualPrices['grand_total'] =
-            $this->checkoutCart->getTotalsBlock()->getGrandTotal();
+            $this->checkoutCart->getTotalsBlock()->getGrandTotalIncludingTax();
         return $actualPrices;
     }
 

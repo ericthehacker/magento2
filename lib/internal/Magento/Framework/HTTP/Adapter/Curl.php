@@ -4,6 +4,8 @@
  * See COPYING.txt for license details.
  */
 
+// @codingStandardsIgnoreFile
+
 /**
  * HTTP CURL Adapter
  *
@@ -33,11 +35,13 @@ class Curl implements \Zend_Http_Client_Adapter_Interface
      * @var array
      */
     protected $_allowedParams = [
-        'timeout' => CURLOPT_TIMEOUT,
+        'timeout'      => CURLOPT_TIMEOUT,
         'maxredirects' => CURLOPT_MAXREDIRS,
-        'proxy' => CURLOPT_PROXY,
-        'ssl_cert' => CURLOPT_SSLCERT,
-        'userpwd' => CURLOPT_USERPWD,
+        'proxy'        => CURLOPT_PROXY,
+        'ssl_cert'     => CURLOPT_SSLCERT,
+        'userpwd'      => CURLOPT_USERPWD,
+        'useragent'    => CURLOPT_USERAGENT,
+        'referer'      => CURLOPT_REFERER
     ];
 
     /**
@@ -51,6 +55,8 @@ class Curl implements \Zend_Http_Client_Adapter_Interface
      * Apply current configuration array to transport resource
      *
      * @return \Magento\Framework\HTTP\Adapter\Curl
+     * @SuppressWarnings(PHPMD.NPathComplexity)
+     * @SuppressWarnings(PHPMD.UnusedLocalVariable)
      */
     protected function _applyConfig()
     {
@@ -137,6 +143,7 @@ class Curl implements \Zend_Http_Client_Adapter_Interface
      * @param array $headers
      * @param string $body
      * @return string Request as text
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function write($method, $url, $http_ver = '1.1', $headers = [], $body = '')
     {

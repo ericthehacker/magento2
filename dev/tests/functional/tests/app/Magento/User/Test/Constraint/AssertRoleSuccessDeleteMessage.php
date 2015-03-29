@@ -7,17 +7,13 @@
 namespace Magento\User\Test\Constraint;
 
 use Magento\User\Test\Page\Adminhtml\UserRoleIndex;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertRoleSuccessDeleteMessage
  */
 class AssertRoleSuccessDeleteMessage extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     const SUCCESS_DELETE_MESSAGE = 'You deleted the role.';
 
     /**

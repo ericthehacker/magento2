@@ -9,6 +9,7 @@ namespace Magento\Catalog\Model\Resource;
  * Product entity resource model
  *
  * @SuppressWarnings(PHPMD.LongVariable)
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Product extends AbstractResource
 {
@@ -56,12 +57,7 @@ class Product extends AbstractResource
     protected $typeFactory;
 
     /**
-     * @param \Magento\Framework\App\Resource $resource
-     * @param \Magento\Eav\Model\Config $eavConfig
-     * @param \Magento\Eav\Model\Entity\Attribute\Set $attrSetEntity
-     * @param \Magento\Framework\Locale\FormatInterface $localeFormat
-     * @param \Magento\Eav\Model\Resource\Helper $resourceHelper
-     * @param \Magento\Framework\Validator\UniversalFactory $universalFactory
+     * @param \Magento\Eav\Model\Entity\Context $context
      * @param \Magento\Store\Model\StoreManagerInterface $storeManager
      * @param \Magento\Catalog\Model\Factory $modelFactory
      * @param Category\CollectionFactory $categoryCollectionFactory
@@ -74,12 +70,7 @@ class Product extends AbstractResource
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
-        \Magento\Framework\App\Resource $resource,
-        \Magento\Eav\Model\Config $eavConfig,
-        \Magento\Eav\Model\Entity\Attribute\Set $attrSetEntity,
-        \Magento\Framework\Locale\FormatInterface $localeFormat,
-        \Magento\Eav\Model\Resource\Helper $resourceHelper,
-        \Magento\Framework\Validator\UniversalFactory $universalFactory,
+        \Magento\Eav\Model\Entity\Context $context,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Catalog\Model\Factory $modelFactory,
         \Magento\Catalog\Model\Resource\Category\CollectionFactory $categoryCollectionFactory,
@@ -95,12 +86,7 @@ class Product extends AbstractResource
         $this->setFactory = $setFactory;
         $this->typeFactory = $typeFactory;
         parent::__construct(
-            $resource,
-            $eavConfig,
-            $attrSetEntity,
-            $localeFormat,
-            $resourceHelper,
-            $universalFactory,
+            $context,
             $storeManager,
             $modelFactory,
             $data
@@ -117,7 +103,7 @@ class Product extends AbstractResource
      */
     protected function _getDefaultAttributes()
     {
-        return ['entity_id', 'entity_type_id', 'attribute_set_id', 'type_id', 'created_at', 'updated_at'];
+        return ['entity_id', 'attribute_set_id', 'type_id', 'created_at', 'updated_at'];
     }
 
     /**
@@ -311,6 +297,7 @@ class Product extends AbstractResource
      *
      * @param \Magento\Framework\Object $object
      * @return $this
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     protected function _saveCategories(\Magento\Framework\Object $object)
     {
@@ -451,9 +438,7 @@ class Product extends AbstractResource
      */
     public function duplicate($oldId, $newId)
     {
-        $adapter = $this->_getWriteAdapter();
         $eavTables = ['datetime', 'decimal', 'int', 'text', 'varchar'];
-
         $adapter = $this->_getWriteAdapter();
 
         // duplicate EAV store values
@@ -463,7 +448,6 @@ class Product extends AbstractResource
             $select = $adapter->select()->from(
                 $tableName,
                 [
-                    'entity_type_id',
                     'attribute_id',
                     'store_id',
                     'entity_id' => new \Zend_Db_Expr($adapter->quote($newId)),
@@ -481,7 +465,7 @@ class Product extends AbstractResource
                 $adapter->insertFromSelect(
                     $select,
                     $tableName,
-                    ['entity_type_id', 'attribute_id', 'store_id', 'entity_id', 'value'],
+                    ['attribute_id', 'store_id', 'entity_id', 'value'],
                     \Magento\Framework\DB\Adapter\AdapterInterface::INSERT_ON_DUPLICATE
                 )
             );

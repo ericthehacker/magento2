@@ -5,7 +5,7 @@
  */
 namespace Magento\SalesRule\Model;
 
-use Magento\Sales\Model\Quote\Address;
+use Magento\Quote\Model\Quote\Address;
 
 /**
  * Shopping Cart Rule data model
@@ -63,6 +63,7 @@ use Magento\Sales\Model\Quote\Address;
  * @method \Magento\SalesRule\Model\Rule setCouponCode(string $value)
  * @method int getRuleId()
  * @method \Magento\SalesRule\Model\Rule setRuleId(int $ruleId)
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Rule extends \Magento\Rule\Model\AbstractModel
 {
@@ -185,6 +186,7 @@ class Rule extends \Magento\Rule\Model\AbstractModel
      * @param \Magento\Framework\Model\Resource\AbstractResource $resource
      * @param \Magento\Framework\Data\Collection\Db $resourceCollection
      * @param array $data
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         \Magento\Framework\Model\Context $context,
@@ -435,7 +437,9 @@ class Rule extends \Magento\Rule\Model\AbstractModel
      * @param bool $saveNewlyCreated Whether or not to save newly created coupon
      * @param int $saveAttemptCount Number of attempts to save newly created coupon
      * @return \Magento\SalesRule\Model\Coupon|null
-     * @throws \Exception|\Magento\Framework\Model\Exception
+     * @throws \Exception|\Magento\Framework\Exception\LocalizedException
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     public function acquireCoupon($saveNewlyCreated = true, $saveAttemptCount = 10)
     {
@@ -471,7 +475,7 @@ class Rule extends \Magento\Rule\Model\AbstractModel
                     try {
                         $coupon->save();
                     } catch (\Exception $e) {
-                        if ($e instanceof \Magento\Framework\Model\Exception || $coupon->getId()) {
+                        if ($e instanceof \Magento\Framework\Exception\LocalizedException || $coupon->getId()) {
                             throw $e;
                         }
                         $coupon->setCode(
@@ -488,7 +492,7 @@ class Rule extends \Magento\Rule\Model\AbstractModel
             }
         }
         if (!$ok) {
-            throw new \Magento\Framework\Model\Exception(__('Can\'t acquire coupon.'));
+            throw new \Magento\Framework\Exception\LocalizedException(__('Can\'t acquire coupon.'));
         }
 
         return $coupon;
@@ -525,6 +529,7 @@ class Rule extends \Magento\Rule\Model\AbstractModel
      *
      * @param Address $address
      * @return bool
+     * @SuppressWarnings(PHPMD.BooleanGetMethodName)
      */
     public function getIsValidForAddress($address)
     {

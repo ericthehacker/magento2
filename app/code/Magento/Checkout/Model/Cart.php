@@ -13,6 +13,7 @@ use Magento\Framework\Object;
 
 /**
  * Shopping cart model
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Cart extends Object implements CartInterface
 {
@@ -80,7 +81,7 @@ class Cart extends Object implements CartInterface
     protected $stockState;
 
     /**
-     * @var \Magento\Sales\Model\QuoteRepository
+     * @var \Magento\Quote\Model\QuoteRepository
      */
     protected $quoteRepository;
 
@@ -99,9 +100,10 @@ class Cart extends Object implements CartInterface
      * @param \Magento\Framework\Message\ManagerInterface $messageManager
      * @param \Magento\CatalogInventory\Api\StockRegistryInterface $stockRegistry
      * @param \Magento\CatalogInventory\Api\StockStateInterface $stockState
-     * @param \Magento\Sales\Model\QuoteRepository $quoteRepository
+     * @param \Magento\Quote\Model\QuoteRepository $quoteRepository
      * @param ProductRepositoryInterface $productRepository
      * @param array $data
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         \Magento\Framework\Event\ManagerInterface $eventManager,
@@ -113,7 +115,7 @@ class Cart extends Object implements CartInterface
         \Magento\Framework\Message\ManagerInterface $messageManager,
         \Magento\CatalogInventory\Api\StockRegistryInterface $stockRegistry,
         \Magento\CatalogInventory\Api\StockStateInterface $stockState,
-        \Magento\Sales\Model\QuoteRepository $quoteRepository,
+        \Magento\Quote\Model\QuoteRepository $quoteRepository,
         ProductRepositoryInterface $productRepository,
         array $data = []
     ) {
@@ -182,7 +184,7 @@ class Cart extends Object implements CartInterface
     public function getQuoteProductIds()
     {
         $products = $this->getData('product_ids');
-        if (is_null($products)) {
+        if ($products === null) {
             $products = [];
             foreach ($this->getQuote()->getAllItems() as $item) {
                 $products[$item->getProductId()] = $item->getProductId();
@@ -195,7 +197,7 @@ class Cart extends Object implements CartInterface
     /**
      * Get quote object associated with cart. By default it is current customer session quote
      *
-     * @return \Magento\Sales\Model\Quote
+     * @return \Magento\Quote\Model\Quote
      */
     public function getQuote()
     {
@@ -208,33 +210,29 @@ class Cart extends Object implements CartInterface
     /**
      * Set quote object associated with the cart
      *
-     * @param \Magento\Sales\Model\Quote $quote
+     * @param \Magento\Quote\Model\Quote $quote
      * @return $this
      */
-    public function setQuote(\Magento\Sales\Model\Quote $quote)
+    public function setQuote(\Magento\Quote\Model\Quote $quote)
     {
         $this->setData('quote', $quote);
         return $this;
     }
 
     /**
-     * Initialize cart quote state to be able use it on cart page
+     * Reinitialize cart quote state
      *
      * @return $this
      */
-    public function init()
+    protected function reinitializeState()
     {
         $quote = $this->getQuote()->setCheckoutMethod('');
-
+        $this->_checkoutSession->setCartWasUpdated(true);
+        // reset for multiple address checkout
         if ($this->_checkoutSession->getCheckoutState() !== Session::CHECKOUT_STATE_BEGIN) {
             $quote->removeAllAddresses()->removePayment();
             $this->_checkoutSession->resetCheckout();
         }
-
-        if (!$quote->hasItems()) {
-            $quote->getShippingAddress()->setCollectShippingRates(false)->removeAllShippingRates();
-        }
-
         return $this;
     }
 
@@ -248,7 +246,7 @@ class Cart extends Object implements CartInterface
     public function addOrderItem($orderItem, $qtyFlag = null)
     {
         /* @var $orderItem \Magento\Sales\Model\Order\Item */
-        if (is_null($orderItem->getParentItem())) {
+        if ($orderItem->getParentItem() === null) {
             $storeId = $this->_storeManager->getStore()->getId();
             try {
                 $product = $this->productRepository->getById($orderItem->getProductId(), false, $storeId);
@@ -257,7 +255,7 @@ class Cart extends Object implements CartInterface
             }
             $info = $orderItem->getProductOptionByCode('info_buyRequest');
             $info = new \Magento\Framework\Object($info);
-            if (is_null($qtyFlag)) {
+            if ($qtyFlag === null) {
                 $info->setQty($orderItem->getQtyOrdered());
             } else {
                 $info->setQty(1);
@@ -273,7 +271,7 @@ class Cart extends Object implements CartInterface
      *
      * @param   Product|int|string $productInfo
      * @return  Product
-     * @throws \Magento\Framework\Model\Exception
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     protected function _getProduct($productInfo)
     {
@@ -281,21 +279,21 @@ class Cart extends Object implements CartInterface
         if ($productInfo instanceof Product) {
             $product = $productInfo;
             if (!$product->getId()) {
-                throw new \Magento\Framework\Model\Exception(__('We can\'t find the product.'));
+                throw new \Magento\Framework\Exception\LocalizedException(__('We can\'t find the product.'));
             }
         } elseif (is_int($productInfo) || is_string($productInfo)) {
             $storeId = $this->_storeManager->getStore()->getId();
             try {
                 $product = $this->productRepository->getById($productInfo, false, $storeId);
             } catch (NoSuchEntityException $e) {
-                throw new \Magento\Framework\Model\Exception(__('We can\'t find the product.'), 0, $e);
+                throw new \Magento\Framework\Exception\LocalizedException(__('We can\'t find the product.'), $e);
             }
         } else {
-            throw new \Magento\Framework\Model\Exception(__('We can\'t find the product.'));
+            throw new \Magento\Framework\Exception\LocalizedException(__('We can\'t find the product.'));
         }
         $currentWebsiteId = $this->_storeManager->getStore()->getWebsiteId();
         if (!is_array($product->getWebsiteIds()) || !in_array($currentWebsiteId, $product->getWebsiteIds())) {
-            throw new \Magento\Framework\Model\Exception(__('We can\'t find the product.'));
+            throw new \Magento\Framework\Exception\LocalizedException(__('We can\'t find the product.'));
         }
         return $product;
     }
@@ -329,7 +327,8 @@ class Cart extends Object implements CartInterface
      * @param int|Product $productInfo
      * @param \Magento\Framework\Object|int|array $requestInfo
      * @return $this
-     * @throws \Magento\Framework\Model\Exception
+     * @throws \Magento\Framework\Exception\LocalizedException
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function addProduct($productInfo, $requestInfo = null)
     {
@@ -353,7 +352,7 @@ class Cart extends Object implements CartInterface
         if ($productId) {
             try {
                 $result = $this->getQuote()->addProduct($product, $request);
-            } catch (\Magento\Framework\Model\Exception $e) {
+            } catch (\Magento\Framework\Exception\LocalizedException $e) {
                 $this->_checkoutSession->setUseNotice(false);
                 $result = $e->getMessage();
             }
@@ -373,10 +372,10 @@ class Cart extends Object implements CartInterface
                 if ($this->_checkoutSession->getUseNotice() === null) {
                     $this->_checkoutSession->setUseNotice(true);
                 }
-                throw new \Magento\Framework\Model\Exception($result);
+                throw new \Magento\Framework\Exception\LocalizedException(__($result));
             }
         } else {
-            throw new \Magento\Framework\Model\Exception(__('The product does not exist.'));
+            throw new \Magento\Framework\Exception\LocalizedException(__('The product does not exist.'));
         }
 
         $this->_eventManager->dispatch(
@@ -472,7 +471,9 @@ class Cart extends Object implements CartInterface
      *
      * @param  array $data
      * @return $this
-     * @throws \Magento\Framework\Model\Exception
+     * @throws \Magento\Framework\Exception\LocalizedException
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     public function updateItems($data)
     {
@@ -501,7 +502,7 @@ class Cart extends Object implements CartInterface
                 $itemInQuote = $this->getQuote()->getItemById($item->getId());
 
                 if (!$itemInQuote && $item->getHasError()) {
-                    throw new \Magento\Framework\Model\Exception($item->getMessage());
+                    throw new \Magento\Framework\Exception\LocalizedException(__($item->getMessage()));
                 }
 
                 if (isset($itemInfo['before_suggest_qty']) && $itemInfo['before_suggest_qty'] != $qty) {
@@ -557,6 +558,7 @@ class Cart extends Object implements CartInterface
          * Cart save usually called after changes with cart items.
          */
         $this->_eventManager->dispatch('checkout_cart_save_after', ['cart' => $this]);
+        $this->reinitializeState();
         return $this;
     }
 
@@ -653,17 +655,18 @@ class Cart extends Object implements CartInterface
      * @param int $itemId
      * @param int|array|\Magento\Framework\Object $requestInfo
      * @param null|array|\Magento\Framework\Object $updatingParams
-     * @return \Magento\Sales\Model\Quote\Item|string
-     * @throws \Magento\Framework\Model\Exception
+     * @return \Magento\Quote\Model\Quote\Item|string
+     * @throws \Magento\Framework\Exception\LocalizedException
      *
-     * @see \Magento\Sales\Model\Quote::updateItem()
+     * @see \Magento\Quote\Model\Quote::updateItem()
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function updateItem($itemId, $requestInfo = null, $updatingParams = null)
     {
         try {
             $item = $this->getQuote()->getItemById($itemId);
             if (!$item) {
-                throw new \Magento\Framework\Model\Exception(__('This quote item does not exist.'));
+                throw new \Magento\Framework\Exception\LocalizedException(__('This quote item does not exist.'));
             }
             $productId = $item->getProduct()->getId();
             $product = $this->_getProduct($productId);
@@ -683,7 +686,7 @@ class Cart extends Object implements CartInterface
             }
 
             $result = $this->getQuote()->updateItem($itemId, $request, $updatingParams);
-        } catch (\Magento\Framework\Model\Exception $e) {
+        } catch (\Magento\Framework\Exception\LocalizedException $e) {
             $this->_checkoutSession->setUseNotice(false);
             $result = $e->getMessage();
         }
@@ -695,7 +698,7 @@ class Cart extends Object implements CartInterface
             if ($this->_checkoutSession->getUseNotice() === null) {
                 $this->_checkoutSession->setUseNotice(true);
             }
-            throw new \Magento\Framework\Model\Exception($result);
+            throw new \Magento\Framework\Exception\LocalizedException(__($result));
         }
 
         $this->_eventManager->dispatch(

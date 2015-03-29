@@ -8,9 +8,9 @@ namespace Magento\Sales\Test\Constraint;
 
 use Magento\Customer\Test\Page\CustomerAccountIndex;
 use Magento\Cms\Test\Page\CmsIndex;
-use Magento\Customer\Test\Fixture\CustomerInjectable;
-use Mtf\Constraint\AbstractConstraint;
-use Mtf\ObjectManager;
+use Magento\Customer\Test\Fixture\Customer;
+use Magento\Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\ObjectManager;
 
 /**
  * Abstract Class AbstractAssertOrderOnFrontend
@@ -51,10 +51,10 @@ abstract class AbstractAssertOrderOnFrontend extends AbstractConstraint
     /**
      * Login customer and open Order page
      *
-     * @param CustomerInjectable $customer
+     * @param Customer $customer
      * @return void
      */
-    protected function loginCustomerAndOpenOrderPage(CustomerInjectable $customer)
+    protected function loginCustomerAndOpenOrderPage(Customer $customer)
     {
         $this->cmsIndex->open();
         $loginCustomerOnFrontendStep = $this->objectManager->create(

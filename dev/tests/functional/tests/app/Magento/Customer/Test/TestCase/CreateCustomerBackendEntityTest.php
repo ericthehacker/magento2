@@ -6,45 +6,57 @@
 
 namespace Magento\Customer\Test\TestCase;
 
-use Magento\Customer\Test\Fixture\AddressInjectable;
-use Magento\Customer\Test\Fixture\CustomerInjectable;
+use Magento\Mtf\TestCase\Injectable;
+use Magento\Customer\Test\Fixture\Address;
+use Magento\Customer\Test\Fixture\Customer;
 use Magento\Customer\Test\Page\Adminhtml\CustomerIndex;
 use Magento\Customer\Test\Page\Adminhtml\CustomerIndexNew;
-use Mtf\TestCase\Injectable;
 
 /**
- * Test Coverage for CreateCustomerBackendEntityTest
- *
- * General Flow:
+ * Steps:
  * 1. Log in as default admin user.
- * 2. Go to Customers > All Customers
- * 3. Press "Add New Customer" button
- * 4. Fill form
- * 5. Click "Save Customer" button
- * 6. Perform all assertions
+ * 2. Go to Customers > All Customers.
+ * 3. Press "Add New Customer" button.
+ * 4. Fill form.
+ * 5. Click "Save Customer" button.
+ * 6. Perform all assertions.
  *
  * @ticketId MAGETWO-23424
  */
 class CreateCustomerBackendEntityTest extends Injectable
 {
+    /* tags */
+    const MVP = 'yes';
+    const DOMAIN = 'CS';
+    /* end tags */
+
     /**
-     * @var CustomerInjectable
+     * Customer fixture.
+     *
+     * @var Customer
      */
     protected $customer;
 
     /**
+     * Customer index page.
+     *
      * @var CustomerIndex
      */
     protected $pageCustomerIndex;
 
     /**
+     * New customer page.
+     *
      * @var CustomerIndexNew
      */
     protected $pageCustomerIndexNew;
 
     /**
+     * Inject customer pages.
+     *
      * @param CustomerIndex $pageCustomerIndex
      * @param CustomerIndexNew $pageCustomerIndexNew
+     * @return void
      */
     public function __inject(
         CustomerIndex $pageCustomerIndex,
@@ -55,10 +67,14 @@ class CreateCustomerBackendEntityTest extends Injectable
     }
 
     /**
-     * @param CustomerInjectable $customer
-     * @param AddressInjectable $address
+     * Create customer on backend.
+     *
+     * @param Customer $customer
+     * @param Address $address
+     * @param string $customerAction
+     * @return void
      */
-    public function testCreateCustomerBackendEntity(CustomerInjectable $customer, AddressInjectable $address)
+    public function test(Customer $customer, Address $address, $customerAction)
     {
         // Prepare data
         $address = $address->hasData() ? $address : null;
@@ -67,6 +83,6 @@ class CreateCustomerBackendEntityTest extends Injectable
         $this->pageCustomerIndex->open();
         $this->pageCustomerIndex->getPageActionsBlock()->addNew();
         $this->pageCustomerIndexNew->getCustomerForm()->fillCustomer($customer, $address);
-        $this->pageCustomerIndexNew->getPageActionsBlock()->save();
+        $this->pageCustomerIndexNew->getPageActionsBlock()->$customerAction();
     }
 }

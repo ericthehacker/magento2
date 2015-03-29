@@ -6,17 +6,13 @@
 
 namespace Magento\Tax\Test\Constraint;
 
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertTaxRateIsInCorrectRange
  */
 class AssertTaxRateIsInCorrectRange extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * @return void
      */

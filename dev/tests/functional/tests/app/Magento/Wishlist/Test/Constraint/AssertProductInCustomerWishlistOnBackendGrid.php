@@ -8,8 +8,8 @@ namespace Magento\Wishlist\Test\Constraint;
 
 use Magento\Customer\Test\Page\Adminhtml\CustomerIndexEdit;
 use Magento\Wishlist\Test\Block\Adminhtml\Customer\Edit\Tab\Wishlist\Grid;
-use Mtf\Constraint\AbstractConstraint;
-use Mtf\Fixture\FixtureInterface;
+use Magento\Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Fixture\FixtureInterface;
 
 /**
  * Class AssertProductInCustomerWishlistOnBackendGrid
@@ -17,10 +17,6 @@ use Mtf\Fixture\FixtureInterface;
  */
 class AssertProductInCustomerWishlistOnBackendGrid extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Assert that product is present in grid on customer's wish list tab with configure option and qty
      *

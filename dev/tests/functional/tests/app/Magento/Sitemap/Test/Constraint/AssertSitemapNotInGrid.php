@@ -8,17 +8,13 @@ namespace Magento\Sitemap\Test\Constraint;
 
 use Magento\Sitemap\Test\Fixture\Sitemap;
 use Magento\Sitemap\Test\Page\Adminhtml\SitemapIndex;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertSitemapNotInGrid
  */
 class AssertSitemapNotInGrid extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Assert that sitemap not availability in sitemap grid
      *

@@ -64,6 +64,7 @@ class Type extends \Magento\Framework\Model\AbstractModel
      * @param \Magento\GoogleShopping\Model\Resource\Type $resource
      * @param \Magento\Framework\Data\Collection\Db $resourceCollection
      * @param array $data
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         \Magento\Framework\Model\Context $context,
@@ -111,6 +112,7 @@ class Type extends \Magento\Framework\Model\AbstractModel
      * @param CatalogModelProduct $product
      * @param Entry $entry
      * @return Entry
+     * @SuppressWarnings(PHPMD.UnusedLocalVariable)
      */
     public function convertProductToEntry($product, $entry)
     {
@@ -140,7 +142,7 @@ class Type extends \Magento\Framework\Model\AbstractModel
         foreach ($this->_getAttributesCollection() as $attribute) {
             $productAttribute = $this->_gsProduct->getProductAttribute($product, $attribute->getAttributeId());
 
-            if (!is_null($productAttribute)) {
+            if ($productAttribute !== null) {
                 // define final attribute name
                 if ($attribute->getGcontentAttribute()) {
                     $name = $attribute->getGcontentAttribute();
@@ -148,7 +150,7 @@ class Type extends \Magento\Framework\Model\AbstractModel
                     $name = $this->_gsProduct->getAttributeLabel($productAttribute, $product->getStoreId());
                 }
 
-                if (!is_null($name)) {
+                if ($name !== null) {
                     $name = $this->_googleShoppingHelper->normalizeName($name);
                     if (isset($group[$name])) {
                         // if attribute is in the group
@@ -223,7 +225,7 @@ class Type extends \Magento\Framework\Model\AbstractModel
      */
     protected function _getAttributesCollection()
     {
-        if (is_null($this->_attributesCollection)) {
+        if ($this->_attributesCollection === null) {
             $this->_attributesCollection = $this->_collectionFactory->create()->addAttributeSetFilter(
                 $this->getAttributeSetId(),
                 $this->getTargetCountry()

@@ -52,11 +52,11 @@ class Session extends \Magento\Framework\Model\AbstractModel
     protected $_persistentData;
 
     /**
-     * Core data
+     * Json Helper
      *
-     * @var \Magento\Core\Helper\Data
+     * @var \Magento\Framework\Json\Helper\Data
      */
-    protected $_coreData;
+    protected $jsonHelper;
 
     /**
      * @var \Magento\Framework\App\Config\ScopeConfigInterface
@@ -100,7 +100,7 @@ class Session extends \Magento\Framework\Model\AbstractModel
      * @param \Magento\Framework\Model\Context $context
      * @param \Magento\Framework\Registry $registry
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $coreConfig
-     * @param \Magento\Core\Helper\Data $coreData
+     * @param \Magento\Framework\Json\Helper\Data $jsonHelper
      * @param \Magento\Persistent\Helper\Data $persistentData
      * @param \Magento\Framework\Stdlib\CookieManagerInterface $cookieManager
      * @param \Magento\Framework\Stdlib\Cookie\CookieMetadataFactory $cookieMetadataFactory
@@ -110,12 +110,13 @@ class Session extends \Magento\Framework\Model\AbstractModel
      * @param \Magento\Framework\Model\Resource\AbstractResource $resource
      * @param \Magento\Framework\Data\Collection\Db $resourceCollection
      * @param array $data
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         \Magento\Framework\Model\Context $context,
         \Magento\Framework\Registry $registry,
         \Magento\Framework\App\Config\ScopeConfigInterface $coreConfig,
-        \Magento\Core\Helper\Data $coreData,
+        \Magento\Framework\Json\Helper\Data $jsonHelper,
         \Magento\Persistent\Helper\Data $persistentData,
         \Magento\Framework\Stdlib\CookieManagerInterface $cookieManager,
         \Magento\Framework\Stdlib\Cookie\CookieMetadataFactory $cookieMetadataFactory,
@@ -126,7 +127,7 @@ class Session extends \Magento\Framework\Model\AbstractModel
         \Magento\Framework\Data\Collection\Db $resourceCollection = null,
         array $data = []
     ) {
-        $this->_coreData = $coreData;
+        $this->jsonHelper = $jsonHelper;
         $this->_persistentData = $persistentData;
         $this->_coreConfig = $coreConfig;
         $this->_cookieManager = $cookieManager;
@@ -163,6 +164,7 @@ class Session extends \Magento\Framework\Model\AbstractModel
      * Get if model loads expired sessions
      *
      * @return bool
+     * @SuppressWarnings(PHPMD.BooleanGetMethodName)
      */
     public function getLoadExpired()
     {
@@ -197,7 +199,7 @@ class Session extends \Magento\Framework\Model\AbstractModel
                 $info[$index] = $value;
             }
         }
-        $this->setInfo($this->_coreData->jsonEncode($info));
+        $this->setInfo($this->jsonHelper->jsonEncode($info));
 
         if ($this->isObjectNew()) {
             $this->setWebsiteId($this->_storeManager->getStore()->getWebsiteId());
@@ -218,7 +220,7 @@ class Session extends \Magento\Framework\Model\AbstractModel
     protected function _afterLoad()
     {
         parent::_afterLoad();
-        $info = $this->_coreData->jsonDecode($this->getInfo());
+        $info = $this->jsonHelper->jsonDecode($this->getInfo());
         if (is_array($info)) {
             foreach ($info as $key => $value) {
                 $this->setData($key, $value);
@@ -326,7 +328,7 @@ class Session extends \Magento\Framework\Model\AbstractModel
      */
     public function deleteExpired($websiteId = null)
     {
-        if (is_null($websiteId)) {
+        if ($websiteId === null) {
             $websiteId = $this->_storeManager->getStore()->getWebsiteId();
         }
 

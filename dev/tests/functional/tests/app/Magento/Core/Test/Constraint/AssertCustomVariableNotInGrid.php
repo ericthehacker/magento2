@@ -8,17 +8,13 @@ namespace Magento\Core\Test\Constraint;
 
 use Magento\Core\Test\Fixture\SystemVariable;
 use Magento\Core\Test\Page\Adminhtml\SystemVariableIndex;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertCustomVariableNotInGrid
  */
 class AssertCustomVariableNotInGrid extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Assert Custom System Variable not available in System Variable grid
      *

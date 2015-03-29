@@ -67,11 +67,12 @@ class Cart extends \Magento\Checkout\Block\Cart\AbstractCart
      * prepare cart items URLs
      *
      * @return void
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function prepareItemUrls()
     {
         $products = [];
-        /* @var $item \Magento\Sales\Model\Quote\Item */
+        /* @var $item \Magento\Quote\Model\Quote\Item */
         foreach ($this->getItems() as $item) {
             $product = $item->getProduct();
             $option = $item->getOptionByCode('product_type');
@@ -152,7 +153,7 @@ class Cart extends \Magento\Checkout\Block\Cart\AbstractCart
     public function getContinueShoppingUrl()
     {
         $url = $this->getData('continue_shopping_url');
-        if (is_null($url)) {
+        if ($url === null) {
             $url = $this->_checkoutSession->getContinueShoppingUrl(true);
             if (!$url) {
                 $url = $this->_urlBuilder->getUrl();
@@ -164,6 +165,7 @@ class Cart extends \Magento\Checkout\Block\Cart\AbstractCart
 
     /**
      * @return bool
+     * @SuppressWarnings(PHPMD.BooleanGetMethodName)
      */
     public function getIsVirtual()
     {
@@ -190,13 +192,13 @@ class Cart extends \Magento\Checkout\Block\Cart\AbstractCart
      *
      * @param string $name Block name in layout
      * @return string
-     * @throws \Magento\Framework\Model\Exception
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function getMethodHtml($name)
     {
         $block = $this->getLayout()->getBlock($name);
         if (!$block) {
-            throw new \Magento\Framework\Model\Exception(__('Invalid method: %1', $name));
+            throw new \Magento\Framework\Exception\LocalizedException(__('Invalid method: %1', $name));
         }
         return $block->toHtml();
     }

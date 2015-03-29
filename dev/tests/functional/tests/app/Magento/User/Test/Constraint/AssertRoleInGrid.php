@@ -6,31 +6,27 @@
 
 namespace Magento\User\Test\Constraint;
 
-use Magento\User\Test\Fixture\AdminUserRole;
+use Magento\User\Test\Fixture\Role;
 use Magento\User\Test\Page\Adminhtml\UserRoleIndex;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertRoleInGrid
  */
 class AssertRoleInGrid extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Asserts that saved role is present in Role Grid.
      *
      * @param UserRoleIndex $rolePage
-     * @param AdminUserRole $role
-     * @param AdminUserRole $roleInit
+     * @param Role $role
+     * @param Role $roleInit
      * @return void
      */
     public function processAssert(
         UserRoleIndex $rolePage,
-        AdminUserRole $role,
-        AdminUserRole $roleInit = null
+        Role $role,
+        Role $roleInit = null
     ) {
         $filter = ['rolename' => $role->hasData('rolename') ? $role->getRoleName() : $roleInit->getRoleName()];
         $rolePage->open();

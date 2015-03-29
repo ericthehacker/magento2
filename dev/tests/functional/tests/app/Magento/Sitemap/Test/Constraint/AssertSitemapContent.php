@@ -6,12 +6,12 @@
 
 namespace Magento\Sitemap\Test\Constraint;
 
-use Magento\Catalog\Test\Fixture\CatalogCategory;
+use Magento\Catalog\Test\Fixture\Category;
 use Magento\Catalog\Test\Fixture\CatalogProductSimple;
 use Magento\Cms\Test\Fixture\CmsPage;
 use Magento\Sitemap\Test\Fixture\Sitemap;
 use Magento\Sitemap\Test\Page\Adminhtml\SitemapIndex;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertSitemapContent
@@ -19,10 +19,6 @@ use Mtf\Constraint\AbstractConstraint;
  */
 class AssertSitemapContent extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Assert that sitemap.xml file contains correct content according to dataset:
      *  - product url
@@ -30,7 +26,7 @@ class AssertSitemapContent extends AbstractConstraint
      *  - CMS page url
      *
      * @param CatalogProductSimple $product
-     * @param CatalogCategory $catalog
+     * @param Category $catalog
      * @param CmsPage $cmsPage
      * @param Sitemap $sitemap
      * @param SitemapIndex $sitemapIndex
@@ -38,7 +34,7 @@ class AssertSitemapContent extends AbstractConstraint
      */
     public function processAssert(
         CatalogProductSimple $product,
-        CatalogCategory $catalog,
+        Category $catalog,
         CmsPage $cmsPage,
         Sitemap $sitemap,
         SitemapIndex $sitemapIndex

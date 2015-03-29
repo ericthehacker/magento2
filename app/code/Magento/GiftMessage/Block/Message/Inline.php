@@ -211,7 +211,7 @@ class Inline extends \Magento\Framework\View\Element\Template
      */
     public function getMessage($entity = null)
     {
-        if (is_null($this->_giftMessage)) {
+        if ($this->_giftMessage === null) {
             $this->_initMessage();
         }
 
@@ -275,6 +275,7 @@ class Inline extends \Magento\Framework\View\Element\Template
      * Check if items has messages
      *
      * @return bool
+     * @SuppressWarnings(PHPMD.BooleanGetMethodName)
      */
     public function getItemsHasMesssages()
     {
@@ -290,6 +291,7 @@ class Inline extends \Magento\Framework\View\Element\Template
      * Check if entity has message
      *
      * @return bool
+     * @SuppressWarnings(PHPMD.BooleanGetMethodName)
      */
     public function getEntityHasMessage()
     {

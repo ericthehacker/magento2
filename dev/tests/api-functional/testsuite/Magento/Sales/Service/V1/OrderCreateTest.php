@@ -7,11 +7,10 @@ namespace Magento\Sales\Service\V1;
 
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\TestFramework\TestCase\WebapiAbstract;
-use Magento\Webapi\Model\Rest\Config;
 
 class OrderCreateTest extends WebapiAbstract
 {
-    const RESOURCE_PATH = '/V1/order';
+    const RESOURCE_PATH = '/V1/orders';
 
     const SERVICE_READ_NAME = 'salesOrderRepositoryV1';
 
@@ -33,11 +32,11 @@ class OrderCreateTest extends WebapiAbstract
     {
         /** @var \Magento\Sales\Model\Order $orderBuilder */
         $orderFactory = $this->objectManager->get('Magento\Sales\Model\OrderFactory');
-        /** @var \Magento\Sales\Service\V1\Data\OrderItemBuilder $orderItemBuilder */
+        /** @var \Magento\Sales\Api\Data\OrderItemFactory $orderItemFactory */
         $orderItemFactory = $this->objectManager->get('Magento\Sales\Model\Order\ItemFactory');
-        /** @var \Magento\Sales\Service\V1\Data\OrderPaymentBuilder $orderPaymentBuilder */
+        /** @var \Magento\Sales\Api\Data\OrderPaymentFactory $orderPaymentFactory */
         $orderPaymentFactory = $this->objectManager->get('Magento\Sales\Model\Order\PaymentFactory');
-        /** @var \Magento\Sales\Service\V1\Data\OrderAddressBuilder $orderAddressBuilder */
+        /** @var \Magento\Sales\Api\Data\OrderAddressFactory $orderAddressFactory */
         $orderAddressFactory = $this->objectManager->get('Magento\Sales\Model\Order\AddressFactory');
 
         $order = $orderFactory->create(
@@ -55,6 +54,12 @@ class OrderCreateTest extends WebapiAbstract
 
         $email = uniqid() . 'email@example.com';
         $orderItem->setSku('sku#1');
+        if (TESTS_WEB_API_ADAPTER == self::ADAPTER_SOAP) {
+            $orderItem->setData('parent_item', $orderItem->getData() + ['parent_item' => null]);
+            $orderItem->setAdditionalData('test');
+        } else {
+            $orderItem->setData('parent_item', ['weight' => 1]);
+        }
         $orderPayment->setCcLast4('4444');
         $orderPayment->setMethod('checkmo');
         $orderPayment->setAccountStatus('ok');
@@ -109,7 +114,7 @@ class OrderCreateTest extends WebapiAbstract
         $serviceInfo = [
             'rest' => [
                 'resourcePath' => self::RESOURCE_PATH,
-                'httpMethod' => Config::HTTP_METHOD_POST,
+                'httpMethod' => \Magento\Framework\Webapi\Rest\Request::HTTP_METHOD_POST,
             ],
             'soap' => [
                 'service' => self::SERVICE_READ_NAME,

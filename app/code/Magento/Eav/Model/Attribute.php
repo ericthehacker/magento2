@@ -4,6 +4,8 @@
  * See COPYING.txt for license details.
  */
 
+// @codingStandardsIgnoreFile
+
 /**
  * EAV attribute resource model (Using Forms)
  *
@@ -176,5 +178,14 @@ abstract class Attribute extends \Magento\Eav\Model\Entity\Attribute
     public function getMultilineCount()
     {
         return $this->_getScopeValue('multiline_count');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function afterDelete()
+    {
+        $this->_eavConfig->clear();
+        return parent::afterDelete();
     }
 }

@@ -98,12 +98,12 @@ class Billing extends \Magento\Payment\Block\Form\Container
     /**
      * Retrieve billing address
      *
-     * @return \Magento\Sales\Model\Quote\Address
+     * @return \Magento\Quote\Model\Quote\Address
      */
     public function getAddress()
     {
         $address = $this->getData('address');
-        if (is_null($address)) {
+        if ($address === null) {
             $address = $this->_multishipping->getQuote()->getBillingAddress();
             $this->setData('address', $address);
         }
@@ -113,7 +113,7 @@ class Billing extends \Magento\Payment\Block\Form\Container
     /**
      * Retrieve quote model object
      *
-     * @return \Magento\Sales\Model\Quote
+     * @return \Magento\Quote\Model\Quote
      */
     public function getQuote()
     {

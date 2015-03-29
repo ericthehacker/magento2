@@ -9,7 +9,7 @@ namespace Magento\Backend\Test\Constraint;
 use Magento\Backend\Test\Fixture\GlobalSearch;
 use Magento\Backend\Test\Page\Adminhtml\Dashboard;
 use Magento\Sales\Test\Fixture\OrderInjectable;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertGlobalSearchProductName
@@ -17,10 +17,6 @@ use Mtf\Constraint\AbstractConstraint;
  */
 class AssertGlobalSearchProductName extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Assert that product name is present in search results
      *

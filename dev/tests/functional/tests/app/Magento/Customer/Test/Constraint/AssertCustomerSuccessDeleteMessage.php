@@ -7,17 +7,13 @@
 namespace Magento\Customer\Test\Constraint;
 
 use Magento\Customer\Test\Page\Adminhtml\CustomerIndex;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertCustomerSuccessDeleteMessage
  */
 class AssertCustomerSuccessDeleteMessage extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     const DELETE_MESSAGE = 'You deleted the customer.';
 
     /**

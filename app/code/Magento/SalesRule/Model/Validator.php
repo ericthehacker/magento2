@@ -3,10 +3,13 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
+
+// @codingStandardsIgnoreFile
+
 namespace Magento\SalesRule\Model;
 
-use Magento\Sales\Model\Quote\Address;
-use Magento\Sales\Model\Quote\Item\AbstractItem;
+use Magento\Quote\Model\Quote\Address;
+use Magento\Quote\Model\Quote\Item\AbstractItem;
 
 /**
  * SalesRule Validator Model
@@ -19,6 +22,7 @@ use Magento\Sales\Model\Quote\Item\AbstractItem;
  * @method Validator setWebsiteId($id)
  * @method mixed getCustomerGroupId()
  * @method Validator setCustomerGroupId($id)
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Validator extends \Magento\Framework\Model\AbstractModel
 {
@@ -101,6 +105,7 @@ class Validator extends \Magento\Framework\Model\AbstractModel
      * @param \Magento\Framework\Model\Resource\AbstractResource $resource
      * @param \Magento\Framework\Data\Collection\Db $resourceCollection
      * @param array $data
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         \Magento\Framework\Model\Context $context,
@@ -246,6 +251,7 @@ class Validator extends \Magento\Framework\Model\AbstractModel
      *
      * @param Address $address
      * @return $this
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function processShippingAmount(Address $address)
     {
@@ -482,12 +488,12 @@ class Validator extends \Magento\Framework\Model\AbstractModel
     /**
      * @param int $key
      * @return array
-     * @throws \Magento\Framework\Model\Exception
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function getRuleItemTotalsInfo($key)
     {
         if (empty($this->_rulesItemTotals[$key])) {
-            throw new \Magento\Framework\Model\Exception(__('Item totals are not set for the rule.'));
+            throw new \Magento\Framework\Exception\LocalizedException(__('Item totals are not set for the rule.'));
         }
 
         return $this->_rulesItemTotals[$key];

@@ -18,6 +18,9 @@ class SourceArgumentsReader
      * @param \ReflectionClass $class
      * @param bool $inherited
      * @return array List of constructor argument types.
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
+     * @SuppressWarnings(PHPMD.UnusedLocalVariable)
      */
     public function getConstructorArgumentTypes(\ReflectionClass $class, $inherited = false)
     {
@@ -61,7 +64,8 @@ class SourceArgumentsReader
         }
         $arguments = explode(',', $arguments);
         foreach ($arguments as $key => &$argument) {
-            $argument = $this->removeDefaultValue($argument);
+            $argument = $this->removeToken($argument, '=');
+            $argument = $this->removeToken($argument, '&');
             $argument = $this->resolveNamespaces($argument, $availableNamespaces);
         }
         unset($argument);
@@ -99,11 +103,12 @@ class SourceArgumentsReader
      * Remove default value from argument.
      *
      * @param string $argument
+     * @param string $token
      * @return string
      */
-    protected function removeDefaultValue($argument)
+    protected function removeToken($argument, $token)
     {
-        $position = strpos($argument, '=');
+        $position = strpos($argument, $token);
         if (is_numeric($position)) {
             return substr($argument, 0, $position);
         }
@@ -115,6 +120,7 @@ class SourceArgumentsReader
      *
      * @param array $file
      * @return array
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     protected function getImportedNamespaces(array $file)
     {

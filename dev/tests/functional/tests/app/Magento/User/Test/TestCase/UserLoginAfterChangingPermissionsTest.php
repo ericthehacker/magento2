@@ -7,14 +7,14 @@
 namespace Magento\User\Test\TestCase;
 
 use Magento\Backend\Test\Page\Adminhtml\Dashboard;
-use Magento\User\Test\Fixture\AdminUserRole;
+use Magento\User\Test\Fixture\Role;
 use Magento\User\Test\Fixture\User;
 use Magento\User\Test\Page\Adminhtml\UserEdit;
 use Magento\User\Test\Page\Adminhtml\UserIndex;
 use Magento\User\Test\Page\Adminhtml\UserRoleEditRole;
 use Magento\User\Test\Page\Adminhtml\UserRoleIndex;
-use Mtf\Fixture\FixtureFactory;
-use Mtf\TestCase\Injectable;
+use Magento\Mtf\Fixture\FixtureFactory;
+use Magento\Mtf\TestCase\Injectable;
 
 /**
  * Test that user can login from the first attempt just after his permissions were changed.
@@ -35,11 +35,16 @@ use Mtf\TestCase\Injectable;
  * 13. Log in using new admin user (before the bug was fixed, it was impossible to log in from the first attempt)
  * 14. Perform assertions
  *
- * @group ACL_(MX)
+ * @group ACL_(PS)
  * @ZephyrId MAGETWO-28828
  */
 class UserLoginAfterChangingPermissionsTest extends Injectable
 {
+    /* tags */
+    const MVP = 'no';
+    const DOMAIN = 'PS';
+    /* end tags */
+
     /**
      * User edit page
      *
@@ -117,14 +122,14 @@ class UserLoginAfterChangingPermissionsTest extends Injectable
     }
 
     /**
-     * @param AdminUserRole $role
-     * @param AdminUserRole $updatedRole
+     * @param Role $role
+     * @param Role $updatedRole
      * @param User $user
      * @return void
      */
     public function testLoginAfterChangingPermissions(
-        AdminUserRole $role,
-        AdminUserRole $updatedRole,
+        Role $role,
+        Role $updatedRole,
         User $user
     ) {
         /** Create role and a new user with this role */

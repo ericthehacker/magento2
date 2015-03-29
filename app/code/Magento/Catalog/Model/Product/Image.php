@@ -15,6 +15,11 @@ use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Image as MagentoImage;
 use Magento\Store\Model\Store;
 
+/**
+ * @SuppressWarnings(PHPMD.TooManyFields)
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class Image extends \Magento\Framework\Model\AbstractModel
 {
     /**
@@ -28,9 +33,11 @@ class Image extends \Magento\Framework\Model\AbstractModel
     protected $_height;
 
     /**
+     * Default quality value (for JPEG images only).
+     *
      * @var int
      */
-    protected $_quality = 90;
+    protected $_quality = 80;
 
     /**
      * @var bool
@@ -135,7 +142,7 @@ class Image extends \Magento\Framework\Model\AbstractModel
     /**
      * Core file storage database
      *
-     * @var \Magento\Core\Helper\File\Storage\Database
+     * @var \Magento\MediaStorage\Helper\File\Storage\Database
      */
     protected $_coreFileStorageDatabase = null;
 
@@ -165,7 +172,7 @@ class Image extends \Magento\Framework\Model\AbstractModel
      * @param \Magento\Framework\Registry $registry
      * @param \Magento\Store\Model\StoreManagerInterface $storeManager
      * @param \Magento\Catalog\Model\Product\Media\Config $catalogProductMediaConfig
-     * @param \Magento\Core\Helper\File\Storage\Database $coreFileStorageDatabase
+     * @param \Magento\MediaStorage\Helper\File\Storage\Database $coreFileStorageDatabase
      * @param \Magento\Framework\Filesystem $filesystem
      * @param \Magento\Framework\Image\Factory $imageFactory
      * @param \Magento\Framework\View\Asset\Repository $assetRepo
@@ -174,13 +181,15 @@ class Image extends \Magento\Framework\Model\AbstractModel
      * @param \Magento\Framework\Model\Resource\AbstractResource $resource
      * @param \Magento\Framework\Data\Collection\Db $resourceCollection
      * @param array $data
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
+     * @SuppressWarnings(PHPMD.UnusedLocalVariable)
      */
     public function __construct(
         \Magento\Framework\Model\Context $context,
         \Magento\Framework\Registry $registry,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Catalog\Model\Product\Media\Config $catalogProductMediaConfig,
-        \Magento\Core\Helper\File\Storage\Database $coreFileStorageDatabase,
+        \Magento\MediaStorage\Helper\File\Storage\Database $coreFileStorageDatabase,
         \Magento\Framework\Filesystem $filesystem,
         \Magento\Framework\Image\Factory $imageFactory,
         \Magento\Framework\View\Asset\Repository $assetRepo,
@@ -381,10 +390,11 @@ class Image extends \Magento\Framework\Model\AbstractModel
     /**
      * @param string|null $file
      * @return float|int
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     protected function _getNeedMemoryForFile($file = null)
     {
-        $file = is_null($file) ? $this->getBaseFile() : $file;
+        $file = $file === null ? $this->getBaseFile() : $file;
         if (!$file) {
             return 0;
         }
@@ -436,6 +446,8 @@ class Image extends \Magento\Framework\Model\AbstractModel
      * @param string $file
      * @return $this
      * @throws \Exception
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     public function setBaseFile($file)
     {
@@ -568,7 +580,7 @@ class Image extends \Magento\Framework\Model\AbstractModel
      */
     public function resize()
     {
-        if (is_null($this->getWidth()) && is_null($this->getHeight())) {
+        if ($this->getWidth() === null && $this->getHeight() === null) {
             return $this;
         }
         $this->getImageProcessor()->resize($this->_width, $this->_height);
@@ -611,6 +623,7 @@ class Image extends \Magento\Framework\Model\AbstractModel
      * @param int $height
      * @param int $opacity
      * @return $this
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     public function setWatermark(
         $file,

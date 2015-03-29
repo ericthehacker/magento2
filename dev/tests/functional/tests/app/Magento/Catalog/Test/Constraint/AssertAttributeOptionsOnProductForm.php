@@ -6,17 +6,13 @@
 
 namespace Magento\Catalog\Test\Constraint;
 
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertAttributeOptionsOnProductForm
  */
 class AssertAttributeOptionsOnProductForm extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * @return void
      */

@@ -6,6 +6,8 @@
  */
 namespace Magento\Checkout\Controller\Cart;
 
+use Magento\Framework;
+
 class Configure extends \Magento\Checkout\Controller\Cart
 {
     /**
@@ -18,44 +20,54 @@ class Configure extends \Magento\Checkout\Controller\Cart
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param \Magento\Checkout\Model\Session $checkoutSession
      * @param \Magento\Store\Model\StoreManagerInterface $storeManager
-     * @param \Magento\Core\App\Action\FormKeyValidator $formKeyValidator
+     * @param \Magento\Framework\Data\Form\FormKey\Validator $formKeyValidator
      * @param \Magento\Checkout\Model\Cart $cart
+     * @param \Magento\Framework\Controller\Result\RedirectFactory $resultRedirectFactory
      * @param \Magento\Framework\View\Result\PageFactory $resultPageFactory
      */
     public function __construct(
-        \Magento\Framework\App\Action\Context $context,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
+        Framework\App\Action\Context $context,
+        Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Checkout\Model\Session $checkoutSession,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Magento\Core\App\Action\FormKeyValidator $formKeyValidator,
+        \Magento\Framework\Data\Form\FormKey\Validator $formKeyValidator,
         \Magento\Checkout\Model\Cart $cart,
-        \Magento\Framework\View\Result\PageFactory $resultPageFactory
+        Framework\Controller\Result\RedirectFactory $resultRedirectFactory,
+        Framework\View\Result\PageFactory $resultPageFactory
     ) {
-        parent::__construct($context, $scopeConfig, $checkoutSession, $storeManager, $formKeyValidator, $cart);
+        parent::__construct(
+            $context,
+            $scopeConfig,
+            $checkoutSession,
+            $storeManager,
+            $formKeyValidator,
+            $cart,
+            $resultRedirectFactory
+        );
         $this->resultPageFactory = $resultPageFactory;
     }
 
     /**
      * Action to reconfigure cart item
      *
-     * @return \Magento\Framework\View\Result\Page
+     * @return \Magento\Framework\View\Result\Page|\Magento\Framework\Controller\Result\Redirect
      */
     public function execute()
     {
         // Extract item and product to configure
         $id = (int)$this->getRequest()->getParam('id');
+        $productId = (int)$this->getRequest()->getParam('product_id');
         $quoteItem = null;
         if ($id) {
             $quoteItem = $this->cart->getQuote()->getItemById($id);
         }
 
-        if (!$quoteItem) {
-            $this->messageManager->addError(__("We can't find the quote item."));
-            $this->_redirect('checkout/cart');
-            return;
-        }
-
         try {
+            if (!$quoteItem || $productId != $quoteItem->getProduct()->getId()) {
+                $this->messageManager->addError(__("We can't find the quote item."));
+                return $this->resultRedirectFactory->create()->setPath('checkout/cart');
+            }
+
             $params = new \Magento\Framework\Object();
             $params->setCategoryId(false);
             $params->setConfigureMode(true);
@@ -73,8 +85,7 @@ class Configure extends \Magento\Checkout\Controller\Cart
         } catch (\Exception $e) {
             $this->messageManager->addError(__('We cannot configure the product.'));
             $this->_objectManager->get('Psr\Log\LoggerInterface')->critical($e);
-            $this->_goBack();
-            return;
+            return $this->_goBack();
         }
     }
 }

@@ -7,17 +7,13 @@
 namespace Magento\Install\Test\Constraint;
 
 use Magento\Install\Test\Page\Install;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Check that agreement text present on Terms & Agreement page during install.
  */
 class AssertAgreementTextPresent extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Part of license agreement text.
      */

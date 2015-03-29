@@ -8,17 +8,13 @@ namespace Magento\CatalogRule\Test\Constraint;
 
 use Magento\CatalogRule\Test\Fixture\CatalogRule;
 use Magento\CatalogRule\Test\Page\Adminhtml\CatalogRuleIndex;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertCatalogPriceRuleInGrid
  */
 class AssertCatalogPriceRuleInGrid extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Assert that data in grid on Catalog Price Rules page according to fixture
      *

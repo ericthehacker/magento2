@@ -8,17 +8,13 @@ namespace Magento\CatalogRule\Test\Constraint;
 
 use Magento\CatalogRule\Test\Fixture\CatalogRule;
 use Magento\CatalogRule\Test\Page\Adminhtml\CatalogRuleIndex;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertCatalogPriceRuleNotInGrid
  */
 class AssertCatalogPriceRuleNotInGrid extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Assert that Catalog Price Rule is not presented in grid and cannot be found using ID, Rule name
      *

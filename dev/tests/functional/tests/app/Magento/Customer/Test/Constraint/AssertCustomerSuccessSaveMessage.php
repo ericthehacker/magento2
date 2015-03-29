@@ -7,7 +7,7 @@
 namespace Magento\Customer\Test\Constraint;
 
 use Magento\Customer\Test\Page\Adminhtml\CustomerIndex;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertCustomerSuccessSaveMessage
@@ -15,10 +15,6 @@ use Mtf\Constraint\AbstractConstraint;
  */
 class AssertCustomerSuccessSaveMessage extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     const SUCCESS_MESSAGE = 'You saved the customer.';
 
     /**

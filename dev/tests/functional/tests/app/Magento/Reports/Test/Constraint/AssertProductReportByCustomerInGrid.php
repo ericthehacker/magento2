@@ -7,12 +7,12 @@
 namespace Magento\Reports\Test\Constraint;
 
 use Magento\Catalog\Test\Fixture\CatalogProductSimple;
-use Magento\Customer\Test\Fixture\CustomerInjectable;
+use Magento\Customer\Test\Fixture\Customer;
 use Magento\Reports\Test\Page\Adminhtml\CustomerReportReview;
 use Magento\Review\Test\Constraint\AssertProductReviewInGrid;
-use Magento\Review\Test\Fixture\ReviewInjectable;
+use Magento\Review\Test\Fixture\Review;
 use Magento\Review\Test\Page\Adminhtml\ReviewIndex;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertProductReportByCustomerInGrid
@@ -20,28 +20,24 @@ use Mtf\Constraint\AbstractConstraint;
  */
 class AssertProductReportByCustomerInGrid extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Assert that Customer review is displayed in grid
      *
      * @param ReviewIndex $reviewIndex
-     * @param ReviewInjectable $review
+     * @param Review $review
      * @param AssertProductReviewInGrid $assertProductReviewInGrid
      * @param CustomerReportReview $customerReportReview
-     * @param CustomerInjectable $customer
+     * @param Customer $customer
      * @param CatalogProductSimple $product
      * @param string $gridStatus
      * @return void
      */
     public function processAssert(
         ReviewIndex $reviewIndex,
-        ReviewInjectable $review,
+        Review $review,
         AssertProductReviewInGrid $assertProductReviewInGrid,
         CustomerReportReview $customerReportReview,
-        CustomerInjectable $customer,
+        Customer $customer,
         CatalogProductSimple $product = null,
         $gridStatus = ''
     ) {

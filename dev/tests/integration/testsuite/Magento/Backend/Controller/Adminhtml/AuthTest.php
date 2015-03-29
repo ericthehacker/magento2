@@ -96,7 +96,7 @@ class AuthTest extends \Magento\TestFramework\TestCase\AbstractController
      */
     public function testNotLoggedLoginActionWithRedirect()
     {
-        $this->getRequest()->setPost(
+        $this->getRequest()->setPostValue(
             [
                 'login' => [
                     'username' => \Magento\TestFramework\Bootstrap::ADMIN_NAME,
@@ -169,7 +169,7 @@ class AuthTest extends \Magento\TestFramework\TestCase\AbstractController
         $homeUrl = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
             'Magento\Backend\Helper\Data'
         )->getHomePageUrl();
-        $expected = '<script type="text/javascript">parent.window.location =';
+        $expected = '<script>parent.window.location =';
         $this->assertStringStartsWith($expected, $this->getResponse()->getBody());
         $this->assertContains($homeUrl, $this->getResponse()->getBody());
         $this->_logout();
@@ -184,7 +184,7 @@ class AuthTest extends \Magento\TestFramework\TestCase\AbstractController
      */
     public function testIncorrectLogin($params)
     {
-        $this->getRequest()->setPost($params);
+        $this->getRequest()->setPostValue($params);
         $this->dispatch('backend/admin/auth/login');
         $this->assertContains('Please correct the user name or password.', $this->getResponse()->getBody());
     }

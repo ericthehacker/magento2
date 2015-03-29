@@ -3,6 +3,9 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
+
+// @codingStandardsIgnoreFile
+
 namespace Magento\Tax\Model\Sales\Total\Quote;
 
 use Magento\Tax\Model\Config;
@@ -209,8 +212,8 @@ class SetupUtil
      */
     protected function setConfig($configData)
     {
-        /** @var \Magento\Core\Model\Resource\Config $config */
-        $config = $this->objectManager->get('Magento\Core\Model\Resource\Config');
+        /** @var \Magento\Config\Model\Resource\Config $config */
+        $config = $this->objectManager->get('Magento\Config\Model\Resource\Config');
         foreach ($configData as $path => $value) {
             if ($path == Config::CONFIG_XML_PATH_SHIPPING_TAX_CLASS) {
                 $value = $this->productTaxClasses[$value];
@@ -492,10 +495,10 @@ class SetupUtil
     {
         /** @var \Magento\Customer\Api\GroupRepositoryInterface $groupRepository */
         $groupRepository = $this->objectManager->create('Magento\Customer\Api\GroupRepositoryInterface');
-        $customerGroupBuilder = $this->objectManager->create('Magento\Customer\Api\Data\GroupDataBuilder');
-        $customerGroupBuilder->setCode('custom_group')
+        $customerGroupFactory = $this->objectManager->create('Magento\Customer\Api\Data\GroupInterfaceFactory');
+        $customerGroup = $customerGroupFactory->create()
+            ->setCode('custom_group')
             ->setTaxClassId($customerTaxClassId);
-        $customerGroup = $customerGroupBuilder->create();
         $customerGroupId = $groupRepository->save($customerGroup)->getId();
         return $customerGroupId;
     }
@@ -581,7 +584,7 @@ class SetupUtil
      *
      * @param array $quoteData
      * @param \Magento\Customer\Api\Data\CustomerInterface $customer
-     * @return \Magento\Sales\Model\Quote
+     * @return \Magento\Quote\Model\Quote
      */
     protected function createQuote($quoteData, $customer)
     {
@@ -593,8 +596,8 @@ class SetupUtil
         /** @var  \Magento\Customer\Model\Address $shippingAddress */
         $shippingAddress = $this->createCustomerAddress($shippingAddressOverride, $customer->getId());
 
-        /** @var \Magento\Sales\Model\Quote\Address $quoteShippingAddress */
-        $quoteShippingAddress = $this->objectManager->create('Magento\Sales\Model\Quote\Address');
+        /** @var \Magento\Quote\Model\Quote\Address $quoteShippingAddress */
+        $quoteShippingAddress = $this->objectManager->create('Magento\Quote\Model\Quote\Address');
         $quoteShippingAddress->importCustomerAddressData($addressService->getById($shippingAddress->getId()));
 
         /** @var array $billingAddressOverride */
@@ -602,12 +605,12 @@ class SetupUtil
         /** @var  \Magento\Customer\Model\Address $billingAddress */
         $billingAddress = $this->createCustomerAddress($billingAddressOverride, $customer->getId());
 
-        /** @var \Magento\Sales\Model\Quote\Address $quoteBillingAddress */
-        $quoteBillingAddress = $this->objectManager->create('Magento\Sales\Model\Quote\Address');
+        /** @var \Magento\Quote\Model\Quote\Address $quoteBillingAddress */
+        $quoteBillingAddress = $this->objectManager->create('Magento\Quote\Model\Quote\Address');
         $quoteBillingAddress->importCustomerAddressData($addressService->getById($billingAddress->getId()));
 
-        /** @var \Magento\Sales\Model\Quote $quote */
-        $quote = $this->objectManager->create('Magento\Sales\Model\Quote');
+        /** @var \Magento\Quote\Model\Quote $quote */
+        $quote = $this->objectManager->create('Magento\Quote\Model\Quote');
         $quote->setStoreId(1)
             ->setIsActive(true)
             ->setIsMultiShipping(false)
@@ -621,7 +624,7 @@ class SetupUtil
     /**
      * Add products to quote
      *
-     * @param \Magento\Sales\Model\Quote $quote
+     * @param \Magento\Quote\Model\Quote $quote
      * @param array $itemsData
      * @return $this
      */
@@ -644,7 +647,7 @@ class SetupUtil
      * Create a quote based on given data
      *
      * @param array $quoteData
-     * @return \Magento\Sales\Model\Quote
+     * @return \Magento\Quote\Model\Quote
      */
     public function setupQuote($quoteData)
     {

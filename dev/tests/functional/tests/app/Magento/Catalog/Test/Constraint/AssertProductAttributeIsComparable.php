@@ -9,32 +9,28 @@ namespace Magento\Catalog\Test\Constraint;
 use Magento\Catalog\Test\Fixture\CatalogProductAttribute;
 use Magento\Catalog\Test\Page\Product\CatalogProductCompare;
 use Magento\Catalog\Test\Page\Product\CatalogProductView;
-use Mtf\Client\Driver\Selenium\Browser;
-use Mtf\Constraint\AbstractConstraint;
-use Mtf\Fixture\InjectableFixture;
+use Magento\Mtf\Client\BrowserInterface;
+use Magento\Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Fixture\InjectableFixture;
 
 /**
  * Check whether there is an opportunity to compare products using given attribute.
  */
 class AssertProductAttributeIsComparable extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Check whether there is an opportunity to compare products using given attribute.
      *
      * @param InjectableFixture $product
      * @param CatalogProductAttribute $attribute
-     * @param Browser $browser
+     * @param BrowserInterface $browser
      * @param CatalogProductView $catalogProductView
      * @param CatalogProductCompare $catalogProductCompare
      */
     public function processAssert(
         InjectableFixture $product,
         CatalogProductAttribute $attribute,
-        Browser $browser,
+        BrowserInterface $browser,
         CatalogProductView $catalogProductView,
         CatalogProductCompare $catalogProductCompare
     ) {

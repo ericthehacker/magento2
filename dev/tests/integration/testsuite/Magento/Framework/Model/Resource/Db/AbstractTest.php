@@ -3,6 +3,9 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
+
+// @codingStandardsIgnoreFile
+
 namespace Magento\Framework\Model\Resource\Db;
 
 class AbstractTest extends \PHPUnit_Framework_TestCase
@@ -15,8 +18,12 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $resource = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get('Magento\Framework\App\Resource');
-        $this->_model = $this->getMockForAbstractClass('Magento\Framework\Model\Resource\Db\AbstractDb',
+        $context = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
+            '\Magento\Framework\Model\Resource\Db\Context',
             ['resource' => $resource]
+        );
+        $this->_model = $this->getMockForAbstractClass('Magento\Framework\Model\Resource\Db\AbstractDb',
+            ['context' => $context]
         );
     }
 
@@ -51,9 +58,13 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
             'Magento\Framework\App\Resource',
             ['tablePrefix' => 'prefix_']
         );
+        $context = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create(
+            '\Magento\Framework\Model\Resource\Db\Context',
+            ['resource' => $resource]
+        );
 
         $model = $this->getMockForAbstractClass('Magento\Framework\Model\Resource\Db\AbstractDb',
-            ['resource' => $resource]
+            ['context' => $context]
         );
 
         $tableName = $model->getTable([$tableNameOrig, $tableSuffix]);

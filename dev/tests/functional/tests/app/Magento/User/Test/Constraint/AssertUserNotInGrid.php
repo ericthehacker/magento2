@@ -8,17 +8,13 @@ namespace Magento\User\Test\Constraint;
 
 use Magento\User\Test\Fixture\User;
 use Magento\User\Test\Page\Adminhtml\UserIndex;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertUserNotInGrid
  */
 class AssertUserNotInGrid extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Asserts that User is not present in User Grid.
      *

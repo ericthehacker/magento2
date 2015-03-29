@@ -8,12 +8,12 @@ namespace Magento\User\Test\TestCase;
 
 use Magento\Backend\Test\Page\AdminAuthLogin;
 use Magento\Backend\Test\Page\Adminhtml\Dashboard;
-use Magento\User\Test\Fixture\AdminUserRole;
+use Magento\User\Test\Fixture\Role;
 use Magento\User\Test\Fixture\User;
 use Magento\User\Test\Page\Adminhtml\UserRoleEditRole;
 use Magento\User\Test\Page\Adminhtml\UserRoleIndex;
-use Mtf\Fixture\FixtureFactory;
-use Mtf\TestCase\Injectable;
+use Magento\Mtf\Fixture\FixtureFactory;
+use Magento\Mtf\TestCase\Injectable;
 
 /**
  * Test Creation for DeleteUserRoleEntity
@@ -28,11 +28,16 @@ use Mtf\TestCase\Injectable;
  *  4. Click "Delete Role" button
  *  5. Perform all assertions
  *
- * @group ACL_(MX)
+ * @group ACL_(PS)
  * @ZephyrId MAGETWO-23926
  */
 class DeleteUserRoleEntityTest extends Injectable
 {
+    /* tags */
+    const MVP = 'no';
+    const DOMAIN = 'PS';
+    /* end tags */
+
     /**
      * @var UserRoleIndex
      */
@@ -95,13 +100,13 @@ class DeleteUserRoleEntityTest extends Injectable
     /**
      * Runs Delete User Role Entity test.
      *
-     * @param AdminUserRole $role
+     * @param Role $role
      * @param User $adminUser
      * @param string $isDefaultUser
      * @return void
      */
     public function testDeleteAdminUserRole(
-        AdminUserRole $role,
+        Role $role,
         User $adminUser,
         $isDefaultUser
     ) {

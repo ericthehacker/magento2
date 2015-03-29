@@ -7,7 +7,6 @@
 namespace Magento\GroupedProduct\Test\Block\Adminhtml\Product\Grouped\AssociatedProducts\Search;
 
 use Magento\Backend\Test\Block\Widget\Grid as GridInterface;
-use Mtf\Client\Element;
 
 /**
  * Class Grid
@@ -20,7 +19,7 @@ class Grid extends GridInterface
      *
      * @var string
      */
-    protected $addProducts = 'button.add';
+    protected $addProducts = 'button.action-add';
 
     /**
      * Filters array mapping

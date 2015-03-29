@@ -6,10 +6,10 @@
 
 namespace Magento\Customer\Test\Handler\Curl;
 
-use Mtf\Fixture\FixtureInterface;
-use Mtf\Handler\Curl;
-use Mtf\Util\Protocol\CurlInterface;
-use Mtf\Util\Protocol\CurlTransport;
+use Magento\Mtf\Fixture\FixtureInterface;
+use Magento\Mtf\Handler\Curl;
+use Magento\Mtf\Util\Protocol\CurlInterface;
+use Magento\Mtf\Util\Protocol\CurlTransport;
 
 /**
  * Curl handler for saving customer address in admin
@@ -92,7 +92,7 @@ class SaveCustomerWithAddress extends Curl
     public function persist(FixtureInterface $fixture = null)
     {
         /** @var \Magento\Customer\Test\Fixture\Customer $fixture */
-        $address = $fixture->getDefaultBillingAddress();
+        $address = $fixture->getDefaultBilling();
         $fields = $this->prepareData($address->getData('fields'));
         $url = $_ENV['app_frontend_url'] . $this->saveUrl;
         $curl = $this->saveCustomer($fixture);

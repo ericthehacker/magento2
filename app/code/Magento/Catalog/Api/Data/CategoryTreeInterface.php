@@ -7,12 +7,18 @@
 
 namespace Magento\Catalog\Api\Data;
 
-interface CategoryTreeInterface extends \Magento\Framework\Api\ExtensibleDataInterface
+interface CategoryTreeInterface
 {
     /**
      * @return int|null
      */
     public function getId();
+
+    /**
+     * @param int $id
+     * @return $this
+     */
+    public function setId($id);
 
     /**
      * Get parent category ID
@@ -22,6 +28,14 @@ interface CategoryTreeInterface extends \Magento\Framework\Api\ExtensibleDataInt
     public function getParentId();
 
     /**
+     * Set parent category ID
+     *
+     * @param int $parentId
+     * @return $this
+     */
+    public function setParentId($parentId);
+
+    /**
      * Get category name
      *
      * @return string
@@ -29,11 +43,28 @@ interface CategoryTreeInterface extends \Magento\Framework\Api\ExtensibleDataInt
     public function getName();
 
     /**
+     * Set category name
+     *
+     * @param string $name
+     * @return $this
+     */
+    public function setName($name);
+
+    /**
      * Check whether category is active
      *
      * @return bool
+     * @SuppressWarnings(PHPMD.BooleanGetMethodName)
      */
     public function getIsActive();
+
+    /**
+     * Set whether category is active
+     *
+     * @param bool $isActive
+     * @return $this
+     */
+    public function setIsActive($isActive);
 
     /**
      * Get category position
@@ -43,11 +74,28 @@ interface CategoryTreeInterface extends \Magento\Framework\Api\ExtensibleDataInt
     public function getPosition();
 
     /**
+     * Set category position
+     *
+     * @param int $position
+     * @return $this
+     */
+    public function setPosition($position);
+
+    /**
      * Get category level
      *
      * @return int
      */
     public function getLevel();
+
+    /**
+     * Set category level
+     *
+     * @param int $level
+     * @return $this
+     */
+    public function setLevel($level);
+
     /**
      * Get product count
      *
@@ -56,9 +104,21 @@ interface CategoryTreeInterface extends \Magento\Framework\Api\ExtensibleDataInt
     public function getProductCount();
 
     /**
-     * Get category level
+     * Set product count
      *
+     * @param int $productCount
+     * @return $this
+     */
+    public function setProductCount($productCount);
+
+    /**
      * @return \Magento\Catalog\Api\Data\CategoryTreeInterface[]
      */
     public function getChildrenData();
+
+    /**
+     * @param \Magento\Catalog\Api\Data\CategoryTreeInterface[] $childrenData
+     * @return $this
+     */
+    public function setChildrenData(array $childrenData = null);
 }

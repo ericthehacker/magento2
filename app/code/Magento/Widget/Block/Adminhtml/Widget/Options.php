@@ -109,14 +109,14 @@ class Options extends \Magento\Backend\Block\Widget\Form\Generic
     /**
      * Add fields to main fieldset based on specified widget type
      *
-     * @throws \Magento\Framework\Model\Exception
+     * @throws \Magento\Framework\Exception\LocalizedException
      * @return $this
      */
     public function addFields()
     {
         // get configuration node and translation helper
         if (!$this->getWidgetType()) {
-            throw new \Magento\Framework\Model\Exception(__('Please specify a Widget Type.'));
+            throw new \Magento\Framework\Exception\LocalizedException(__('Please specify a Widget Type.'));
         }
         $config = $this->_widget->getConfigAsObject($this->getWidgetType());
         if (!$config->getParameters()) {
@@ -134,6 +134,8 @@ class Options extends \Magento\Backend\Block\Widget\Form\Generic
      *
      * @param \Magento\Framework\Object $parameter
      * @return \Magento\Framework\Data\Form\Element\AbstractElement
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     protected function _addField($parameter)
     {

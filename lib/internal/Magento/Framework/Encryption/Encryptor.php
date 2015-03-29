@@ -113,7 +113,7 @@ class Encryptor implements EncryptorInterface
 
         $version = (int)$version;
         if (!in_array($version, $types, true)) {
-            throw new \Exception(__('Not supported cipher version'));
+            throw new \Exception((string)new \Magento\Framework\Phrase('Not supported cipher version'));
         }
         return $version;
     }
@@ -318,7 +318,7 @@ class Encryptor implements EncryptorInterface
     public function validateKey($key)
     {
         if (preg_match('/\s/s', $key)) {
-            throw new \Exception(__('The encryption key format is invalid.'));
+            throw new \Exception((string)new \Magento\Framework\Phrase('The encryption key format is invalid.'));
         }
         return $this->getCrypt($key);
     }

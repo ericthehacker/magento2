@@ -7,17 +7,13 @@
 namespace Magento\Review\Test\Constraint;
 
 use Magento\Review\Test\Page\Adminhtml\ReviewIndex;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertReviewSuccessSaveMessage
  */
 class AssertReviewSuccessSaveMessage extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'high';
-    /* end tags */
-
     const SUCCESS_MESSAGE = 'You saved the review.';
 
     /**

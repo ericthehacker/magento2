@@ -7,8 +7,8 @@
 namespace Magento\Catalog\Test\Constraint;
 
 use Magento\Catalog\Test\Page\Product\CatalogProductCompare;
-use Mtf\Constraint\AbstractConstraint;
-use Mtf\Fixture\FixtureInterface;
+use Magento\Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Fixture\FixtureInterface;
 
 /**
  * Class AssertProductCompareSuccessRemoveMessage
@@ -16,10 +16,6 @@ use Mtf\Fixture\FixtureInterface;
  */
 class AssertProductCompareSuccessRemoveMessage extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     const SUCCESS_MESSAGE = 'You removed product %s from the comparison list.';
 
     /**

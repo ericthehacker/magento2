@@ -3,6 +3,9 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
+
+// @codingStandardsIgnoreFile
+
 namespace Magento\DesignEditor\Model\Editor\Tools\QuickStyles\Form\Renderer;
 
 use Magento\Framework\Data\Form\Element\Renderer\RendererInterface;
@@ -63,13 +66,13 @@ class Factory
      * @param string $elementClassName
      * @param string $rendererName
      * @return RendererInterface
-     * @throws \Magento\Framework\Model\Exception
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function create($elementClassName, $rendererName)
     {
         if (!isset($this->_rendererByElement[$elementClassName])) {
-            throw new \Magento\Framework\Model\Exception(
-                sprintf('No renderer registered for elements of class "%s"', $elementClassName)
+            throw new \Magento\Framework\Exception\LocalizedException(
+                __('No renderer registered for elements of class "%1"', $elementClassName)
             );
         }
         $rendererClass = $this->_rendererByElement[$elementClassName];

@@ -11,6 +11,7 @@ use Magento\Framework\App\Rss\DataProviderInterface;
 /**
  * Class Special
  * @package Magento\Catalog\Block\Rss\Product
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Special extends \Magento\Framework\View\Element\AbstractBlock implements DataProviderInterface
 {
@@ -55,6 +56,11 @@ class Special extends \Magento\Framework\View\Element\AbstractBlock implements D
     protected $msrpHelper;
 
     /**
+     * @var \Magento\Framework\Locale\ResolverInterface
+     */
+    private $localeResolver;
+
+    /**
      * @param \Magento\Framework\View\Element\Template\Context $context
      * @param \Magento\Framework\App\Http\Context $httpContext
      * @param \Magento\Catalog\Helper\Image $imageHelper
@@ -63,7 +69,9 @@ class Special extends \Magento\Framework\View\Element\AbstractBlock implements D
      * @param \Magento\Framework\Pricing\PriceCurrencyInterface $priceCurrency
      * @param \Magento\Catalog\Model\Rss\Product\Special $rssModel
      * @param \Magento\Framework\App\Rss\UrlBuilderInterface $rssUrlBuilder
+     * @param \Magento\Framework\Locale\ResolverInterface $localeResolver
      * @param array $data
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         \Magento\Framework\View\Element\Template\Context $context,
@@ -74,6 +82,7 @@ class Special extends \Magento\Framework\View\Element\AbstractBlock implements D
         \Magento\Framework\Pricing\PriceCurrencyInterface $priceCurrency,
         \Magento\Catalog\Model\Rss\Product\Special $rssModel,
         \Magento\Framework\App\Rss\UrlBuilderInterface $rssUrlBuilder,
+        \Magento\Framework\Locale\ResolverInterface $localeResolver,
         array $data = []
     ) {
         $this->outputHelper = $outputHelper;
@@ -85,6 +94,7 @@ class Special extends \Magento\Framework\View\Element\AbstractBlock implements D
         $this->httpContext = $httpContext;
         $this->storeManager = $context->getStoreManager();
         parent::__construct($context, $data);
+        $this->localeResolver = $localeResolver;
     }
 
     /**
@@ -103,7 +113,10 @@ class Special extends \Magento\Framework\View\Element\AbstractBlock implements D
     {
         $newUrl = $this->rssUrlBuilder->getUrl(['type' => 'special_products', 'store_id' => $this->getStoreId()]);
         $title = __('%1 - Special Products', $this->storeManager->getStore()->getFrontendName());
-        $lang = $this->_scopeConfig->getValue('general/locale/code', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        $lang = $this->_scopeConfig->getValue(
+            'general/locale/code',
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+        );
 
         $data = [
             'title' => $title,
@@ -113,7 +126,7 @@ class Special extends \Magento\Framework\View\Element\AbstractBlock implements D
             'language' => $lang,
         ];
 
-        $currentDate = new \Magento\Framework\Stdlib\DateTime\Date();
+        $currentDate = (new \DateTime())->setTime(0, 0, 0);
         foreach ($this->rssModel->getProductsCollection($this->getStoreId(), $this->getCustomerGroupId()) as $item) {
             /** @var $item \Magento\Catalog\Model\Product */
             $item->setAllowedInRss(true);
@@ -132,11 +145,7 @@ class Special extends \Magento\Framework\View\Element\AbstractBlock implements D
             if ($item->getSpecialToDate() && $item->getFinalPrice() <= $item->getSpecialPrice() &&
                 $item->getAllowedPriceInRss()
             ) {
-                $compareDate = $currentDate->compareDate(
-                    $item->getSpecialToDate(),
-                    \Magento\Framework\Stdlib\DateTime::DATE_INTERNAL_FORMAT
-                );
-                if (-1 === $compareDate || 0 === $compareDate) {
+                if ($currentDate->format('Y-m-d') <= $item->getSpecialToDate()) {
                     $item->setUseSpecial(true);
                 }
             }
@@ -168,7 +177,7 @@ class Special extends \Magento\Framework\View\Element\AbstractBlock implements D
                 if ($item->getUseSpecial()) {
                     $special = '<br />' . __('Special Expires On: %1', $this->formatDate(
                         $item->getSpecialToDate(),
-                        \Magento\Framework\Stdlib\DateTime\TimezoneInterface::FORMAT_TYPE_MEDIUM
+                        \IntlDateFormatter::MEDIUM
                     ));
                 }
                 $specialPrice = sprintf(
@@ -229,7 +238,10 @@ class Special extends \Magento\Framework\View\Element\AbstractBlock implements D
      */
     public function isAllowed()
     {
-        return $this->_scopeConfig->isSetFlag('rss/catalog/special', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        return $this->_scopeConfig->isSetFlag(
+            'rss/catalog/special',
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+        );
     }
 
     /**

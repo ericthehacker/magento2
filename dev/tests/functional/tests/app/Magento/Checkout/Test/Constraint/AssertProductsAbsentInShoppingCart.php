@@ -7,17 +7,13 @@
 namespace Magento\Checkout\Test\Constraint;
 
 use Magento\Checkout\Test\Page\CheckoutCart;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Assert that products are absent in shopping cart.
  */
 class AssertProductsAbsentInShoppingCart extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Assert that products are absent in shopping cart.
      *

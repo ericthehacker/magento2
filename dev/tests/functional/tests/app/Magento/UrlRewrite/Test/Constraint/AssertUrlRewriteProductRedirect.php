@@ -8,9 +8,9 @@ namespace Magento\UrlRewrite\Test\Constraint;
 
 use Magento\Catalog\Test\Page\Product\CatalogProductView;
 use Magento\UrlRewrite\Test\Fixture\UrlRewrite;
-use Mtf\Client\Browser;
-use Mtf\Constraint\AbstractConstraint;
-use Mtf\Fixture\InjectableFixture;
+use Magento\Mtf\Client\BrowserInterface;
+use Magento\Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Fixture\InjectableFixture;
 
 /**
  * Class AssertUrlRewriteProductRedirect
@@ -18,23 +18,19 @@ use Mtf\Fixture\InjectableFixture;
  */
 class AssertUrlRewriteProductRedirect extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Check that product available by new URL on the front
      *
      * @param UrlRewrite $urlRewrite
      * @param CatalogProductView $catalogProductView
-     * @param Browser $browser
+     * @param BrowserInterface $browser
      * @param InjectableFixture $product
      * @return void
      */
     public function processAssert(
         UrlRewrite $urlRewrite,
         CatalogProductView $catalogProductView,
-        Browser $browser,
+        BrowserInterface $browser,
         InjectableFixture $product = null
     ) {
         $browser->open($_ENV['app_frontend_url'] . $urlRewrite->getRequestPath());

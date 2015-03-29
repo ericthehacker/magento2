@@ -7,17 +7,13 @@
 namespace Magento\CatalogRule\Test\Constraint;
 
 use Magento\CatalogRule\Test\Page\Adminhtml\CatalogRuleIndex;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertCatalogPriceRuleSuccessSaveMessage
  */
 class AssertCatalogPriceRuleSuccessSaveMessage extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     const SUCCESS_MESSAGE = 'The rule has been saved.';
 
     /**

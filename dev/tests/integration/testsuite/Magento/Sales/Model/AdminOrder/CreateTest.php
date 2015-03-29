@@ -40,14 +40,14 @@ class CreateTest extends \PHPUnit_Framework_TestCase
         /** @var $order \Magento\Sales\Model\Order */
         $order = Bootstrap::getObjectManager()->create('Magento\Sales\Model\Order');
         $order->loadByIncrementId('100000001');
-        $this->assertFalse($order->getShippingAddress());
+        $this->assertNull($order->getShippingAddress());
 
         /** @var $objectManager \Magento\TestFramework\ObjectManager */
         $objectManager = Bootstrap::getObjectManager();
         $objectManager->get('Magento\Framework\Registry')->unregister('rule_data');
         $this->_model->initFromOrder($order);
 
-        $this->assertFalse($order->getShippingAddress());
+        $this->assertNull($order->getShippingAddress());
     }
 
     /**
@@ -190,7 +190,7 @@ class CreateTest extends \PHPUnit_Framework_TestCase
         /** Validate data before creating address object */
         $this->_model->setIsValidate(true)->setBillingAddress($addressData);
         $this->assertInstanceOf(
-            'Magento\Sales\Model\Quote\Address',
+            'Magento\Quote\Model\Quote\Address',
             $this->_model->getBillingAddress(),
             'Billing address object was not created.'
         );
@@ -234,7 +234,7 @@ class CreateTest extends \PHPUnit_Framework_TestCase
         try {
             $this->_model->createOrder();
             $this->fail('Validation errors are expected to lead to exception during createOrder() call.');
-        } catch (\Magento\Framework\Model\Exception $e) {
+        } catch (\Magento\Framework\Exception\LocalizedException $e) {
             /** createOrder is expected to throw exception with empty message when validation error occurs */
         }
         $errorMessages = [];
@@ -434,8 +434,8 @@ class CreateTest extends \PHPUnit_Framework_TestCase
         /** @var \Magento\Backend\Model\Session\Quote $session */
         $session = Bootstrap::getObjectManager()->create('Magento\Backend\Model\Session\Quote');
         $session->setCustomerId($fixtureCustomerId);
-        /** @var $quoteFixture \Magento\Sales\Model\Quote */
-        $quoteFixture = Bootstrap::getObjectManager()->create('Magento\Sales\Model\Quote');
+        /** @var $quoteFixture \Magento\Quote\Model\Quote */
+        $quoteFixture = Bootstrap::getObjectManager()->create('Magento\Quote\Model\Quote');
         $quoteFixture->load('test01', 'reserved_order_id');
         $quoteFixture->setCustomerIsGuest(false)->setCustomerId($fixtureCustomerId)->save();
 
@@ -503,7 +503,7 @@ class CreateTest extends \PHPUnit_Framework_TestCase
         /** Set current customer */
         /** @var \Magento\Backend\Model\Session\Quote $session */
         $session = Bootstrap::getObjectManager()->get('Magento\Backend\Model\Session\Quote');
-        if (!is_null($customerIdFromFixture)) {
+        if ($customerIdFromFixture !== null) {
             $session->setCustomerId($customerIdFromFixture);
 
             /** Unset fake IDs for default billing and shipping customer addresses */
@@ -519,8 +519,8 @@ class CreateTest extends \PHPUnit_Framework_TestCase
         }
 
         /** Emulate availability of shipping method (all are disabled by default) */
-        /** @var $rate \Magento\Sales\Model\Quote\Address\Rate */
-        $rate = Bootstrap::getObjectManager()->create('Magento\Sales\Model\Quote\Address\Rate');
+        /** @var $rate \Magento\Quote\Model\Quote\Address\Rate */
+        $rate = Bootstrap::getObjectManager()->create('Magento\Quote\Model\Quote\Address\Rate');
         $rate->setCode($shippingMethod);
         $this->_model->getQuote()->getShippingAddress()->addShippingRate($rate);
 
@@ -587,7 +587,7 @@ class CreateTest extends \PHPUnit_Framework_TestCase
             $orderData['customer_firstname'],
             'Customer first name is invalid.'
         );
-        $this->assertEquals($shippingMethod, $orderData['shipping_method'], 'Customer first name is invalid.');
+        $this->assertEquals($shippingMethod, $orderData['shipping_method'], 'Shipping method is invalid.');
     }
 
     /**

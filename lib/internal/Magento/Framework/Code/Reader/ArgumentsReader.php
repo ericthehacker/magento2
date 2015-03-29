@@ -16,6 +16,8 @@ class ArgumentsReader
      * @param bool $groupByPosition
      * @param bool $inherited
      * @return array
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     public function getConstructorArguments(\ReflectionClass $class, $groupByPosition = false, $inherited = false)
     {
@@ -45,12 +47,10 @@ class ArgumentsReader
                     } elseif (true == is_int($value)) {
                         $default = $value;
                     } else {
-                        $default = is_null(
-                            $parameter->getDefaultValue()
-                        ) ? 'null' : "'" . $parameter->getDefaultValue() . "'";
+                        $default = $parameter->getDefaultValue();
                     }
                 } elseif ($parameter->allowsNull()) {
-                    $default = 'null';
+                    $default = null;
                 }
             }
 

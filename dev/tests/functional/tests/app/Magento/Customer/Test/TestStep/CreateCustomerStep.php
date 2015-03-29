@@ -6,8 +6,8 @@
 
 namespace Magento\Customer\Test\TestStep;
 
-use Magento\Customer\Test\Fixture\CustomerInjectable;
-use Mtf\TestStep\TestStepInterface;
+use Magento\Customer\Test\Fixture\Customer;
+use Magento\Mtf\TestStep\TestStepInterface;
 
 /**
  * Class CreateCustomerStep
@@ -18,7 +18,7 @@ class CreateCustomerStep implements TestStepInterface
     /**
      * Customer fixture
      *
-     * @var CustomerInjectable
+     * @var Customer
      */
     protected $customer;
 
@@ -31,10 +31,10 @@ class CreateCustomerStep implements TestStepInterface
 
     /**
      * @constructor
-     * @param CustomerInjectable $customer
+     * @param Customer $customer
      * @param string $checkoutMethod
      */
-    public function __construct(CustomerInjectable $customer, $checkoutMethod = '')
+    public function __construct(Customer $customer, $checkoutMethod = '')
     {
         $this->customer = $customer;
         if ($checkoutMethod === 'register' || $checkoutMethod === 'guest') {

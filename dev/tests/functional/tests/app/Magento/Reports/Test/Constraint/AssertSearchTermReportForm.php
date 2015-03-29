@@ -8,7 +8,7 @@ namespace Magento\Reports\Test\Constraint;
 
 use Magento\CatalogSearch\Test\Page\Adminhtml\CatalogSearchEdit;
 use Magento\Reports\Test\Page\Adminhtml\SearchIndex;
-use Mtf\Constraint\AbstractAssertForm;
+use Magento\Mtf\Constraint\AbstractAssertForm;
 
 /**
  * Class AssertSearchTermReportForm
@@ -16,10 +16,6 @@ use Mtf\Constraint\AbstractAssertForm;
  */
 class AssertSearchTermReportForm extends AbstractAssertForm
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Assert that Search Term Report form data equals to passed from dataSet
      *

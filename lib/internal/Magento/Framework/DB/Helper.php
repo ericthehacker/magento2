@@ -182,6 +182,8 @@ class Helper extends \Magento\Framework\DB\Helper\AbstractHelper
      * @param string|null $groupByCondition OPTIONAL
      * @return mixed|array
      * @throws \Zend_Db_Exception
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function prepareColumnsList(\Magento\Framework\DB\Select $select, $groupByCondition = null)
     {
@@ -216,7 +218,7 @@ class Helper extends \Magento\Framework\DB\Helper\AbstractHelper
                         $preparedColumns[strtoupper($col)] = [$correlationName, $col, null];
                     }
                 } else {
-                    $columnKey = is_null($alias) ? $column : $alias;
+                    $columnKey = $alias === null ? $column : $alias;
                     $preparedColumns[strtoupper($columnKey)] = [$correlationName, $column, $alias];
                 }
             }

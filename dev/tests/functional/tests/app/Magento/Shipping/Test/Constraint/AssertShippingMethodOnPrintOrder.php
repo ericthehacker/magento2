@@ -7,17 +7,13 @@
 namespace Magento\Shipping\Test\Constraint;
 
 use Magento\Sales\Test\Page\SalesGuestPrint;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Assert that shipping method was printed correctly on sales guest print page.
  */
 class AssertShippingMethodOnPrintOrder extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Shipping method and carrier template.
      */

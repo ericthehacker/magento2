@@ -56,11 +56,14 @@ class QuantityValidator
      * @param \Magento\Framework\Event\Observer $observer
      *
      * @return void
-     * @throws \Magento\Framework\Model\Exception
+     * @throws \Magento\Framework\Exception\LocalizedException
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
+     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     public function validate(\Magento\Framework\Event\Observer $observer)
     {
-        /* @var $quoteItem \Magento\Sales\Model\Quote\Item */
+        /* @var $quoteItem \Magento\Quote\Model\Quote\Item */
         $quoteItem = $observer->getEvent()->getItem();
 
         if (!$quoteItem ||
@@ -80,7 +83,7 @@ class QuantityValidator
         );
         /* @var $stockItem \Magento\CatalogInventory\Api\Data\StockItemInterface */
         if (!$stockItem instanceof \Magento\CatalogInventory\Api\Data\StockItemInterface) {
-            throw new \Magento\Framework\Model\Exception(__('The stock item for Product is not valid.'));
+            throw new \Magento\Framework\Exception\LocalizedException(__('The stock item for Product is not valid.'));
         }
 
         $parentStockItem = false;
@@ -197,7 +200,7 @@ class QuantityValidator
     /**
      * Removes error statuses from quote and item, set by this observer
      *
-     * @param \Magento\Sales\Model\Quote\Item $item
+     * @param \Magento\Quote\Model\Quote\Item $item
      * @param int $code
      * @return void
      */

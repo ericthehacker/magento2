@@ -6,11 +6,10 @@
 
 namespace Magento\Customer\Test\Constraint;
 
-use Magento\Cms\Test\Page\CmsIndex;
-use Magento\Customer\Test\Fixture\CustomerInjectable;
+use Magento\Customer\Test\Fixture\Customer;
 use Magento\Customer\Test\Page\CustomerAccountIndex;
-use Mtf\Constraint\AbstractConstraint;
-use Mtf\Fixture\FixtureFactory;
+use Magento\Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Fixture\FixtureFactory;
 
 /**
  * Check that login again to frontend with new password was success.
@@ -26,18 +25,18 @@ class AssertCustomerPasswordChanged extends AbstractConstraint
      *
      * @param FixtureFactory $fixtureFactory
      * @param CustomerAccountIndex $customerAccountIndex
-     * @param CustomerInjectable $initialCustomer
-     * @param CustomerInjectable $customer
+     * @param Customer $initialCustomer
+     * @param Customer $customer
      * @return void
      */
     public function processAssert(
         FixtureFactory $fixtureFactory,
         CustomerAccountIndex $customerAccountIndex,
-        CustomerInjectable $initialCustomer,
-        CustomerInjectable $customer
+        Customer $initialCustomer,
+        Customer $customer
     ) {
         $customer = $fixtureFactory->createByCode(
-            'customerInjectable',
+            'customer',
             [
                 'dataSet' => 'default',
                 'data' => [

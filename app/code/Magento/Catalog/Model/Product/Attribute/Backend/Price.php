@@ -96,6 +96,7 @@ class Price extends \Magento\Eav\Model\Entity\Attribute\Backend\AbstractBackend
      *
      * @param \Magento\Catalog\Model\Product $object
      * @return $this
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function afterSave($object)
     {
@@ -139,7 +140,7 @@ class Price extends \Magento\Eav\Model\Entity\Attribute\Backend\AbstractBackend
      * Validate
      *
      * @param \Magento\Catalog\Model\Product $object
-     * @throws \Magento\Framework\Model\Exception
+     * @throws \Magento\Framework\Exception\LocalizedException
      * @return bool
      */
     public function validate($object)
@@ -150,7 +151,9 @@ class Price extends \Magento\Eav\Model\Entity\Attribute\Backend\AbstractBackend
         }
 
         if (!preg_match('/^\d*(\.|,)?\d{0,4}$/i', $value) || $value < 0) {
-            throw new \Magento\Framework\Model\Exception(__('Please enter a number 0 or greater in this field.'));
+            throw new \Magento\Framework\Exception\LocalizedException(
+                __('Please enter a number 0 or greater in this field.')
+            );
         }
 
         return true;

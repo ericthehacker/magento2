@@ -9,17 +9,13 @@ namespace Magento\Downloadable\Test\Constraint;
 use Magento\Catalog\Test\Constraint\AssertProductDuplicateForm;
 use Magento\Catalog\Test\Page\Adminhtml\CatalogProductEdit;
 use Magento\Catalog\Test\Page\Adminhtml\CatalogProductIndex;
-use Mtf\Fixture\FixtureInterface;
+use Magento\Mtf\Fixture\FixtureInterface;
 
 /**
  * Class AssertDownloadableDuplicateForm
  */
 class AssertDownloadableDuplicateForm extends AssertProductDuplicateForm
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Assert form data equals duplicate product downloadable data
      *

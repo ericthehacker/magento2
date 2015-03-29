@@ -8,7 +8,7 @@ namespace Magento\Store\Test\Constraint;
 
 use Magento\Backend\Test\Page\Adminhtml\SystemConfig;
 use Magento\Store\Test\Fixture\Store;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertStoreBackend
@@ -16,10 +16,6 @@ use Mtf\Constraint\AbstractConstraint;
  */
 class AssertStoreBackend extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Assert that created store view displays in backend configuration (Stores > Configuration > "Scope" dropdown)
      *

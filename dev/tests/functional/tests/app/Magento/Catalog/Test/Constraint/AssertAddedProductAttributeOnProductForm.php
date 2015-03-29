@@ -8,22 +8,18 @@ namespace Magento\Catalog\Test\Constraint;
 
 use Magento\Catalog\Test\Fixture\CatalogAttributeSet;
 use Magento\Catalog\Test\Fixture\CatalogProductSimple;
-use Mtf\Fixture\InjectableFixture;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Fixture\InjectableFixture;
+use Magento\Mtf\Constraint\AbstractConstraint;
 use Magento\Catalog\Test\Fixture\CatalogProductAttribute;
 use Magento\Catalog\Test\Page\Adminhtml\CatalogProductEdit;
 use Magento\Catalog\Test\Page\Adminhtml\CatalogProductIndex;
-use Mtf\ObjectManager;
+use Magento\Mtf\ObjectManager;
 
 /**
  * Check attribute on product form.
  */
 class AssertAddedProductAttributeOnProductForm extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'high';
-    /* end tags */
-
     /**
      * Add this attribute to Default attribute Template. Create product and Assert that created attribute
      * is displayed on product form (Products > Inventory > Catalog).
@@ -63,16 +59,6 @@ class AssertAddedProductAttributeOnProductForm extends AbstractConstraint
     }
 
     /**
-     * Text of Product Attribute is present on the Product form.
-     *
-     * @return string
-     */
-    public function toString()
-    {
-        return 'Product Attribute is present on Product form.';
-    }
-
-    /**
      * Create Product With AttributeSet.
      *
      * @param CatalogProductAttribute $attribute
@@ -87,7 +73,16 @@ class AssertAddedProductAttributeOnProductForm extends AbstractConstraint
             'Magento\Catalog\Test\TestStep\AddAttributeToProductTemplateStep',
             ['attribute' => $attribute, 'productTemplate' => $productTemplate]
         )->run();
-        ObjectManager::getInstance()->create('Magento\Catalog\Test\TestStep\SaveProductTemplateStep')->run();
         return $product['product'];
+    }
+
+    /**
+     * Text of Product Attribute is present on the Product form.
+     *
+     * @return string
+     */
+    public function toString()
+    {
+        return 'Product Attribute is present on Product form.';
     }
 }

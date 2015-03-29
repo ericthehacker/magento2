@@ -7,17 +7,13 @@
 namespace Magento\Catalog\Test\Constraint;
 
 use Magento\Cms\Test\Page\CmsIndex;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertProductCompareItemsLink
  */
 class AssertProductCompareItemsLink extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Assert that link "Compare Products..." on top menu of page
      *

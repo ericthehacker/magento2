@@ -3,6 +3,9 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
+
+// @codingStandardsIgnoreFile
+
 namespace Magento\Eav\Model\Entity;
 
 use Magento\Eav\Model\Entity\Attribute\AbstractAttribute;
@@ -11,12 +14,17 @@ use Magento\Eav\Model\Entity\Attribute\Frontend\AbstractFrontend;
 use Magento\Eav\Model\Entity\Attribute\Source\AbstractSource;
 use Magento\Framework\App\Config\Element;
 use Magento\Framework\Model\AbstractModel;
-use Magento\Framework\Model\Exception;
+use Magento\Eav\Exception as EavException;
+use Magento\Framework\Model\Resource\Db\ObjectRelationProcessor;
+use Magento\Framework\Model\Resource\Db\TransactionManagerInterface;
 
 /**
  * Entity/Attribute/Model - entity abstract
  *
  * @author     Magento Core Team <core@magentocommerce.com>
+ * @SuppressWarnings(PHPMD.TooManyFields)
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 abstract class AbstractEntity extends \Magento\Framework\Model\Resource\AbstractResource implements EntityInterface
 {
@@ -185,29 +193,29 @@ abstract class AbstractEntity extends \Magento\Framework\Model\Resource\Abstract
     protected $_universalFactory;
 
     /**
-     * @param \Magento\Framework\App\Resource $resource
-     * @param \Magento\Eav\Model\Config $eavConfig
-     * @param \Magento\Eav\Model\Entity\Attribute\Set $attrSetEntity
-     * @param \Magento\Framework\Locale\FormatInterface $localeFormat
-     * @param \Magento\Eav\Model\Resource\Helper $resourceHelper
-     * @param \Magento\Framework\Validator\UniversalFactory $universalFactory
+     * @var TransactionManagerInterface
+     */
+    protected $transactionManager;
+
+    /**
+     * @var ObjectRelationProcessor
+     */
+    protected $objectRelationProcessor;
+
+    /**
+     * @param Context $context
      * @param array $data
      */
-    public function __construct(
-        \Magento\Framework\App\Resource $resource,
-        \Magento\Eav\Model\Config $eavConfig,
-        \Magento\Eav\Model\Entity\Attribute\Set $attrSetEntity,
-        \Magento\Framework\Locale\FormatInterface $localeFormat,
-        \Magento\Eav\Model\Resource\Helper $resourceHelper,
-        \Magento\Framework\Validator\UniversalFactory $universalFactory,
-        $data = []
-    ) {
-        $this->_eavConfig = $eavConfig;
-        $this->_resource = $resource;
-        $this->_attrSetEntity = $attrSetEntity;
-        $this->_localeFormat = $localeFormat;
-        $this->_resourceHelper = $resourceHelper;
-        $this->_universalFactory = $universalFactory;
+    public function __construct(Context $context, $data = [])
+    {
+        $this->_eavConfig = $context->getEavConfig();
+        $this->_resource = $context->getResource();
+        $this->_attrSetEntity = $context->getAttributeSetEntity();
+        $this->_localeFormat = $context->getLocaleFormat();
+        $this->_resourceHelper = $context->getResourceHelper();
+        $this->_universalFactory = $context->getUniversalFactory();
+        $this->transactionManager = $context->getTransactionManager();
+        $this->objectRelationProcessor = $context->getObjectRelationProcessor();
         parent::__construct();
         $properties = get_object_vars($this);
         foreach ($data as $key => $value) {
@@ -326,12 +334,12 @@ abstract class AbstractEntity extends \Magento\Framework\Model\Resource\Abstract
      * Retrieve current entity config
      *
      * @return Type
-     * @throws \Magento\Framework\Model\Exception
+     * @throws EavException
      */
     public function getEntityType()
     {
         if (empty($this->_type)) {
-            throw new \Magento\Eav\Exception(__('Entity is not initialized'));
+            throw new EavException(__('Entity is not initialized'));
         }
         return $this->_type;
     }
@@ -364,7 +372,7 @@ abstract class AbstractEntity extends \Magento\Framework\Model\Resource\Abstract
      *
      * @param array|string|null $attributes
      * @return $this
-     * @throws \Magento\Framework\Model\Exception
+     * @throws EavException
      */
     public function unsetAttributes($attributes = null)
     {
@@ -379,7 +387,7 @@ abstract class AbstractEntity extends \Magento\Framework\Model\Resource\Abstract
         }
 
         if (!is_array($attributes)) {
-            throw new \Magento\Eav\Exception(__('Unknown parameter'));
+            throw new EavException(__('Unknown parameter'));
         }
 
         foreach ($attributes as $attrCode) {
@@ -414,6 +422,7 @@ abstract class AbstractEntity extends \Magento\Framework\Model\Resource\Abstract
      *
      * @param string|int|Element $attribute
      * @return AbstractAttribute|false
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function getAttribute($attribute)
     {
@@ -637,6 +646,7 @@ abstract class AbstractEntity extends \Magento\Framework\Model\Resource\Abstract
      * @param   \Magento\Framework\Object $object
      * @param   AbstractAttribute $attribute
      * @return  bool
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     protected function _isApplicableAttribute($object, $attribute)
     {
@@ -657,6 +667,8 @@ abstract class AbstractEntity extends \Magento\Framework\Model\Resource\Abstract
      *
      * @throws \Exception|\Magento\Eav\Model\Entity\Attribute\Exception
      * @return array
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     public function walkAttributes($partMethod, array $args = [], $collectExceptionMessages = null)
     {
@@ -739,6 +751,7 @@ abstract class AbstractEntity extends \Magento\Framework\Model\Resource\Abstract
      * @param string $method
      * @param array $args array of arguments
      * @return bool
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     protected function _isCallableAttributeInstance($instance, $method, $args)
     {
@@ -931,24 +944,20 @@ abstract class AbstractEntity extends \Magento\Framework\Model\Resource\Abstract
         $select = $adapter->select();
         if ($attribute->getBackend()->getType() === 'static') {
             $value = $object->getData($attribute->getAttributeCode());
-            $bind = ['entity_type_id' => $this->getTypeId(), 'attribute_code' => trim($value)];
+            $bind = ['attribute_code' => trim($value)];
 
             $select->from(
                 $this->getEntityTable(),
                 $this->getEntityIdField()
-            )->where(
-                'entity_type_id = :entity_type_id'
             )->where(
                 $attribute->getAttributeCode() . ' = :attribute_code'
             );
         } else {
             $value = $object->getData($attribute->getAttributeCode());
             if ($attribute->getBackend()->getType() == 'datetime') {
-                $date = new \Magento\Framework\Stdlib\DateTime\Date($value, \Magento\Framework\Stdlib\DateTime::DATE_INTERNAL_FORMAT);
-                $value = $date->toString(\Magento\Framework\Stdlib\DateTime::DATETIME_INTERNAL_FORMAT);
+                $value = (new \DateTime($value))->format('Y-m-d H:i:s');
             }
             $bind = [
-                'entity_type_id' => $this->getTypeId(),
                 'attribute_id' => $attribute->getId(),
                 'value' => trim($value),
             ];
@@ -956,13 +965,17 @@ abstract class AbstractEntity extends \Magento\Framework\Model\Resource\Abstract
                 $attribute->getBackend()->getTable(),
                 $attribute->getBackend()->getEntityIdField()
             )->where(
-                'entity_type_id = :entity_type_id'
-            )->where(
                 'attribute_id = :attribute_id'
             )->where(
                 'value = :value'
             );
         }
+
+        if ($this->getEntityTable() == \Magento\Eav\Model\Entity::DEFAULT_ENTITY_TABLE) {
+            $bind['entity_type_id'] = $this->getTypeId();
+            $select->where('entity_type_id = :entity_type_id');
+        }
+
         $data = $adapter->fetchCol($select, $bind);
 
         if ($object->getId()) {
@@ -1011,6 +1024,9 @@ abstract class AbstractEntity extends \Magento\Framework\Model\Resource\Abstract
         if (empty($attributes)) {
             $this->loadAllAttributes($object);
         } else {
+            if (!is_array($attributes)) {
+                $attributes = [$attributes];
+            }
             foreach ($attributes as $attrCode) {
                 $this->getAttribute($attrCode);
             }
@@ -1080,6 +1096,7 @@ abstract class AbstractEntity extends \Magento\Framework\Model\Resource\Abstract
      * @param   \Magento\Framework\Object $object
      * @param   string|int $rowId
      * @return  \Zend_Db_Select
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     protected function _getLoadRowSelect($object, $rowId)
     {
@@ -1137,6 +1154,7 @@ abstract class AbstractEntity extends \Magento\Framework\Model\Resource\Abstract
      *
      * @param   \Magento\Framework\Object $object
      * @return $this
+     * @throws \Exception
      */
     public function save(\Magento\Framework\Object $object)
     {
@@ -1158,11 +1176,15 @@ abstract class AbstractEntity extends \Magento\Framework\Model\Resource\Abstract
                     $this->loadAllAttributes($object);
                 }
 
-                if (!$object->getEntityTypeId()) {
+                if ($this->getEntityTable() ==  \Magento\Eav\Model\Entity::DEFAULT_ENTITY_TABLE
+                    && !$object->getEntityTypeId()
+                ) {
                     $object->setEntityTypeId($this->getTypeId());
                 }
 
                 $object->setParentId((int)$object->getParentId());
+
+                $this->objectRelationProcessor->validateDataIntegrity($this->getEntityTable(), $object->getData());
 
                 $this->_beforeSave($object);
                 $this->_processSaveData($this->_collectSaveData($object));
@@ -1225,6 +1247,8 @@ abstract class AbstractEntity extends \Magento\Framework\Model\Resource\Abstract
      *
      * @param   \Magento\Framework\Object $newObject
      * @return  array
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     protected function _collectSaveData($newObject)
     {
@@ -1329,6 +1353,7 @@ abstract class AbstractEntity extends \Magento\Framework\Model\Resource\Abstract
      * @param mixed $v New value of the attribute. Can be used in subclasses.
      * @param array $origData
      * @return bool
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     protected function _canUpdateAttribute(AbstractAttribute $attribute, $v, array &$origData)
     {
@@ -1383,6 +1408,8 @@ abstract class AbstractEntity extends \Magento\Framework\Model\Resource\Abstract
      *
      * @param   array $saveData array('newObject', 'entityRow', 'insert', 'update', 'delete')
      * @return $this
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     protected function _processSaveData($saveData)
     {
@@ -1492,6 +1519,7 @@ abstract class AbstractEntity extends \Magento\Framework\Model\Resource\Abstract
      * @param   mixed $valueId
      * @param   mixed $value
      * @return $this
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     protected function _updateAttribute($object, $attribute, $valueId, $value)
     {
@@ -1518,11 +1546,14 @@ abstract class AbstractEntity extends \Magento\Framework\Model\Resource\Abstract
         $entityIdField = $attribute->getBackend()->getEntityIdField();
 
         $data = [
-            'entity_type_id' => $object->getEntityTypeId(),
             $entityIdField => $object->getId(),
             'attribute_id' => $attribute->getId(),
             'value' => $this->_prepareValueForSave($value, $attribute),
         ];
+
+        if (!$this->getEntityTable()) {
+            $data['entity_type_id'] = $object->getEntityTypeId();
+        }
 
         $this->_attributeValuesToSave[$table][] = $data;
 
@@ -1582,6 +1613,7 @@ abstract class AbstractEntity extends \Magento\Framework\Model\Resource\Abstract
      * @param   string $table
      * @param   array $info
      * @return  \Magento\Framework\Object
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     protected function _deleteAttributes($object, $table, $info)
     {
@@ -1610,6 +1642,7 @@ abstract class AbstractEntity extends \Magento\Framework\Model\Resource\Abstract
      * @param string $attributeCode
      * @return $this
      * @throws \Exception
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function saveAttribute(\Magento\Framework\Object $object, $attributeCode)
     {
@@ -1617,14 +1650,8 @@ abstract class AbstractEntity extends \Magento\Framework\Model\Resource\Abstract
         $backend = $attribute->getBackend();
         $table = $backend->getTable();
         $entity = $attribute->getEntity();
-        $entityIdField = $entity->getEntityIdField();
         $adapter = $this->_getWriteAdapter();
-
-        $row = [
-            'entity_type_id' => $entity->getTypeId(),
-            'attribute_id' => $attribute->getId(),
-            $entityIdField => $object->getData($entityIdField),
-        ];
+        $row = $this->getAttributeRow($entity, $object, $attribute);
 
         $newValue = $object->getData($attributeCode);
         if ($attribute->isValueEmpty($newValue)) {
@@ -1661,28 +1688,56 @@ abstract class AbstractEntity extends \Magento\Framework\Model\Resource\Abstract
     }
 
     /**
+     * Return attribute row to prepare where statement
+     *
+     * @param \Magento\Framework\Object $entity
+     * @param \Magento\Framework\Object $object
+     * @param \Magento\Eav\Model\Entity\Attribute\AbstractAttribute $attribute
+     * @return array
+     */
+    protected function getAttributeRow($entity, $object, $attribute)
+    {
+        $data = [
+            'attribute_id' => $attribute->getId(),
+            $entity->getEntityIdField() => $object->getData($entity->getEntityIdField()),
+        ];
+
+        if (!$this->getEntityTable()) {
+            $data['entity_type_id'] = $entity->getTypeId();
+        }
+
+        return $data;
+    }
+
+    /**
      * Delete entity using current object's data
      *
      * @param \Magento\Framework\Object|int|string $object
      * @return $this
      * @throws \Exception
+     * @SuppressWarnings(PHPMD.UnusedLocalVariable)
      */
     public function delete($object)
     {
         try {
-            $this->beginTransaction();
+            $connection = $this->transactionManager->start($this->_getWriteAdapter());
             if (is_numeric($object)) {
                 $id = (int) $object;
             } elseif ($object instanceof \Magento\Framework\Object) {
                 $object->beforeDelete();
                 $id = (int) $object->getId();
             }
-
             $this->_beforeDelete($object);
-
             try {
                 $where = [$this->getEntityIdField() . '=?' => $id];
-                $this->_getWriteAdapter()->delete($this->getEntityTable(), $where);
+                $this->objectRelationProcessor->delete(
+                    $this->transactionManager,
+                    $connection,
+                    $this->getEntityTable(),
+                    $this->_getWriteAdapter()->quoteInto($this->getEntityIdField() . '=?', $id),
+                    [$this->getEntityIdField() => $id]
+                );
+
                 $this->loadAllAttributes($object);
                 foreach ($this->getAttributesByTable() as $table => $attributes) {
                     $this->_getWriteAdapter()->delete($table, $where);
@@ -1697,12 +1752,12 @@ abstract class AbstractEntity extends \Magento\Framework\Model\Resource\Abstract
                 $object->isDeleted(true);
                 $object->afterDelete();
             }
-            $this->commit();
+            $this->transactionManager->commit();
             if ($object instanceof \Magento\Framework\Object) {
                 $object->afterDeleteCommit();
             }
         } catch (\Exception $e) {
-            $this->rollBack();
+            $this->transactionManager->rollBack();
             throw $e;
         }
         return $this;

@@ -7,17 +7,13 @@
 namespace Magento\Sales\Test\Constraint;
 
 use Magento\Sales\Test\Page\SalesGuestPrint;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Assert that payment method was printed correctly on sales guest print page.
  */
 class AssertSalesPrintOrderPaymentMethod extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Assert that payment method was printed correctly on sales guest print page.
      *

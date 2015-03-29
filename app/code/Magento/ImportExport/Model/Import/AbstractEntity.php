@@ -8,6 +8,8 @@ namespace Magento\ImportExport\Model\Import;
 
 /**
  * Import entity abstract model
+ * @SuppressWarnings(PHPMD.TooManyFields)
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 abstract class AbstractEntity
 {
@@ -108,13 +110,6 @@ abstract class AbstractEntity
      * @var string[]
      */
     protected $_notices = [];
-
-    /**
-     * Helper to encode/decode json
-     *
-     * @var \Magento\Core\Helper\Data
-     */
-    protected $_jsonHelper;
 
     /**
      * Magento string lib
@@ -237,16 +232,15 @@ abstract class AbstractEntity
     protected $_scopeConfig;
 
     /**
-     * @param \Magento\Core\Helper\Data $coreData
      * @param \Magento\Framework\Stdlib\String $string
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param \Magento\ImportExport\Model\ImportFactory $importFactory
      * @param \Magento\ImportExport\Model\Resource\Helper $resourceHelper
      * @param \Magento\Framework\App\Resource $resource
      * @param array $data
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     public function __construct(
-        \Magento\Core\Helper\Data $coreData,
         \Magento\Framework\Stdlib\String $string,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\ImportExport\Model\ImportFactory $importFactory,
@@ -259,7 +253,6 @@ abstract class AbstractEntity
             $data['data_source_model']
         ) ? $data['data_source_model'] : $importFactory->create()->getDataSourceModel();
         $this->_connection = isset($data['connection']) ? $data['connection'] : $resource->getConnection('write');
-        $this->_jsonHelper = $coreData;
         $this->string = $string;
         $this->_pageSize = isset(
             $data['page_size']
@@ -319,6 +312,8 @@ abstract class AbstractEntity
      * Validate data rows and save bunches to DB
      *
      * @return $this
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     protected function _saveValidatedBunches()
     {
@@ -549,12 +544,12 @@ abstract class AbstractEntity
      * Source object getter
      *
      * @return AbstractSource
-     * @throws \Magento\Framework\Model\Exception
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function getSource()
     {
         if (!$this->_source) {
-            throw new \Magento\Framework\Model\Exception(__('Source is not set'));
+            throw new \Magento\Framework\Exception\LocalizedException(__('Source is not set'));
         }
         return $this->_source;
     }
@@ -596,6 +591,7 @@ abstract class AbstractEntity
      * @param array $rowData Row data
      * @param int $rowNumber
      * @return bool
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function isAttributeValid($attributeCode, array $attributeParams, array $rowData, $rowNumber)
     {
@@ -713,7 +709,7 @@ abstract class AbstractEntity
      * Validate data
      *
      * @return $this
-     * @throws \Magento\Framework\Model\Exception
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function validateData()
     {
@@ -721,7 +717,7 @@ abstract class AbstractEntity
             // do all permanent columns exist?
             $absentColumns = array_diff($this->_permanentAttributes, $this->getSource()->getColNames());
             if ($absentColumns) {
-                throw new \Magento\Framework\Model\Exception(
+                throw new \Magento\Framework\Exception\LocalizedException(
                     __('Cannot find required columns: %1', implode(', ', $absentColumns))
                 );
             }
@@ -742,12 +738,12 @@ abstract class AbstractEntity
             }
 
             if ($emptyHeaderColumns) {
-                throw new \Magento\Framework\Model\Exception(
+                throw new \Magento\Framework\Exception\LocalizedException(
                     __('Columns number: "%1" have empty headers', implode('", "', $emptyHeaderColumns))
                 );
             }
             if ($invalidColumns) {
-                throw new \Magento\Framework\Model\Exception(
+                throw new \Magento\Framework\Exception\LocalizedException(
                     __('Column names: "%1" are invalid', implode('", "', $invalidColumns))
                 );
             }

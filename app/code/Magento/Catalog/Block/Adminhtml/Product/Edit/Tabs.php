@@ -72,6 +72,7 @@ class Tabs extends \Magento\Backend\Block\Widget\Tabs
      * @param \Magento\Framework\Registry $registry
      * @param \Magento\Framework\Translate\InlineInterface $translateInline
      * @param array $data
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         \Magento\Backend\Block\Template\Context $context,
@@ -118,6 +119,9 @@ class Tabs extends \Magento\Backend\Block\Widget\Tabs
 
     /**
      * @return $this
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
+     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     protected function _prepareLayout()
     {
@@ -291,7 +295,7 @@ class Tabs extends \Magento\Backend\Block\Widget\Tabs
      */
     public function getAttributeTabBlock()
     {
-        if (is_null($this->_helperCatalog->getAttributeTabBlock())) {
+        if ($this->_helperCatalog->getAttributeTabBlock() === null) {
             return $this->_attributeTabBlock;
         }
         return $this->_helperCatalog->getAttributeTabBlock();

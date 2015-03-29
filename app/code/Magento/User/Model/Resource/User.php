@@ -3,6 +3,9 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
+
+// @codingStandardsIgnoreFile
+
 namespace Magento\User\Model\Resource;
 
 use Magento\Authorization\Model\Acl\Role\Group as RoleGroup;
@@ -12,6 +15,7 @@ use Magento\User\Model\User as ModelUser;
 
 /**
  * ACL user resource
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class User extends \Magento\Framework\Model\Resource\Db\AbstractDb
 {
@@ -42,18 +46,20 @@ class User extends \Magento\Framework\Model\Resource\Db\AbstractDb
     /**
      * Construct
      *
-     * @param \Magento\Framework\App\Resource $resource
+     * @param \Magento\Framework\Model\Resource\Db\Context $context
      * @param \Magento\Framework\Acl\CacheInterface $aclCache
      * @param \Magento\Authorization\Model\RoleFactory $roleFactory
      * @param \Magento\Framework\Stdlib\DateTime $dateTime
+     * @param string|null $resourcePrefix
      */
     public function __construct(
-        \Magento\Framework\App\Resource $resource,
+        \Magento\Framework\Model\Resource\Db\Context $context,
         \Magento\Framework\Acl\CacheInterface $aclCache,
         \Magento\Authorization\Model\RoleFactory $roleFactory,
-        \Magento\Framework\Stdlib\DateTime $dateTime
+        \Magento\Framework\Stdlib\DateTime $dateTime,
+        $resourcePrefix = null
     ) {
-        parent::__construct($resource);
+        parent::__construct($context, $resourcePrefix);
         $this->_aclCache = $aclCache;
         $this->_roleFactory = $roleFactory;
         $this->dateTime = $dateTime;
@@ -94,7 +100,10 @@ class User extends \Magento\Framework\Model\Resource\Db\AbstractDb
     {
         $adapter = $this->_getWriteAdapter();
 
-        $data = ['logdate' => $this->dateTime->now(), 'lognum' => $user->getLognum() + 1];
+        $data = [
+            'logdate' => (new \DateTime())->format(\Magento\Framework\Stdlib\DateTime::DATETIME_PHP_FORMAT),
+            'lognum' => $user->getLognum() + 1,
+        ];
 
         $condition = ['user_id = ?' => (int)$user->getUserId()];
 
@@ -249,7 +258,7 @@ class User extends \Magento\Framework\Model\Resource\Db\AbstractDb
      *
      * @param \Magento\Framework\Model\AbstractModel $user
      * @return bool
-     * @throws \Magento\Framework\Model\Exception
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function delete(\Magento\Framework\Model\AbstractModel $user)
     {
@@ -263,7 +272,7 @@ class User extends \Magento\Framework\Model\Resource\Db\AbstractDb
 
             $adapter->delete($this->getMainTable(), $conditions);
             $adapter->delete($this->getTable('authorization_role'), $conditions);
-        } catch (\Magento\Framework\Model\Exception $e) {
+        } catch (\Magento\Framework\Exception\LocalizedException $e) {
             throw $e;
             return false;
         } catch (\Exception $e) {

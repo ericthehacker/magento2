@@ -3,12 +3,17 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
+
+// @codingStandardsIgnoreFile
+
 namespace Magento\Sales\Model\Order\Pdf;
 
 use Magento\Framework\App\Filesystem\DirectoryList;
 
 /**
  * Sales Order PDF abstract model
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 abstract class AbstractPdf extends \Magento\Framework\Object
 {
@@ -219,6 +224,7 @@ abstract class AbstractPdf extends \Magento\Framework\Object
      * @param \Zend_Pdf_Page &$page
      * @param null $store
      * @return void
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     protected function insertLogo(&$page, $store = null)
     {
@@ -330,6 +336,7 @@ abstract class AbstractPdf extends \Magento\Framework\Object
      *
      * @param  array $address
      * @return int Height
+     * @SuppressWarnings(PHPMD.UnusedLocalVariable)
      */
     protected function _calcAddressHeight($address)
     {
@@ -355,6 +362,9 @@ abstract class AbstractPdf extends \Magento\Framework\Object
      * @param \Magento\Sales\Model\Order $obj
      * @param bool $putOrderId
      * @return void
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
+     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     protected function insertOrder(&$page, $obj, $putOrderId = true)
     {
@@ -380,7 +390,7 @@ abstract class AbstractPdf extends \Magento\Framework\Object
             $page->drawText(__('Order # ') . $order->getRealOrderId(), 35, $top -= 30, 'UTF-8');
         }
         $page->drawText(
-            __('Order Date: ') . $this->_localeDate->formatDate($order->getCreatedAtStoreDate(), 'medium', false),
+            __('Order Date: ') . $this->_localeDate->formatDate($order->getCreatedAtStoreDate(), \IntlDateFormatter::MEDIUM, false),
             35,
             $top -= 15,
             'UTF-8'
@@ -760,7 +770,7 @@ abstract class AbstractPdf extends \Magento\Framework\Object
      *
      * @param  string $type
      * @return \Magento\Sales\Model\Order\Pdf\Items\AbstractItems
-     * @throws \Magento\Framework\Model\Exception
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     protected function _getRenderer($type)
     {
@@ -769,7 +779,7 @@ abstract class AbstractPdf extends \Magento\Framework\Object
         }
 
         if (!isset($this->_renderers[$type])) {
-            throw new \Magento\Framework\Model\Exception(__('We found an invalid renderer model.'));
+            throw new \Magento\Framework\Exception\LocalizedException(__('We found an invalid renderer model.'));
         }
 
         if (is_null($this->_renderers[$type]['renderer'])) {
@@ -878,13 +888,13 @@ abstract class AbstractPdf extends \Magento\Framework\Object
     /**
      * Retrieve PDF object
      *
-     * @throws \Magento\Framework\Model\Exception
+     * @throws \Magento\Framework\Exception\LocalizedException
      * @return \Zend_Pdf
      */
     protected function _getPdf()
     {
         if (!$this->_pdf instanceof \Zend_Pdf) {
-            throw new \Magento\Framework\Model\Exception(__('Please define the PDF object before using.'));
+            throw new \Magento\Framework\Exception\LocalizedException(__('Please define the PDF object before using.'));
         }
 
         return $this->_pdf;
@@ -928,14 +938,17 @@ abstract class AbstractPdf extends \Magento\Framework\Object
      * @param  \Zend_Pdf_Page $page
      * @param  array $draw
      * @param  array $pageSettings
-     * @throws \Magento\Framework\Model\Exception
+     * @throws \Magento\Framework\Exception\LocalizedException
      * @return \Zend_Pdf_Page
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
+     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     public function drawLineBlocks(\Zend_Pdf_Page $page, array $draw, array $pageSettings = [])
     {
         foreach ($draw as $itemsProp) {
             if (!isset($itemsProp['lines']) || !is_array($itemsProp['lines'])) {
-                throw new \Magento\Framework\Model\Exception(
+                throw new \Magento\Framework\Exception\LocalizedException(
                     __('We don\'t recognize the draw line data. Please define the "lines" array.')
                 );
             }

@@ -9,6 +9,7 @@ namespace Magento\Backend\Block\Widget\Grid;
  * Backend grid container block
  *
  * @author      Magento Core Team <core@magentocommerce.com>
+ * @SuppressWarnings(PHPMD.NumberOfChildren)
  */
 class Container extends \Magento\Backend\Block\Widget\Container
 {
@@ -58,7 +59,7 @@ class Container extends \Magento\Backend\Block\Widget\Container
             $this->_addButtonLabel = $this->_getData(self::PARAM_BUTTON_NEW);
         } else {
             // legacy logic to support all descendants
-            if (is_null($this->_addButtonLabel)) {
+            if ($this->_addButtonLabel === null) {
                 $this->_addButtonLabel = __('Add New');
             }
             $this->_addNewButton();
@@ -67,7 +68,7 @@ class Container extends \Magento\Backend\Block\Widget\Container
             $this->_backButtonLabel = $this->_getData(self::PARAM_BUTTON_BACK);
         } else {
             // legacy logic
-            if (is_null($this->_backButtonLabel)) {
+            if ($this->_backButtonLabel === null) {
                 $this->_backButtonLabel = __('Back');
             }
         }

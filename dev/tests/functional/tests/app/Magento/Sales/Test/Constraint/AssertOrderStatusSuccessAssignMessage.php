@@ -7,7 +7,7 @@
 namespace Magento\Sales\Test\Constraint;
 
 use Magento\Sales\Test\Page\Adminhtml\OrderStatusIndex;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertOrderStatusSuccessAssignMessage
@@ -15,10 +15,6 @@ use Mtf\Constraint\AbstractConstraint;
  */
 class AssertOrderStatusSuccessAssignMessage extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * OrderStatus assigning success message
      */

@@ -6,7 +6,7 @@
 
 namespace Magento\Catalog\Test\Fixture\CatalogProductAttribute;
 
-use Mtf\Fixture\FixtureInterface;
+use Magento\Mtf\Fixture\FixtureInterface;
 
 /**
  * Class Options
@@ -92,6 +92,10 @@ class Options implements FixtureInterface
                     'admin' => 'blue',
                     'view' => '',
                 ],
+            ],
+            'two_options' => [
+                ['admin' => 'black'],
+                ['admin' => 'white'],
             ],
         ];
 

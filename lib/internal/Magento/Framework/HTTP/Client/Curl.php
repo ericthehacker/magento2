@@ -271,7 +271,7 @@ class Curl implements \Magento\Framework\HTTP\ClientInterface
                 continue;
             }
             list($key, $val) = explode("=", $values[0]);
-            if (is_null($val)) {
+            if ($val === null) {
                 continue;
             }
             $out[trim($key)] = trim($val);
@@ -297,7 +297,7 @@ class Curl implements \Magento\Framework\HTTP\ClientInterface
                 continue;
             }
             list($key, $val) = explode("=", $values[0]);
-            if (is_null($val)) {
+            if ($val === null) {
                 continue;
             }
             $out[trim($key)] = ['value' => trim($val)];
@@ -331,6 +331,8 @@ class Curl implements \Magento\Framework\HTTP\ClientInterface
      * @param string $uri
      * @param array $params
      * @return void
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     protected function makeRequest($method, $uri, $params = [])
     {
@@ -406,6 +408,7 @@ class Curl implements \Magento\Framework\HTTP\ClientInterface
      * @param resource $ch curl handle, not needed
      * @param string $data
      * @return int
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     protected function parseHeaders($ch, $data)
     {

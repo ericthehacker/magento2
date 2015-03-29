@@ -8,17 +8,13 @@ namespace Magento\CatalogSearch\Test\Constraint;
 
 use Magento\Catalog\Test\Fixture\CatalogProductSimple;
 use Magento\CatalogSearch\Test\Page\AdvancedResult;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertAdvancedSearchProductsResult
  */
 class AssertAdvancedSearchProductsResult extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'high';
-    /* end tags */
-
     /**
      * Text for notice messages
      */

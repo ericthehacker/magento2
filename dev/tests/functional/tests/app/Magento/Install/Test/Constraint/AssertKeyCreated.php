@@ -6,7 +6,7 @@
 
 namespace Magento\Install\Test\Constraint;
 
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 use Magento\Install\Test\Page\Install;
 use Magento\Install\Test\Fixture\Install as InstallConfig;
 
@@ -15,10 +15,6 @@ use Magento\Install\Test\Fixture\Install as InstallConfig;
  */
 class AssertKeyCreated extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Assert that selected encryption key displays on success full install page.
      *

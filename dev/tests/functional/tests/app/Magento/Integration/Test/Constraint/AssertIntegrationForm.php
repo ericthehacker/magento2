@@ -9,7 +9,7 @@ namespace Magento\Integration\Test\Constraint;
 use Magento\Integration\Test\Fixture\Integration;
 use Magento\Integration\Test\Page\Adminhtml\IntegrationIndex;
 use Magento\Integration\Test\Page\Adminhtml\IntegrationNew;
-use Mtf\Constraint\AbstractAssertForm;
+use Magento\Mtf\Constraint\AbstractAssertForm;
 
 /**
  * Class AssertIntegrationForm
@@ -17,10 +17,6 @@ use Mtf\Constraint\AbstractAssertForm;
  */
 class AssertIntegrationForm extends AbstractAssertForm
 {
-    /* tags */
-    const SEVERITY = 'high';
-    /* end tags */
-
     /**
      * Skipped fields while verifying
      *

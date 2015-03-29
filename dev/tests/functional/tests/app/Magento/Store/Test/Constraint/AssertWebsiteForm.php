@@ -9,7 +9,7 @@ namespace Magento\Store\Test\Constraint;
 use Magento\Backend\Test\Page\Adminhtml\EditWebsite;
 use Magento\Backend\Test\Page\Adminhtml\StoreIndex;
 use Magento\Store\Test\Fixture\Website;
-use Mtf\Constraint\AbstractAssertForm;
+use Magento\Mtf\Constraint\AbstractAssertForm;
 
 /**
  * Class AssertWebsiteForm
@@ -17,10 +17,6 @@ use Mtf\Constraint\AbstractAssertForm;
  */
 class AssertWebsiteForm extends AbstractAssertForm
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Skipped fields for verify data
      *

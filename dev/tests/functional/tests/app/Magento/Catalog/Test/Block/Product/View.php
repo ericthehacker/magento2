@@ -8,9 +8,9 @@ namespace Magento\Catalog\Test\Block\Product;
 
 use Magento\Catalog\Test\Block\AbstractConfigureBlock;
 use Magento\Catalog\Test\Fixture\CatalogProductSimple;
-use Mtf\Client\Element\Locator;
-use Mtf\Fixture\FixtureInterface;
-use Mtf\Fixture\InjectableFixture;
+use Magento\Mtf\Client\Locator;
+use Magento\Mtf\Fixture\FixtureInterface;
+use Magento\Mtf\Fixture\InjectableFixture;
 
 /**
  * Product view block on the product page.
@@ -61,7 +61,7 @@ class View extends AbstractConfigureBlock
      *
      * @var string
      */
-    protected $productName = '.page-title.product h1.title .base';
+    protected $productName = '.page-title-wrapper.product h1.page-title .base';
 
     /**
      * Product sku element.
@@ -161,11 +161,8 @@ class View extends AbstractConfigureBlock
      */
     public function addToCart(FixtureInterface $product)
     {
-        $checkoutData = null;
-        if ($product instanceof InjectableFixture) {
-            /** @var CatalogProductSimple $product */
-            $checkoutData = $product->getCheckoutData();
-        }
+        /** @var CatalogProductSimple $product */
+        $checkoutData = $product->getCheckoutData();
 
         $this->fillOptions($product);
         if (isset($checkoutData['qty'])) {
@@ -204,8 +201,7 @@ class View extends AbstractConfigureBlock
      */
     public function setQty($qty)
     {
-        $this->browser->selectWindow();
-        $this->_rootElement->find($this->qty)->keys([$qty]);
+        $this->_rootElement->find($this->qty)->setValue($qty);
         $this->_rootElement->click();
     }
 
@@ -352,7 +348,7 @@ class View extends AbstractConfigureBlock
      *
      * @return bool
      */
-    public function checkAddToCardButton()
+    public function isVisibleAddToCardButton()
     {
         return $this->_rootElement->find($this->addToCart, Locator::SELECTOR_CSS)->isVisible();
     }

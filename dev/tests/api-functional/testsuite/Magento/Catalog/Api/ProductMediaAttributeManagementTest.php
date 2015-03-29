@@ -3,10 +3,12 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
+
+// @codingStandardsIgnoreFile
+
 namespace Magento\Catalog\Api;
 
 use Magento\TestFramework\TestCase\WebapiAbstract;
-use Magento\Webapi\Model\Rest\Config as RestConfig;
 
 class ProductMediaAttributeManagementTest extends WebapiAbstract
 {
@@ -19,7 +21,7 @@ class ProductMediaAttributeManagementTest extends WebapiAbstract
         $serviceInfo = [
             'rest' => [
                 'resourcePath' => '/V1/products/media/types/' . $attributeSetName,
-                'httpMethod' => RestConfig::HTTP_METHOD_GET,
+                'httpMethod' => \Magento\Framework\Webapi\Rest\Request::HTTP_METHOD_GET,
             ],
             'soap' => [
                 'service' => 'catalogProductMediaAttributeManagementV1',
@@ -35,7 +37,7 @@ class ProductMediaAttributeManagementTest extends WebapiAbstract
         $mediaAttributes = $this->_webApiCall($serviceInfo, $requestData);
 
         $this->assertNotEmpty($mediaAttributes);
-        $attribute = $this->getAttributeByCode($mediaAttributes,  'funny_image');
+        $attribute = $this->getAttributeByCode($mediaAttributes, 'funny_image');
         $this->assertNotNull($attribute);
         $this->assertEquals('Funny image', $attribute['default_frontend_label']);
         $this->assertEquals(1, $attribute['is_user_defined']);

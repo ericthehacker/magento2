@@ -3,14 +3,18 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
+
+// @codingStandardsIgnoreFile
+
 namespace Magento\Catalog\Model\Product\Option\Type;
 
-use Magento\Framework\Model\Exception;
+use Magento\Framework\Exception\LocalizedException;
 
 /**
  * Catalog product option default type
  *
  * @author     Magento Core Team <core@magentocommerce.com>
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class DefaultType extends \Magento\Framework\Object
 {
@@ -81,7 +85,7 @@ class DefaultType extends \Magento\Framework\Object
     /**
      * Option Instance getter
      *
-     * @throws \Magento\Framework\Model\Exception
+     * @throws \Magento\Framework\Exception\LocalizedException
      * @return \Magento\Catalog\Model\Product\Option
      */
     public function getOption()
@@ -89,7 +93,7 @@ class DefaultType extends \Magento\Framework\Object
         if ($this->_option instanceof \Magento\Catalog\Model\Product\Option) {
             return $this->_option;
         }
-        throw new Exception(__('The option instance type in options group is incorrect.'));
+        throw new LocalizedException(__('The option instance type in options group is incorrect.'));
     }
 
     /**
@@ -107,7 +111,7 @@ class DefaultType extends \Magento\Framework\Object
     /**
      * Product Instance getter
      *
-     * @throws \Magento\Framework\Model\Exception
+     * @throws \Magento\Framework\Exception\LocalizedException
      * @return \Magento\Catalog\Model\Product
      */
     public function getProduct()
@@ -115,14 +119,14 @@ class DefaultType extends \Magento\Framework\Object
         if ($this->_product instanceof \Magento\Catalog\Model\Product) {
             return $this->_product;
         }
-        throw new Exception(__('The product instance type in options group is incorrect.'));
+        throw new LocalizedException(__('The product instance type in options group is incorrect.'));
     }
 
     /**
      * Getter for Configuration Item Option
      *
      * @return \Magento\Catalog\Model\Product\Configuration\Item\Option\OptionInterface
-     * @throws Exception
+     * @throws LocalizedException
      */
     public function getConfigurationItemOption()
     {
@@ -134,18 +138,18 @@ class DefaultType extends \Magento\Framework\Object
         }
 
         // Back compatibility with quote specific keys to set configuration item options
-        if ($this->_getData('quote_item_option') instanceof \Magento\Sales\Model\Quote\Item\Option) {
+        if ($this->_getData('quote_item_option') instanceof \Magento\Quote\Model\Quote\Item\Option) {
             return $this->_getData('quote_item_option');
         }
 
-        throw new Exception(__('The configuration item option instance in options group is incorrect.'));
+        throw new LocalizedException(__('The configuration item option instance in options group is incorrect.'));
     }
 
     /**
      * Getter for Configuration Item
      *
      * @return \Magento\Catalog\Model\Product\Configuration\Item\ItemInterface
-     * @throws Exception
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function getConfigurationItem()
     {
@@ -157,25 +161,25 @@ class DefaultType extends \Magento\Framework\Object
         }
 
         // Back compatibility with quote specific keys to set configuration item
-        if ($this->_getData('quote_item') instanceof \Magento\Sales\Model\Quote\Item) {
+        if ($this->_getData('quote_item') instanceof \Magento\Quote\Model\Quote\Item) {
             return $this->_getData('quote_item');
         }
 
-        throw new Exception(__('The configuration item instance in options group is incorrect.'));
+        throw new LocalizedException(__('The configuration item instance in options group is incorrect.'));
     }
 
     /**
      * Getter for Buy Request
      *
      * @return \Magento\Framework\Object
-     * @throws \Magento\Framework\Model\Exception
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function getRequest()
     {
         if ($this->_getData('request') instanceof \Magento\Framework\Object) {
             return $this->_getData('request');
         }
-        throw new Exception(__('The BuyRequest instance in options group is incorrect.'));
+        throw new LocalizedException(__('The BuyRequest instance in options group is incorrect.'));
     }
 
     /**
@@ -194,7 +198,7 @@ class DefaultType extends \Magento\Framework\Object
      *
      * @param array $values All product option values, i.e. array (option_id => mixed, option_id => mixed...)
      * @return $this
-     * @throws \Magento\Framework\Model\Exception
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function validateUserValue($values)
     {
@@ -204,7 +208,7 @@ class DefaultType extends \Magento\Framework\Object
 
         $option = $this->getOption();
         if (!isset($values[$option->getId()]) && $option->getIsRequire() && !$this->getSkipCheckRequiredOption()) {
-            throw new Exception(__('Please specify the product\'s required option(s).'));
+            throw new LocalizedException(__('Please specify the product\'s required option(s).'));
         } elseif (isset($values[$option->getId()])) {
             $this->setUserValue($values[$option->getId()]);
             $this->setIsValid(true);
@@ -216,6 +220,7 @@ class DefaultType extends \Magento\Framework\Object
      * Check skip required option validation
      *
      * @return bool
+     * @SuppressWarnings(PHPMD.BooleanGetMethodName)
      */
     public function getSkipCheckRequiredOption()
     {
@@ -227,14 +232,16 @@ class DefaultType extends \Magento\Framework\Object
      * Prepare option value for cart
      *
      * @return string|null Prepared option value
-     * @throws \Magento\Framework\Model\Exception
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function prepareForCart()
     {
         if ($this->getIsValid()) {
             return $this->getUserValue();
         }
-        throw new Exception(__('We couldn\'t add the product to the cart because of an option validation issue.'));
+        throw new LocalizedException(
+            __('We couldn\'t add the product to the cart because of an option validation issue.')
+        );
     }
 
     /**
@@ -298,6 +305,7 @@ class DefaultType extends \Magento\Framework\Object
      * @param string $optionValue
      * @param array $productOptionValues Values for product option
      * @return string|null
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function parseOptionValue($optionValue, $productOptionValues)
     {
@@ -321,6 +329,7 @@ class DefaultType extends \Magento\Framework\Object
      * @param string $optionValue Prepared for cart option value
      * @param float $basePrice For percent price type
      * @return float
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function getOptionPrice($optionValue, $basePrice)
     {
@@ -335,6 +344,7 @@ class DefaultType extends \Magento\Framework\Object
      * @param string $optionValue Prepared for cart option value
      * @param string $skuDelimiter Delimiter for Sku parts
      * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function getOptionSku($optionValue, $skuDelimiter)
     {

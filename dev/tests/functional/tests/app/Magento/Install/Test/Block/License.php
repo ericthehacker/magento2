@@ -6,8 +6,8 @@
 
 namespace Magento\Install\Test\Block;
 
-use Mtf\Block\Block;
-use Mtf\Client\Element\Locator;
+use Magento\Mtf\Block\Block;
+use Magento\Mtf\Client\Locator;
 
 /**
  * License block.
@@ -19,7 +19,7 @@ class License extends Block
      *
      * @var string
      */
-    protected $back = '.btn.btn-primary';
+    protected $back = '[ng-click="nextState()"]';
 
     /**
      * License text.

@@ -9,7 +9,7 @@ namespace Magento\Newsletter\Test\Constraint;
 use Magento\Newsletter\Test\Fixture\Template;
 use Magento\Newsletter\Test\Page\Adminhtml\TemplateEdit;
 use Magento\Newsletter\Test\Page\Adminhtml\TemplateIndex;
-use Mtf\Constraint\AbstractAssertForm;
+use Magento\Mtf\Constraint\AbstractAssertForm;
 
 /**
  * Class AssertNewsletterForm
@@ -17,10 +17,6 @@ use Mtf\Constraint\AbstractAssertForm;
  */
 class AssertNewsletterForm extends AbstractAssertForm
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Assert that newsletter template form data equals to data passed from fixture
      *

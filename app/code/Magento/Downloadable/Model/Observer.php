@@ -11,15 +11,11 @@ use Magento\Store\Model\ScopeInterface;
  * Downloadable Products Observer
  *
  * @author      Magento Core Team <core@magentocommerce.com>
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Observer
 {
     const XML_PATH_DISABLE_GUEST_CHECKOUT = 'catalog/downloadable/disable_guest_checkout';
-
-    /**
-     * @var \Magento\Core\Helper\Data
-     */
-    protected $_helper;
 
     /**
      * Core store config
@@ -59,7 +55,6 @@ class Observer
     protected $_objectCopyService;
 
     /**
-     * @param \Magento\Core\Helper\Data $coreData
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param \Magento\Downloadable\Model\Link\PurchasedFactory $purchasedFactory
      * @param \Magento\Catalog\Model\ProductFactory $productFactory
@@ -69,7 +64,6 @@ class Observer
      * @param \Magento\Framework\Object\Copy $objectCopyService
      */
     public function __construct(
-        \Magento\Core\Helper\Data $coreData,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Downloadable\Model\Link\PurchasedFactory $purchasedFactory,
         \Magento\Catalog\Model\ProductFactory $productFactory,
@@ -78,7 +72,6 @@ class Observer
         \Magento\Downloadable\Model\Resource\Link\Purchased\Item\CollectionFactory $itemsFactory,
         \Magento\Framework\Object\Copy $objectCopyService
     ) {
-        $this->_helper = $coreData;
         $this->_scopeConfig = $scopeConfig;
         $this->_purchasedFactory = $purchasedFactory;
         $this->_productFactory = $productFactory;
@@ -111,6 +104,8 @@ class Observer
      *
      * @param \Magento\Framework\Object $observer
      * @return $this
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     public function saveDownloadableOrderItem($observer)
     {
@@ -230,6 +225,8 @@ class Observer
      *
      * @param \Magento\Framework\Object $observer
      * @return $this
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     public function setLinkStatus($observer)
     {
@@ -352,7 +349,7 @@ class Observer
             return $this;
         }
 
-        /* @var $quote \Magento\Sales\Model\Quote */
+        /* @var $quote \Magento\Quote\Model\Quote */
         $quote = $observer->getEvent()->getQuote();
 
         foreach ($quote->getAllItems() as $item) {

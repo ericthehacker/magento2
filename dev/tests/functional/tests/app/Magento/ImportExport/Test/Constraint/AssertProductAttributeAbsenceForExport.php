@@ -9,7 +9,7 @@ namespace Magento\ImportExport\Test\Constraint;
 use Magento\Catalog\Test\Fixture\CatalogProductAttribute;
 use Magento\ImportExport\Test\Fixture\ImportExport;
 use Magento\ImportExport\Test\Page\Adminhtml\AdminExportIndex;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertAbsenceProductAttributeForExport
@@ -17,10 +17,6 @@ use Mtf\Constraint\AbstractConstraint;
  */
 class AssertProductAttributeAbsenceForExport extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'high';
-    /* end tags */
-
     /**
      * Assert that deleted attribute can't be used for Products' Export
      *

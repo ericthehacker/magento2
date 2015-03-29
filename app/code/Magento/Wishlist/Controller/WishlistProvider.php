@@ -55,6 +55,7 @@ class WishlistProvider implements WishlistProviderInterface
 
     /**
      * {@inheritdoc}
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function getWishlist($wishlistId = null)
     {
@@ -80,7 +81,7 @@ class WishlistProvider implements WishlistProviderInterface
 
             if (!$wishlist->getId() || $wishlist->getCustomerId() != $customerId) {
                 throw new \Magento\Framework\Exception\NoSuchEntityException(
-                    __("The requested wish list doesn't exist.")
+                    __('The requested wish list doesn\'t exist.')
                 );
             }
         } catch (\Magento\Framework\Exception\NoSuchEntityException $e) {

@@ -7,7 +7,7 @@
 namespace Magento\Sales\Test\Constraint;
 
 use Magento\Sales\Test\Page\Adminhtml\OrderStatusNew;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertOrderStatusDuplicateStatus
@@ -15,10 +15,6 @@ use Mtf\Constraint\AbstractConstraint;
  */
 class AssertOrderStatusDuplicateStatus extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'high';
-    /* end tags */
-
     const DUPLICATE_MESSAGE = 'We found another order status with the same order status code.';
 
     /**

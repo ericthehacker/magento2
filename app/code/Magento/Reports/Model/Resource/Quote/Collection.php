@@ -4,6 +4,8 @@
  * See COPYING.txt for license details.
  */
 
+// @codingStandardsIgnoreFile
+
 /**
  * Reports quote collection
  *
@@ -11,7 +13,7 @@
  */
 namespace Magento\Reports\Model\Resource\Quote;
 
-class Collection extends \Magento\Sales\Model\Resource\Quote\Collection
+class Collection extends \Magento\Quote\Model\Resource\Quote\Collection
 {
     const SELECT_COUNT_SQL_TYPE_CART = 1;
 
@@ -45,7 +47,7 @@ class Collection extends \Magento\Sales\Model\Resource\Quote\Collection
     protected $_customerResource;
 
     /**
-     * @param \Magento\Core\Model\EntityFactory $entityFactory
+     * @param \Magento\Framework\Data\Collection\EntityFactory $entityFactory
      * @param \Psr\Log\LoggerInterface $logger
      * @param \Magento\Framework\Data\Collection\Db\FetchStrategyInterface $fetchStrategy
      * @param \Magento\Framework\Event\ManagerInterface $eventManager
@@ -55,7 +57,7 @@ class Collection extends \Magento\Sales\Model\Resource\Quote\Collection
      * @param \Magento\Framework\Model\Resource\Db\AbstractDb $resource
      */
     public function __construct(
-        \Magento\Core\Model\EntityFactory $entityFactory,
+        \Magento\Framework\Data\Collection\EntityFactory $entityFactory,
         \Psr\Log\LoggerInterface $logger,
         \Magento\Framework\Data\Collection\Db\FetchStrategyInterface $fetchStrategy,
         \Magento\Framework\Event\ManagerInterface $eventManager,
@@ -96,14 +98,18 @@ class Collection extends \Magento\Sales\Model\Resource\Quote\Collection
         )->addFieldToFilter(
             'main_table.is_active',
             '1'
+        )->addFieldToFilter(
+            'main_table.customer_id',
+            ['neq' => null]
         )->addSubtotal(
             $storeIds,
-            $filter
-        )->addCustomerData(
             $filter
         )->setOrder(
             'updated_at'
         );
+        if (isset($filter['email']) || isset($filter['customer_name'])) {
+            $this->addCustomerData($filter);
+        }
         if (is_array($storeIds) && !empty($storeIds)) {
             $this->addFieldToFilter('store_id', ['in' => $storeIds]);
         }
@@ -125,20 +131,12 @@ class Collection extends \Magento\Sales\Model\Resource\Quote\Collection
         $productAttrPriceId = (int)$productAttrPrice->getAttributeId();
         $productAttrPriceTable = $productAttrPrice->getBackend()->getTable();
 
-        $ordersSubSelect = clone $this->getSelect();
-        $ordersSubSelect->reset()->from(
-            ['oi' => $this->getTable('sales_order_item')],
-            ['orders' => new \Zend_Db_Expr('COUNT(1)'), 'product_id']
-        )->group(
-            'oi.product_id'
-        );
-
         $this->getSelect()->useStraightJoin(
             true
         )->reset(
             \Zend_Db_Select::COLUMNS
         )->joinInner(
-            ['quote_items' => $this->getTable('sales_quote_item')],
+            ['quote_items' => $this->getTable('quote_item')],
             'quote_items.quote_id = main_table.entity_id',
             null
         )->joinInner(
@@ -147,15 +145,16 @@ class Collection extends \Magento\Sales\Model\Resource\Quote\Collection
             null
         )->joinInner(
             ['product_name' => $productAttrNameTable],
-            "product_name.entity_id = e.entity_id\n                AND product_name.attribute_id = {$productAttrNameId}\n                AND product_name.store_id = " .
-            \Magento\Store\Model\Store::DEFAULT_STORE_ID,
+            'product_name.entity_id = e.entity_id'
+                . ' AND product_name.attribute_id = ' . $productAttrNameId
+                . ' AND product_name.store_id = ' . \Magento\Store\Model\Store::DEFAULT_STORE_ID,
             ['name' => 'product_name.value']
         )->joinInner(
             ['product_price' => $productAttrPriceTable],
             "product_price.entity_id = e.entity_id AND product_price.attribute_id = {$productAttrPriceId}",
             ['price' => new \Zend_Db_Expr('product_price.value * main_table.base_to_global_rate')]
         )->joinLeft(
-            ['order_items' => new \Zend_Db_Expr(sprintf('(%s)', $ordersSubSelect))],
+            ['order_items' => new \Zend_Db_Expr(sprintf('(%s)', $this->getOrdersSubSelect()))],
             'order_items.product_id = e.entity_id',
             []
         )->columns(
@@ -175,6 +174,24 @@ class Collection extends \Magento\Sales\Model\Resource\Quote\Collection
     }
 
     /**
+     * Orders quantity subselect
+     *
+     * @return \Magento\Framework\DB\Select
+     */
+    protected function getOrdersSubSelect()
+    {
+        $ordersSubSelect = clone $this->getSelect();
+        $ordersSubSelect->reset()->from(
+            ['oi' => $this->getTable('sales_order_item')],
+            ['orders' => new \Zend_Db_Expr('COUNT(1)'), 'product_id']
+        )->group(
+            'oi.product_id'
+        );
+
+        return $ordersSubSelect;
+    }
+
+    /**
      * Add store ids to filter
      *
      * @param array $storeIds
@@ -189,64 +206,25 @@ class Collection extends \Magento\Sales\Model\Resource\Quote\Collection
     /**
      * Add customer data
      *
-     * @param unknown_type $filter
+     * @param array|null $filter
      * @return $this
      */
     public function addCustomerData($filter = null)
     {
-        $attrFirstname = $this->_customerResource->getAttribute('firstname');
-        $attrFirstnameId = (int)$attrFirstname->getAttributeId();
-        $attrFirstnameTableName = $attrFirstname->getBackend()->getTable();
-
-        $attrLastname = $this->_customerResource->getAttribute('lastname');
-        $attrLastnameId = (int)$attrLastname->getAttributeId();
-        $attrLastnameTableName = $attrLastname->getBackend()->getTable();
-
-        $attrEmail = $this->_customerResource->getAttribute('email');
-        $attrEmailTableName = $attrEmail->getBackend()->getTable();
-
-        $adapter = $this->getSelect()->getAdapter();
-        $customerName = $adapter->getConcatSql(['cust_fname.value', 'cust_lname.value'], ' ');
-        $this->getSelect()->joinInner(
-            ['cust_email' => $attrEmailTableName],
-            'cust_email.entity_id = main_table.customer_id',
-            ['email' => 'cust_email.email']
-        )->joinInner(
-            ['cust_fname' => $attrFirstnameTableName],
-            implode(
-                ' AND ',
-                [
-                    'cust_fname.entity_id = main_table.customer_id',
-                    $adapter->quoteInto('cust_fname.attribute_id = ?', (int)$attrFirstnameId)
-                ]
-            ),
-            ['firstname' => 'cust_fname.value']
-        )->joinInner(
-            ['cust_lname' => $attrLastnameTableName],
-            implode(
-                ' AND ',
-                [
-                    'cust_lname.entity_id = main_table.customer_id',
-                    $adapter->quoteInto('cust_lname.attribute_id = ?', (int)$attrLastnameId)
-                ]
-            ),
-            ['lastname' => 'cust_lname.value', 'customer_name' => $customerName]
-        );
-
-        $this->_joinedFields['customer_name'] = $customerName;
-        $this->_joinedFields['email'] = 'cust_email.email';
-
-        if ($filter) {
-            if (isset($filter['customer_name'])) {
-                $likeExpr = '%' . $filter['customer_name'] . '%';
-                $this->getSelect()->where($this->_joinedFields['customer_name'] . ' LIKE ?', $likeExpr);
-            }
-            if (isset($filter['email'])) {
-                $likeExpr = '%' . $filter['email'] . '%';
-                $this->getSelect()->where($this->_joinedFields['email'] . ' LIKE ?', $likeExpr);
-            }
+        $customersSelect = $this->_customerResource->getReadConnection()->select();
+        $customersSelect->from(['customer' => 'customer_entity'], 'entity_id');
+        if (isset($filter['customer_name'])) {
+            $customersSelect = $this->getCustomerNames($customersSelect);
+            $customerName = $customersSelect->getAdapter()->getConcatSql(['cust_fname.value', 'cust_lname.value'], ' ');
+            $customersSelect->where(
+                $customerName . ' LIKE ?', '%' . $filter['customer_name'] . '%'
+            );
         }
-
+        if (isset($filter['email'])) {
+            $customersSelect->where('customer.email LIKE ?', '%' . $filter['email'] . '%');
+        }
+        $filteredCustomers = $this->_customerResource->getReadConnection()->fetchCol($customersSelect);
+        $this->getSelect()->where('main_table.customer_id IN (?)', $filteredCustomers);
         return $this;
     }
 
@@ -311,5 +289,58 @@ class Collection extends \Magento\Sales\Model\Resource\Quote\Collection
         }
 
         return $countSelect;
+    }
+
+    /**
+     * @param \Magento\Framework\DB\Select $select
+     * @return \Magento\Framework\DB\Select
+     */
+    protected function getCustomerNames($select)
+    {
+        $attrFirstname = $this->_customerResource->getAttribute('firstname');
+        $attrFirstnameId = (int)$attrFirstname->getAttributeId();
+        $attrFirstnameTableName = $attrFirstname->getBackend()->getTable();
+        $attrLastname = $this->_customerResource->getAttribute('lastname');
+        $attrLastnameId = (int)$attrLastname->getAttributeId();
+        $attrLastnameTableName = $attrLastname->getBackend()->getTable();
+        $select->joinInner(
+            ['cust_fname' => $attrFirstnameTableName],
+            'customer.entity_id = cust_fname.entity_id',
+            ['firstname' => 'cust_fname.value']
+        )->joinInner(
+            ['cust_lname' => $attrLastnameTableName],
+            'customer.entity_id = cust_lname.entity_id',
+            ['lastname' => 'cust_lname.value']
+        )->where(
+            'cust_fname.attribute_id = ?', (int)$attrFirstnameId
+        )->where(
+            'cust_lname.attribute_id = ?', (int)$attrLastnameId
+        );
+        return $select;
+    }
+
+    /**
+     * Resolve customers data based on ids quote table.
+     *
+     * @return void
+     */
+    public function resolveCustomerNames()
+    {
+        $select = $this->_customerResource->getReadConnection()->select();
+        $customerName = $select->getAdapter()->getConcatSql(['cust_fname.value', 'cust_lname.value'], ' ');
+
+        $select->from(
+            ['customer' => 'customer_entity']
+        )->columns(
+            ['customer_name' => $customerName]
+        )->where(
+            'customer.entity_id IN (?)', array_column($this->getData(), 'customer_id')
+        );
+        $customersData = $select->getAdapter()->fetchAll($this->getCustomerNames($select));
+
+        foreach($this->getItems() as $item) {
+            $item->setData(array_merge($item->getData(), current($customersData)));
+            next($customersData);
+        }
     }
 }

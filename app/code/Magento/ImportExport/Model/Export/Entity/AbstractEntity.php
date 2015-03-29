@@ -11,6 +11,8 @@ use Magento\ImportExport\Model\Export\Adapter\AbstractAdapter;
  * Export entity abstract model
  *
  * @author      Magento Core Team <core@magentocommerce.com>
+ * @SuppressWarnings(PHPMD.TooManyFields)
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 abstract class AbstractEntity
 {
@@ -244,6 +246,7 @@ abstract class AbstractEntity
      *
      * @param \Magento\Eav\Model\Entity\Collection\AbstractCollection $collection
      * @return \Magento\Eav\Model\Entity\Collection\AbstractCollection
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     protected function _prepareEntityCollection(\Magento\Eav\Model\Entity\Collection\AbstractCollection $collection)
     {
@@ -280,11 +283,11 @@ abstract class AbstractEntity
                         $to = array_shift($exportFilter[$attrCode]);
 
                         if (is_scalar($from) && !empty($from)) {
-                            $date = $this->_localeDate->date($from, null, null, false)->toString('MM/dd/YYYY');
+                            $date = (new \DateTime($from))->format('m/d/Y');
                             $collection->addAttributeToFilter($attrCode, ['from' => $date, 'date' => true]);
                         }
                         if (is_scalar($to) && !empty($to)) {
-                            $date = $this->_localeDate->date($to, null, null, false)->toString('MM/dd/YYYY');
+                            $date = (new \DateTime($to))->format('m/d/Y');
                             $collection->addAttributeToFilter($attrCode, ['to' => $date, 'date' => true]);
                         }
                     }
@@ -490,12 +493,12 @@ abstract class AbstractEntity
      * Inner writer object getter.
      *
      * @return AbstractAdapter
-     * @throws \Magento\Framework\Model\Exception
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function getWriter()
     {
         if (!$this->_writer) {
-            throw new \Magento\Framework\Model\Exception(__('Please specify writer.'));
+            throw new \Magento\Framework\Exception\LocalizedException(__('Please specify writer.'));
         }
         return $this->_writer;
     }

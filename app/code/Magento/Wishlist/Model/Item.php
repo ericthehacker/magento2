@@ -3,6 +3,9 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
+
+// @codingStandardsIgnoreFile
+
 namespace Magento\Wishlist\Model;
 
 use Magento\Catalog\Api\ProductRepositoryInterface;
@@ -12,6 +15,7 @@ use Magento\Framework\Model\AbstractModel;
 use Magento\Wishlist\Model\Item\Option;
 use Magento\Wishlist\Model\Item\OptionFactory;
 use Magento\Wishlist\Model\Resource\Item\Option\CollectionFactory;
+use Magento\Catalog\Model\Product\Exception as ProductException;
 
 /**
  * Wishlist item model
@@ -27,6 +31,7 @@ use Magento\Wishlist\Model\Resource\Item\Option\CollectionFactory;
  * @method \Magento\Wishlist\Model\Item setAddedAt(string $value)
  * @method string getDescription()
  * @method \Magento\Wishlist\Model\Item setDescription(string $value)
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Item extends AbstractModel implements ItemInterface
 {
@@ -132,6 +137,7 @@ class Item extends AbstractModel implements ItemInterface
      * @param \Magento\Framework\Model\Resource\AbstractResource $resource
      * @param \Magento\Framework\Data\Collection\Db $resourceCollection
      * @param array $data
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         \Magento\Framework\Model\Context $context,
@@ -215,14 +221,16 @@ class Item extends AbstractModel implements ItemInterface
      *
      * @param   Option $option
      * @return  $this
-     * @throws \Magento\Framework\Model\Exception
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     protected function _addOptionCode($option)
     {
         if (!isset($this->_optionsByCode[$option->getCode()])) {
             $this->_optionsByCode[$option->getCode()] = $option;
         } else {
-            throw new \Magento\Framework\Model\Exception(__('An item option with code %1 already exists.', $option->getCode()));
+            throw new \Magento\Framework\Exception\LocalizedException(
+                __('An item option with code %1 already exists.', $option->getCode())
+            );
         }
         return $this;
     }
@@ -301,15 +309,15 @@ class Item extends AbstractModel implements ItemInterface
      * Validate wish list item data
      *
      * @return bool
-     * @throws \Magento\Framework\Model\Exception
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function validate()
     {
         if (!$this->getWishlistId()) {
-            throw new \Magento\Framework\Model\Exception(__('We can\'t specify a wish list.'));
+            throw new \Magento\Framework\Exception\LocalizedException(__('We can\'t specify a wish list.'));
         }
         if (!$this->getProductId()) {
-            throw new \Magento\Framework\Model\Exception(__('Cannot specify product.'));
+            throw new \Magento\Framework\Exception\LocalizedException(__('Cannot specify product.'));
         }
 
         return true;
@@ -360,7 +368,7 @@ class Item extends AbstractModel implements ItemInterface
     /**
      * Retrieve item product instance
      *
-     * @throws \Magento\Framework\Model\Exception
+     * @throws \Magento\Framework\Exception\LocalizedException
      * @return \Magento\Catalog\Model\Product
      */
     public function getProduct()
@@ -368,12 +376,12 @@ class Item extends AbstractModel implements ItemInterface
         $product = $this->_getData('product');
         if (is_null($product)) {
             if (!$this->getProductId()) {
-                throw new \Magento\Framework\Model\Exception(__('Cannot specify product.'));
+                throw new \Magento\Framework\Exception\LocalizedException(__('Cannot specify product.'));
             }
             try {
                 $product = $this->productRepository->getById($this->getProductId(), false, $this->getStoreId());
             } catch (NoSuchEntityException $e) {
-                throw new \Magento\Framework\Model\Exception(__('Cannot specify product.'), 0, $e);
+                throw new \Magento\Framework\Exception\LocalizedException(__('Cannot specify product.'), $e);
             }
             $this->setData('product', $product);
         }
@@ -395,7 +403,7 @@ class Item extends AbstractModel implements ItemInterface
      * @param \Magento\Checkout\Model\Cart $cart
      * @param bool $delete  delete the item after successful add to cart
      * @return bool
-     * @throws \Magento\Framework\Model\Exception
+     * @throws \Magento\Catalog\Model\Product\Exception
      */
     public function addToCart(\Magento\Checkout\Model\Cart $cart, $delete = false)
     {
@@ -423,7 +431,7 @@ class Item extends AbstractModel implements ItemInterface
         }
 
         if (!$product->isSalable()) {
-            throw new \Magento\Framework\Model\Exception(null, self::EXCEPTION_CODE_NOT_SALABLE);
+            throw new ProductException(__('Product is not salable.'));
         }
 
         $buyRequest = $this->getBuyRequest();
@@ -648,7 +656,7 @@ class Item extends AbstractModel implements ItemInterface
      *
      * @param   Option|\Magento\Framework\Object|array $option
      * @return  $this
-     * @throws \Magento\Framework\Model\Exception
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function addOption($option)
     {
@@ -661,7 +669,7 @@ class Item extends AbstractModel implements ItemInterface
                ->setProduct($option->getProduct())
                ->setItem($this);
         } else {
-            throw new \Magento\Framework\Model\Exception(__('Invalid item option format.'));
+            throw new \Magento\Framework\Exception\LocalizedException(__('Invalid item option format.'));
         }
 
         $exOption = $this->getOptionByCode($option->getCode());

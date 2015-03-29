@@ -8,6 +8,7 @@ namespace Magento\Catalog\Model\Indexer\Product\Price;
 /**
  * Abstract action reindex class
  *
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 abstract class AbstractAction
 {
@@ -336,7 +337,7 @@ abstract class AbstractAction
      */
     public function getTypeIndexers()
     {
-        if (is_null($this->_indexers)) {
+        if ($this->_indexers === null) {
             $this->_indexers = [];
             $types = $this->_catalogProductType->getTypesByPriority();
             foreach ($types as $typeId => $typeInfo) {
@@ -409,7 +410,7 @@ abstract class AbstractAction
      */
     protected function _useIdxTable($value = null)
     {
-        if (!is_null($value)) {
+        if ($value !== null) {
             $this->_useIdxTable = (bool)$value;
         }
         return $this->_useIdxTable;
@@ -444,6 +445,7 @@ abstract class AbstractAction
      *
      * @param array $changedIds
      * @return array Affected ids
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     protected function _reindexRows($changedIds = [])
     {

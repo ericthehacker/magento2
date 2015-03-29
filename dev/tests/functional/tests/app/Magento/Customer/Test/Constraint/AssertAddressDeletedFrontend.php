@@ -7,7 +7,7 @@
 namespace Magento\Customer\Test\Constraint;
 
 use Magento\Customer\Test\Page\CustomerAccountIndex;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertAddressDeletedFrontend
@@ -15,10 +15,6 @@ use Mtf\Constraint\AbstractConstraint;
  */
 class AssertAddressDeletedFrontend extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Expected message
      */

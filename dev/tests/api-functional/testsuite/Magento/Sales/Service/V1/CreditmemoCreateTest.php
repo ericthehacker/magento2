@@ -3,10 +3,12 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
+
+// @codingStandardsIgnoreFile
+
 namespace Magento\Sales\Service\V1;
 
 use Magento\TestFramework\TestCase\WebapiAbstract;
-use Magento\Webapi\Model\Rest\Config;
 
 /**
  * Class CreditmemoCreateTest
@@ -42,12 +44,12 @@ class CreditmemoCreateTest extends WebapiAbstract
         /** @var \Magento\Sales\Model\Order\Item $orderItem */
         $orderItem = current($order->getAllItems());
         $items = [
-            $orderItem->getId() => ['qty' => $orderItem->getQtyInvoiced(), 'order_item_id' => $orderItem->getId()],
+            $orderItem->getId() => ['order_item_id' => $orderItem->getId(), 'qty' => $orderItem->getQtyInvoiced()],
         ];
         $serviceInfo = [
             'rest' => [
                 'resourcePath' => self::RESOURCE_PATH,
-                'httpMethod' => Config::HTTP_METHOD_POST,
+                'httpMethod' => \Magento\Framework\Webapi\Rest\Request::HTTP_METHOD_POST,
             ],
             'soap' => [
                 'service' => self::SERVICE_READ_NAME,

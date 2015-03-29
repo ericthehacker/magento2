@@ -123,6 +123,8 @@ class Cache
      * @param array|string $tags
      * @return string
      * @throws \Magento\Framework\Exception
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     public function save($object, $idx = null, $tags = null)
     {
@@ -132,18 +134,18 @@ class Cache
         }
 
         $hash = spl_object_hash($object);
-        if (!is_null($idx) && strpos($idx, '{')) {
+        if ($idx !== null && strpos($idx, '{')) {
             $idx = str_replace('{hash}', $hash, $idx);
         }
         if (isset($this->_hashes[$hash])) {
             //throw new \Exception('test');
-            if (!is_null($idx)) {
+            if ($idx !== null) {
                 $this->_references[$idx] = $this->_hashes[$hash];
             }
             return $this->_hashes[$hash];
         }
 
-        if (is_null($idx)) {
+        if ($idx === null) {
             $idx = '#' . ++$this->_idx;
         }
 
@@ -274,6 +276,7 @@ class Cache
      *
      * @param array|string $tags
      * @return true
+     * @SuppressWarnings(PHPMD.UnusedLocalVariable)
      */
     public function deleteByTags($tags)
     {
@@ -348,6 +351,7 @@ class Cache
      *
      * @param array|string $tags
      * @return array
+     * @SuppressWarnings(PHPMD.UnusedLocalVariable)
      */
     public function findByTags($tags)
     {
@@ -389,6 +393,7 @@ class Cache
      * @param string $idx
      * @param object|null $object
      * @return void
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function debug($idx, $object = null)
     {

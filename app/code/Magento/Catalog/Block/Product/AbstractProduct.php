@@ -7,6 +7,8 @@ namespace Magento\Catalog\Block\Product;
 
 /**
  * Class AbstractProduct
+ * @SuppressWarnings(PHPMD.NumberOfChildren)
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class AbstractProduct extends \Magento\Framework\View\Element\Template
 {
@@ -249,7 +251,7 @@ class AbstractProduct extends \Magento\Framework\View\Element\Template
      */
     public function getImageLabel($product = null, $mediaAttributeCode = 'image')
     {
-        if (is_null($product)) {
+        if ($product === null) {
             $product = $this->getProduct();
         }
 
@@ -377,6 +379,7 @@ class AbstractProduct extends \Magento\Framework\View\Element\Template
      *
      * @param \Magento\Catalog\Model\Product $product
      * @return bool
+     * @SuppressWarnings(PHPMD.BooleanGetMethodName)
      */
     public function getCanShowProductPrice($product)
     {
@@ -581,5 +584,18 @@ class AbstractProduct extends \Magento\Framework\View\Element\Template
             $price = $priceRender->render($priceType, $product, $arguments);
         }
         return $price;
+    }
+
+    /**
+     * Whether redirect to cart enabled
+     *
+     * @return bool
+     */
+    public function isRedirectToCartEnabled()
+    {
+        return $this->_scopeConfig->getValue(
+            'checkout/cart/redirect_to_cart',
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+        );
     }
 }

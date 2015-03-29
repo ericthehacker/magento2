@@ -6,9 +6,9 @@
 
 namespace Magento\Downloadable\Test\Block\Catalog\Product;
 
-use Magento\Downloadable\Test\Fixture\DownloadableProductInjectable;
-use Mtf\Client\Element\Locator;
-use Mtf\Fixture\FixtureInterface;
+use Magento\Downloadable\Test\Fixture\DownloadableProduct;
+use Magento\Mtf\Client\Locator;
+use Magento\Mtf\Fixture\FixtureInterface;
 
 /**
  * Class View
@@ -68,7 +68,7 @@ class View extends \Magento\Catalog\Test\Block\Product\View
      */
     public function fillOptions(FixtureInterface $product)
     {
-        /** @var DownloadableProductInjectable $product */
+        /** @var DownloadableProduct $product */
         $productData = $product->getData();
         $downloadableLinks = isset($productData['downloadable_links']['downloadable']['link'])
             ? $productData['downloadable_links']['downloadable']['link']

@@ -7,7 +7,7 @@
 -->
 <tabs>
     <product-details>
-        <class>\Magento\Catalog\Test\Block\Adminhtml\Product\Edit\ProductTab</class>
+        <class>\Magento\Catalog\Test\Block\Adminhtml\Product\Edit\Tab\ProductDetails</class>
         <selector>#product_info_tabs_product-details</selector>
         <strategy>css selector</strategy>
         <wrapper>product</wrapper>
@@ -162,7 +162,7 @@
             <type>
                 <selector>.field [id$='_type']</selector>
                 <strategy>css selector</strategy>
-                <input>strictselect</input>
+                <input>optgroupselect</input>
             </type>
         </fields>
     </customer-options>

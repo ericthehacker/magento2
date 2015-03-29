@@ -9,9 +9,9 @@ namespace Magento\GroupedProduct\Test\Constraint;
 use Magento\Catalog\Test\Constraint\AssertPriceOnProductPageInterface;
 use Magento\Catalog\Test\Fixture\CatalogProductSimple;
 use Magento\Catalog\Test\Page\Product\CatalogProductView;
-use Magento\GroupedProduct\Test\Fixture\GroupedProductInjectable;
-use Mtf\Client\Browser;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\GroupedProduct\Test\Fixture\GroupedProduct;
+use Magento\Mtf\Client\BrowserInterface;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Assert that displayed grouped price on product page equals passed from fixture.
@@ -35,18 +35,18 @@ abstract class AbstractAssertPriceOnGroupedProductPage extends AbstractConstrain
     /**
      * Verify product price on grouped product view page
      *
-     * @param GroupedProductInjectable $product
+     * @param GroupedProduct $product
      * @param CatalogProductView $catalogProductView
      * @param AssertPriceOnProductPageInterface $object
-     * @param Browser $browser
+     * @param BrowserInterface $browser
      * @param string $typePrice [optional]
      * @return bool|string
      */
     protected function processAssertPrice(
-        GroupedProductInjectable $product,
+        GroupedProduct $product,
         CatalogProductView $catalogProductView,
         AssertPriceOnProductPageInterface $object,
-        Browser $browser,
+        BrowserInterface $browser,
         $typePrice = ''
     ) {
         $browser->open($_ENV['app_frontend_url'] . $product->getUrlKey() . '.html');

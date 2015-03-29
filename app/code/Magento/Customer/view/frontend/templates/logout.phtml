@@ -5,13 +5,13 @@
  */
 ?>
 <p><?php echo __('You have logged out and will be redirected to our homepage in 5 seconds.') ?></p>
-<script type="text/javascript">
+<script>
 require([
 	"jquery",
 	"mage/mage"
 ], function($){
 
-   	$($.mage.redirect("<?php echo $this->getUrl() ?>", "assign", 5000));
+   	$($.mage.redirect("<?php echo $block->getUrl() ?>", "assign", 5000));
 
 });
 </script>

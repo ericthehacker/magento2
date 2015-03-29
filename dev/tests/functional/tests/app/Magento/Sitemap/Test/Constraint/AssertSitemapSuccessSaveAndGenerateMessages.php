@@ -8,17 +8,13 @@ namespace Magento\Sitemap\Test\Constraint;
 
 use Magento\Sitemap\Test\Fixture\Sitemap;
 use Magento\Sitemap\Test\Page\Adminhtml\SitemapIndex;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertSitemapSuccessSaveAndGenerateMessages
  */
 class AssertSitemapSuccessSaveAndGenerateMessages extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     const SUCCESS_GENERATE_MESSAGE = 'The sitemap "%s" has been generated.';
 
     const SUCCESS_SAVE_MESSAGE = 'The sitemap has been saved.';

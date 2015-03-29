@@ -8,7 +8,7 @@ namespace Magento\Integration\Test\Constraint;
 
 use Magento\Integration\Test\Fixture\Integration;
 use Magento\Integration\Test\Page\Adminhtml\IntegrationIndex;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertIntegrationSuccessDeleteMessage
@@ -16,10 +16,6 @@ use Mtf\Constraint\AbstractConstraint;
  */
 class AssertIntegrationSuccessDeleteMessage extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     const SUCCESS_DELETE_MESSAGE = "The integration '%s' has been deleted.";
 
     /**

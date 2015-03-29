@@ -7,19 +7,15 @@
 namespace Magento\Catalog\Test\Constraint;
 
 use Magento\Cms\Test\Page\CmsIndex;
-use Mtf\Client\Browser;
-use Mtf\Constraint\AbstractConstraint;
-use Mtf\Fixture\FixtureFactory;
+use Magento\Mtf\Client\BrowserInterface;
+use Magento\Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Fixture\FixtureFactory;
 
 /**
  * Class AssertProductCompareBlockOnCmsPage
  */
 class AssertProductCompareBlockOnCmsPage extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Assert that Compare Products block is presented on CMS pages.
      * Block contains information about compared products
@@ -27,11 +23,15 @@ class AssertProductCompareBlockOnCmsPage extends AbstractConstraint
      * @param array $products
      * @param CmsIndex $cmsIndex
      * @param FixtureFactory $fixtureFactory
-     * @param Browser $browser
+     * @param BrowserInterface $browser
      * @return void
      */
-    public function processAssert(array $products, CmsIndex $cmsIndex, FixtureFactory $fixtureFactory, Browser $browser)
-    {
+    public function processAssert(
+        array $products,
+        CmsIndex $cmsIndex,
+        FixtureFactory $fixtureFactory,
+        BrowserInterface $browser
+    ) {
         $newCmsPage = $fixtureFactory->createByCode('cmsPage', ['dataSet' => '3_column_template']);
         $newCmsPage->persist();
         $browser->open($_ENV['app_frontend_url'] . $newCmsPage->getIdentifier());

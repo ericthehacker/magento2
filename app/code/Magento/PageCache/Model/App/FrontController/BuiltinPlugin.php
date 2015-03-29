@@ -57,6 +57,7 @@ class BuiltinPlugin
      * @param callable $proceed
      * @param \Magento\Framework\App\RequestInterface $request
      * @return \Magento\Framework\Controller\ResultInterface|\Magento\Framework\App\Response\Http
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function aroundDispatch(
         \Magento\Framework\App\FrontControllerInterface $subject,
@@ -88,7 +89,7 @@ class BuiltinPlugin
      */
     protected function addDebugHeaders(ResponseHttp $result)
     {
-        $cacheControl = $result->getHeader('Cache-Control')['value'];
+        $cacheControl = $result->getHeader('Cache-Control')->getFieldValue();
         $this->addDebugHeader($result, 'X-Magento-Cache-Control', $cacheControl);
         $this->addDebugHeader($result, 'X-Magento-Cache-Debug', 'MISS', true);
         return $result;

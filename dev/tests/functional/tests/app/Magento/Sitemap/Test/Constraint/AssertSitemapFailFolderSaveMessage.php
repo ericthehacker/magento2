@@ -8,17 +8,13 @@ namespace Magento\Sitemap\Test\Constraint;
 
 use Magento\Sitemap\Test\Fixture\Sitemap;
 use Magento\Sitemap\Test\Page\Adminhtml\SitemapIndex;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertSitemapFailFolderSaveMessage
  */
 class AssertSitemapFailFolderSaveMessage extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     const FAIL_FOLDER_MESSAGE = 'Please create the specified folder "%s" before saving the sitemap.';
 
     /**

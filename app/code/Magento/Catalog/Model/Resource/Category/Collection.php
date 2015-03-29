@@ -151,7 +151,7 @@ class Collection extends \Magento\Catalog\Model\Resource\Collection\AbstractColl
      */
     public function getProductStoreId()
     {
-        if (is_null($this->_productStoreId)) {
+        if ($this->_productStoreId === null) {
             $this->_productStoreId = \Magento\Store\Model\Store::DEFAULT_STORE_ID;
         }
         return $this->_productStoreId;
@@ -201,6 +201,8 @@ class Collection extends \Magento\Catalog\Model\Resource\Collection\AbstractColl
      * @param boolean $countRegular get product count for regular (non-anchor) categories
      * @param boolean $countAnchor get product count for anchor categories
      * @return $this
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.UnusedLocalVariable)
      */
     public function loadProductCount($items, $countRegular = true, $countAnchor = true)
     {

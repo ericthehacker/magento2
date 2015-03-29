@@ -71,7 +71,7 @@ class Stock
      */
     public function assignStatusToProduct(\Magento\Catalog\Model\Product $product, $stockStatus = null)
     {
-        if (is_null($stockStatus)) {
+        if ($stockStatus === null) {
             $websiteId = $product->getStore()->getWebsiteId();
             $stockStatus = $this->stockRegistry->getStockStatus($product->getId(), $websiteId);
             $status = $stockStatus->getStockStatus();
@@ -84,6 +84,7 @@ class Stock
      *
      * @param \Magento\Catalog\Model\Resource\Collection\AbstractCollection $productCollection
      * @return void
+     * @SuppressWarnings(PHPMD.UnusedLocalVariable)
      */
     public function addStockStatusToProducts(
         \Magento\Catalog\Model\Resource\Collection\AbstractCollection $productCollection

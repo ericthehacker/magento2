@@ -18,6 +18,7 @@ use Magento\Ui\DataProvider\Manager;
 
 /**
  * Class Listing
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Listing extends AbstractView
 {
@@ -59,6 +60,7 @@ class Listing extends AbstractView
      * @param ActionPool $actionPool
      * @param RowPool $dataProviderRowPool
      * @param array $data
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         TemplateContext $context,
@@ -145,7 +147,7 @@ class Listing extends AbstractView
         foreach ($meta['fields'] as $key => $field) {
             if ($field['data_type'] === 'date') {
                 $field['date_format'] = $this->_localeDate->getDateTimeFormat(
-                    \Magento\Framework\Stdlib\DateTime\TimezoneInterface::FORMAT_TYPE_MEDIUM
+                    \IntlDateFormatter::MEDIUM
                 );
             }
 
@@ -171,7 +173,7 @@ class Listing extends AbstractView
     {
         if ($this->hasData(static::ROW_DATA_PROVIDER_KEY)) {
             foreach ($this->getData(static::ROW_DATA_PROVIDER_KEY) as $field => $data) {
-                $dataRow[$field] = $this->dataProviderRowPool->get($data['class'])->getData($dataRow);
+                $dataRow[$field] = $this->dataProviderRowPool->get($data['class'])->getData($dataRow, $data);
             }
         }
 

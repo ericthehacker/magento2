@@ -3,6 +3,9 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
+
+// @codingStandardsIgnoreFile
+
 namespace Magento\Backend\Block\Widget\Grid;
 
 use Magento\Framework\App\Filesystem\DirectoryList;
@@ -66,7 +69,7 @@ class Export extends \Magento\Backend\Block\Widget implements \Magento\Backend\B
 
     /**
      * @return void
-     * @throws \Magento\Framework\Model\Exception
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     protected function _construct()
     {
@@ -74,7 +77,9 @@ class Export extends \Magento\Backend\Block\Widget implements \Magento\Backend\B
         if ($this->hasData('exportTypes')) {
             foreach ($this->getData('exportTypes') as $type) {
                 if (!isset($type['urlPath']) || !isset($type['label'])) {
-                    throw new \Magento\Framework\Model\Exception('Invalid export type supplied for grid export block');
+                    throw new \Magento\Framework\Exception\LocalizedException(
+                        __('Invalid export type supplied for grid export block')
+                    );
                 }
                 $this->addExportType($type['urlPath'], $type['label']);
             }
@@ -106,6 +111,7 @@ class Export extends \Magento\Backend\Block\Widget implements \Magento\Backend\B
      * Return count totals
      *
      * @return bool
+     * @SuppressWarnings(PHPMD.BooleanGetMethodName)
      */
     public function getCountTotals()
     {

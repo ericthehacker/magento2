@@ -4,6 +4,8 @@
  * See COPYING.txt for license details.
  */
 
+// @codingStandardsIgnoreFile
+
 namespace Magento\Catalog\Pricing\Price;
 
 use Magento\Catalog\Model\Product;
@@ -160,7 +162,8 @@ class TierPrice extends AbstractPrice implements TierPriceInterface, BasePricePr
         $qtyCache = [];
         foreach ($priceList as $priceKey => $price) {
             /* filter price by customer group */
-            if ($price['cust_group'] !== $this->customerGroup && $price['cust_group'] !== $this->groupManagement->getAllCustomersGroup()->getId()) {
+            if ($price['cust_group'] != $this->customerGroup &&
+                $price['cust_group'] != $this->groupManagement->getAllCustomersGroup()->getId()) {
                 unset($priceList[$priceKey]);
                 continue;
             }
@@ -250,6 +253,7 @@ class TierPrice extends AbstractPrice implements TierPriceInterface, BasePricePr
      * Get clear tier price list stored in DB
      *
      * @return array
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     protected function getStoredTierPrices()
     {

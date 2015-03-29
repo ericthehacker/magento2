@@ -9,7 +9,7 @@ namespace Magento\Catalog\Test\Constraint;
 use Magento\Catalog\Test\Fixture\CatalogAttributeSet;
 use Magento\Catalog\Test\Page\Adminhtml\CatalogProductSetEdit;
 use Magento\Catalog\Test\Page\Adminhtml\CatalogProductSetIndex;
-use Mtf\Constraint\AbstractConstraint;
+use Magento\Mtf\Constraint\AbstractConstraint;
 
 /**
  * Class AssertProductAttributeAbsenceInUnassignedAttributes
@@ -17,10 +17,6 @@ use Mtf\Constraint\AbstractConstraint;
  */
 class AssertProductAttributeAbsenceInUnassignedAttributes extends AbstractConstraint
 {
-    /* tags */
-    const SEVERITY = 'low';
-    /* end tags */
-
     /**
      * Assert that deleted attribute isn't displayed in Product template's Unassigned Attributes section
      *
