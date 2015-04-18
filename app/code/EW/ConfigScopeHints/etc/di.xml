@@ -1,8 +1,5 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../lib/internal/Magento/Framework/ObjectManager/etc/config.xsd">
-    <!--<preference for="Magento\Config\Block\System\Config\Form" type="EW\ConfigScopeHints\Block\Config\System\Config\Form" />-->
-    <!--<virtualType name="Magento\Config\Block\System\Config\Form" type="EW\ConfigScopeHints\Block\Config\System\Config\Form" />-->
-
     <type name="Magento\Config\Block\System\Config\Form">
         <plugin name="configScopeHints" type="EW\ConfigScopeHints\Model\Plugin" sortOrder="100" />
     </type>
