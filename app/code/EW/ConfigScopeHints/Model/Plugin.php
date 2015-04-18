@@ -13,19 +13,28 @@ class Plugin
         $this->_helper = $helper;
     }
 
-    public function aroundGetScopeLabel($intercepter, \Closure $getScopeLabel, Field $field)
+    public function aroundGetScopeLabel(\Magento\Config\Block\System\Config\Form $form, \Closure $getScopeLabel, Field $field)
     {
-        $overriddenLevels = $this->_helper->getOverridenLevels($field);
+        $currentScopeId = null;
+        switch($form->getScope()) {
+            case 'websites':
+                $currentScopeId = $form->getWebsiteCode();
+                break;
+            case 'stores':
+                $currentScopeId = $form->getStoreCode();
+                break;
+        }
+        $overriddenLevels = $this->_helper->getOverridenLevels($field->getPath(), $form->getScope(), $currentScopeId);
 
         /* @var $returnPhrase Phrase */
         $labelPhrase = $getScopeLabel($field);
 
-        if(empty($overriddenLevels)) {
-            $scopeHintText = $labelPhrase->getText() . ': phrase plugin text';
-        }
+        if(!empty($overriddenLevels)) {
+            $scopeHintText = $labelPhrase->getText() . $this->_helper->formatOverriddenScopes($form, $overriddenLevels);
 
-        // reconstruct phrase with new text without rendering
-        $labelPhrase = new Phrase($scopeHintText, $labelPhrase->getArguments());
+            // reconstruct phrase with new text without rendering
+            $labelPhrase = new Phrase($scopeHintText, $labelPhrase->getArguments());
+        }
 
         return $labelPhrase;
     }
