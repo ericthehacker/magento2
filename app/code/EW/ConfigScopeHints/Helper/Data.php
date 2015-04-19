@@ -11,6 +11,10 @@ class Data extends  \Magento\Framework\App\Helper\AbstractHelper
     /** @var \Magento\Store\Model\StoreManagerInterface */
     protected $_storeManger;
 
+    /**
+     * @param \Magento\Framework\App\Helper\Context $context
+     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
+     */
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
         \Magento\Store\Model\StoreManagerInterface $storeManager
@@ -19,6 +23,12 @@ class Data extends  \Magento\Framework\App\Helper\AbstractHelper
         $this->_context = $context;
     }
 
+    /**
+     * Gets store tree in a format easily walked over
+     * for config path value comparison
+     *
+     * @return array
+     */
     public function getScopeTree() {
         $tree = array('websites' => array());
 
@@ -37,10 +47,28 @@ class Data extends  \Magento\Framework\App\Helper\AbstractHelper
         return $tree;
     }
 
+    /**
+     * Wrapper method to get config value at path, scope, and scope code provided
+     *
+     * @param $path
+     * @param $contextScope
+     * @param $contextScopeId
+     * @return mixed
+     */
     protected function _getConfigValue($path, $contextScope, $contextScopeId) {
         return $this->_context->getScopeConfig()->getValue($path, $contextScope, $contextScopeId);
     }
 
+    /**
+     * Gets array of scopes and scope IDs where path value is different
+     * than supplied context scope and context scope ID.
+     * If no lower-level scopes override the value, return empty array.
+     *
+     * @param $path
+     * @param $contextScope
+     * @param $contextScopeId
+     * @return array
+     */
     public function getOverridenLevels($path, $contextScope, $contextScopeId) {
         $tree = $this->getScopeTree();
 
@@ -91,6 +119,13 @@ class Data extends  \Magento\Framework\App\Helper\AbstractHelper
         return $overridden;
     }
 
+    /**
+     * Get HTML output for override hint UI
+     *
+     * @param \Magento\Config\Block\System\Config\Form $form
+     * @param array $overridden
+     * @return string
+     */
     public function formatOverriddenScopes(\Magento\Config\Block\System\Config\Form $form, array $overridden) {
         $title = __('This setting is overridden at a more specific scope. Click for details.');
 

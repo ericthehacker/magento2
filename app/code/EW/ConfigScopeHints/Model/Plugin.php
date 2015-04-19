@@ -9,10 +9,23 @@ class Plugin
     /** @var \EW\ConfigScopeHints\Helper\Data */
     protected $_helper;
 
+    /**
+     * @param \EW\ConfigScopeHints\Helper\Data $helper
+     */
     public function __construct(\EW\ConfigScopeHints\Helper\Data $helper) {
         $this->_helper = $helper;
     }
 
+    /**
+     * Intercept core config form block getScopeLabel() method
+     * to add additional override hints.
+     *
+     * @see Magento\Config\Block\System\Config\Form::getScopeLabel()
+     * @param \Magento\Config\Block\System\Config\Form $form
+     * @param callable $getScopeLabel
+     * @param Field $field
+     * @return Phrase
+     */
     public function aroundGetScopeLabel(\Magento\Config\Block\System\Config\Form $form, \Closure $getScopeLabel, Field $field)
     {
         $currentScopeId = null;
@@ -30,9 +43,9 @@ class Plugin
         $labelPhrase = $getScopeLabel($field);
 
         if(!empty($overriddenLevels)) {
-            $scopeHintText = $labelPhrase->getText() . $this->_helper->formatOverriddenScopes($form, $overriddenLevels);
+            $scopeHintText = $labelPhrase . $this->_helper->formatOverriddenScopes($form, $overriddenLevels);
 
-            // reconstruct phrase with new text without rendering
+            // create new phrase, now that constituent strings are translated individually
             $labelPhrase = new Phrase($scopeHintText, $labelPhrase->getArguments());
         }
 
