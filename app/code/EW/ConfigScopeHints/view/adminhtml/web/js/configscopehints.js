@@ -12,7 +12,7 @@ require([
             var list = toggleLink.next('.overridden-hint-list');
             list.toggleClass('visible');
 
-            if(toggleLink.hasClassName('visible')) {
+            if(toggleLink.hasClass('visible')) {
                 toggleLink.attr('title', 'Click to close');
             } else {
                 toggleLink.attr('title', 'This setting is overridden at a more specific scope. Click for details.');
