@@ -1,16 +1,23 @@
-.overridden-hint-list-toggle {
+a.overridden-hint-list-toggle {
     display: inline-block;
     width: 16px;
     height: 16px;
     line-height: 16px;
-    background-image: url('../../../images/note_msg_icon.gif');
-
+    margin-left: 5px;
+    text-decoration: none;
+}
+a.overridden-hint-list-toggle:hover {
+    text-decoration: none;
+}
+a.overridden-hint-list-toggle > span {
     text-indent: -9999px;
     white-space: nowrap;
-    margin-left: 5px;
+    display: inline-block;
 }
-.overridden-hint-list-toggle.visible {
-    /* background-image: url('../../../images/button-close.png'); */
+a.overridden-hint-list-toggle::before{
+    color: #eb5202;
+    content: '\e623';
+    font-family: "Admin Icons";
 }
 .overridden-hint-list {
     display: none;

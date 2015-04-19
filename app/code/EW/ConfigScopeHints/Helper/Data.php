@@ -94,7 +94,7 @@ class Data extends  \Magento\Framework\App\Helper\AbstractHelper
     public function formatOverriddenScopes(\Magento\Config\Block\System\Config\Form $form, array $overridden) {
         $title = __('This setting is overridden at a more specific scope. Click for details.');
 
-        $formatted = '<a class="overridden-hint-list-toggle" title="'. $title .'" href="#">'. $title .'</a>'.
+        $formatted = '<a class="overridden-hint-list-toggle" title="'. $title .'" href="#"><span>'. $title .'</span></a>'.
             '<ul class="overridden-hint-list">';
 
         foreach($overridden as $overriddenScope) {
