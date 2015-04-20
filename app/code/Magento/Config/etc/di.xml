@@ -53,4 +53,15 @@
             <argument name="resourceCollection" xsi:type="object">Magento\Config\Model\Resource\Config\Data\Collection\Proxy</argument>
         </arguments>
     </type>
+
+    <type name="Magento\Backend\Controller\Adminhtml\Index\GlobalSearch">
+        <arguments>
+            <argument name="searchModules" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="class" xsi:type="string">Magento\Config\Model\Search\Config</item>
+                    <item name="acl" xsi:type="string">Magento_Backend::stores_settings</item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
 </config>
