@@ -14,17 +14,13 @@ class Config extends \Magento\Framework\Object
 
     /**
      * @param \Magento\Backend\Helper\Data $adminhtmlData
-     * @param \Magento\Framework\Stdlib\String $string
      * @param \Magento\Config\Model\Config\Structure\Data $configStructureData
-     * @param QueryFactory $queryFactory
      */
     public function __construct(
         \Magento\Backend\Helper\Data $adminhtmlData,
-        \Magento\Framework\Stdlib\String $string,
         \Magento\Config\Model\Config\Structure\Data $configStructureData
     ) {
         $this->_adminhtmlData = $adminhtmlData;
-        $this->_string = $string;
         $this->_configStructureData = $configStructureData->get();
     }
 
@@ -50,6 +46,7 @@ class Config extends \Magento\Framework\Object
                     continue;
                 }
                 foreach($group['children'] as $field) {
+                    //@todo: check ACL for individual field
                     $field['tab'] = $tabs[$section['tab']]['label'];
                     $field['section'] = $section['label'];
                     $field['group'] = $group['label'];
@@ -59,6 +56,10 @@ class Config extends \Magento\Framework\Object
         }
 
         foreach($fields as $field) {
+            if(count($result) >= $this->getLimit()) {
+                break;
+            }
+
             if(!isset($field['label'])) {
                 continue;
             }
@@ -84,10 +85,6 @@ class Config extends \Magento\Framework\Object
                         )
                     ),
                 ];
-
-                if(isset($field['comment'])) {
-
-                }
             }
         }
 
