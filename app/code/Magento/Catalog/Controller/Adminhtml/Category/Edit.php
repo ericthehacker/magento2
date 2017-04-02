@@ -19,11 +19,6 @@ class Edit extends \Magento\Catalog\Controller\Adminhtml\Category
     protected $resultPageFactory;
 
     /**
-     * @var \Magento\Framework\EntityManager\Operation\ExtensionPool
-     */
-    protected $extensionPool;
-
-    /**
      * @var \Magento\Store\Model\StoreManagerInterface
      */
     protected $storeManager;
@@ -33,18 +28,15 @@ class Edit extends \Magento\Catalog\Controller\Adminhtml\Category
      * @param \Magento\Backend\App\Action\Context $context
      * @param \Magento\Framework\View\Result\PageFactory $resultPageFactory
      * @param \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory
-     * @param \Magento\Framework\EntityManager\Operation\ExtensionPool $extensionPool
      */
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
         \Magento\Framework\View\Result\PageFactory $resultPageFactory,
-        \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory,
-        \Magento\Framework\EntityManager\Operation\ExtensionPool $extensionPool
+        \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory
     ) {
         parent::__construct($context);
         $this->resultPageFactory = $resultPageFactory;
         $this->resultJsonFactory = $resultJsonFactory;
-        $this->extensionPool = $extensionPool;
     }
 
     /**
@@ -80,8 +72,6 @@ class Edit extends \Magento\Catalog\Controller\Adminhtml\Category
             $this->getRequest()->setParam('id', $categoryId);
         }
 
-        // TODO: Ensure this feature is enabled in store config before running this
-        $this->loadCategoryAllScopeData();
         $category = $this->_initCategory(true);
         if (!$category || $categoryId != $category->getId() || !$category->getId()) {
             /** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
@@ -121,23 +111,6 @@ class Edit extends \Magento\Catalog\Controller\Adminhtml\Category
         }
 
         return $resultPage;
-    }
-
-    /**
-     * Ensure the "scope_data" extension attribute gets added to category
-     *
-     * @return $this
-     */
-    protected function loadCategoryAllScopeData()
-    {
-        $extensionPoolAction = [
-            'read' => [
-                'scopeDataReader' => 'Magento\Catalog\Model\ResourceModel\ReadHandler'
-            ]
-        ];
-        // TODO: Remove hard-coded interface name
-        $this->extensionPool->addAction('Magento\Catalog\Api\Data\CategoryInterface', $extensionPoolAction);
-        return $this;
     }
 
     /**

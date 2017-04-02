@@ -57,27 +57,4 @@ class ExtensionPool
         }
         return $actions;
     }
-
-    /**
-     * Add action to extension pool
-     *
-     * $action array should be in the format:
-     * [
-     *     'read' => [
-     *         'scopeDataReader' => 'Magento\Catalog\Model\ResourceModel\Category\ScopeData\ReadHandler'
-     *     ]
-     * ]
-     *
-     * @param $entityType
-     * @param array $action
-     * @return $this
-     */
-    public function addAction($entityType, array $action)
-    {
-        if (!isset($this->actions[$entityType])) {
-            $this->actions[$entityType] = [];
-        }
-        $this->actions[$entityType] = array_merge_recursive($this->actions[$entityType], $action);
-        return $this;
-    }
 }
