@@ -324,6 +324,10 @@
             <label>Admin</label>
             <tab>advanced</tab>
             <resource>Magento_Config::config_admin</resource>
+            <group id="general" translate="label" type="text" sortOrder="0" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>General</label>
+                <!-- section added to allow other modules to add general admin config fields -->
+            </group>
             <group id="emails" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
                 <label>Admin User Emails</label>
                 <field id="forgot_email_template" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
