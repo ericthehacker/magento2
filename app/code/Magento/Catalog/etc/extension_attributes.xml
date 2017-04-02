@@ -7,6 +7,9 @@
 -->
 
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Api/etc/extension_attributes.xsd">
+    <extension_attributes for="Magento\Catalog\Api\Data\CategoryInterface">
+        <attribute code="scope_data" type="array" />
+    </extension_attributes>
     <extension_attributes for="Magento\Quote\Api\Data\ProductOptionInterface">
         <attribute code="custom_options" type="Magento\Catalog\Api\Data\CustomOptionInterface[]" />
     </extension_attributes>

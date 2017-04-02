@@ -80,6 +80,8 @@ class ReadHandler implements AttributeInterface
     }
 
     /**
+     * Add attribute data for entity to entity and return it
+     *
      * @param string $entityType
      * @param array $entityData
      * @param array $arguments
@@ -90,6 +92,37 @@ class ReadHandler implements AttributeInterface
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function execute($entityType, $entityData, $arguments = [])
+    {
+        return $this->getData($entityType, $entityData, $arguments = []);
+    }
+
+    /**
+     * @param string $entityType
+     * @param array $entityData
+     * @param array $arguments
+     * @return array
+     * @throws \Exception
+     * @throws \Magento\Framework\Exception\ConfigurationMismatchException
+     * @throws \Magento\Framework\Exception\LocalizedException
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function getAllScopeData($entityType, $entityData, $arguments = [])
+    {
+        return $this->getData($entityType, $entityData, $arguments = [], true);
+    }
+
+    /**
+     * @param string $entityType
+     * @param array $entityData
+     * @param array $arguments
+     * @param bool $loadAllScopes
+     * @return array
+     * @throws \Exception
+     * @throws \Magento\Framework\Exception\ConfigurationMismatchException
+     * @throws \Magento\Framework\Exception\LocalizedException
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function getData($entityType, $entityData, $arguments = [], $loadAllScopes = false)
     {
         $metadata = $this->metadataPool->getMetadata($entityType);
         if (!$metadata->getEavEntityType()) {//todo hasCustomAttributes
@@ -112,18 +145,25 @@ class ReadHandler implements AttributeInterface
         if (count($attributeTables)) {
             $attributeTables = array_keys($attributeTables);
             foreach ($attributeTables as $attributeTable) {
+                $from = ['value' => 't.value', 'attribute_id' => 't.attribute_id'];
+                if ($loadAllScopes) {
+                    $from['store_id'] = 't.store_id';
+                }
                 $select = $connection->select()
                     ->from(
                         ['t' => $attributeTable],
-                        ['value' => 't.value', 'attribute_id' => 't.attribute_id']
+                        $from
                     )
                     ->where($metadata->getLinkField() . ' = ?', $entityData[$metadata->getLinkField()]);
-                foreach ($context as $scope) {
-                    //TODO: if (in table exists context field)
-                    $select->where(
-                        $metadata->getEntityConnection()->quoteIdentifier($scope->getIdentifier()) . ' IN (?)',
-                        $this->getContextVariables($scope)
-                    )->order('t.' . $scope->getIdentifier() . ' DESC');
+                // TODO: Clean up this code
+                if (!$loadAllScopes) {
+                    foreach ($context as $scope) {
+                        //TODO: if (in table exists context field)
+                        $select->where(
+                            $metadata->getEntityConnection()->quoteIdentifier($scope->getIdentifier()) . ' IN (?)',
+                            $this->getContextVariables($scope)
+                        )->order('t.' . $scope->getIdentifier() . ' DESC');
+                    }
                 }
                 $selects[] = $select;
             }
@@ -131,16 +171,26 @@ class ReadHandler implements AttributeInterface
                 $selects,
                 \Magento\Framework\DB\Select::SQL_UNION_ALL
             );
+
             foreach ($connection->fetchAll($unionSelect) as $attributeValue) {
                 if (isset($attributesMap[$attributeValue['attribute_id']])) {
-                    $entityData[$attributesMap[$attributeValue['attribute_id']]] = $attributeValue['value'];
+                    if ($loadAllScopes) {
+                        $scopeData[$attributesMap[$attributeValue['attribute_id']]][$attributeValue['store_id']] = $attributeValue['value'];
+                    } else {
+                        $entityData[$attributesMap[$attributeValue['attribute_id']]] = $attributeValue['value'];
+                    }
                 } else {
-                    $this->logger->warning(
-                        "Attempt to load value of nonexistent EAV attribute '{$attributeValue['attribute_id']}' 
+                    $this->getLogger()->warning(
+                        "Attempt to load value of nonexistent EAV attribute '{$attributeValue['attribute_id']}'
                         for entity type '$entityType'."
                     );
                 }
             }
+        }
+
+        // TODO: Clean up this code
+        if ($loadAllScopes) {
+            return $scopeData;
         }
         return $entityData;
     }
