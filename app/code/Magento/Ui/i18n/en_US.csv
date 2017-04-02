@@ -108,4 +108,5 @@ Ok,Ok
 "Log JS Errors to Session Storage Key","Log JS Errors to Session Storage Key"
 Action,Action
 CSV,CSV
-"Excel XML","Excel XML"
+"Excel XML","Excel XML",
+"This value is overridden at the following scope(s):","This value is overridden at the following scope(s):"

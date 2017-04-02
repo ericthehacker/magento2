@@ -36,10 +36,10 @@
             <span translate="notice"/>
         </div>
 
-        <div class="todo-make-me-a-render-tag-instead" if="$data.scopeHint" html="$data.scopeHint"></div>
-        
         <div class="admin__additional-info" if="$data.additionalInfo" html="$data.additionalInfo"></div>
 
         <render args="$data.service.template" if="$data.hasService()"/>
+
+        <render args="$data.scopeHint.template" if="$data.scopeHint"/>
     </div>
 </div>
