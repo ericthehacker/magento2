@@ -71,6 +71,16 @@ class Product extends AbstractResource
     protected $defaultAttributes;
 
     /**
+     * @var \Magento\Eav\Model\ResourceModel\ReadHandler\Attribute
+     */
+    protected $attribute;
+
+    /**
+     * @var \Magento\Framework\EntityManager\TypeResolver
+     */
+    protected $typeResolver;
+
+    /**
      * @var array
      */
     protected $availableCategoryIdsCache = [];
@@ -90,6 +100,7 @@ class Product extends AbstractResource
      * @param \Magento\Eav\Model\Entity\Attribute\SetFactory $setFactory
      * @param \Magento\Eav\Model\Entity\TypeFactory $typeFactory
      * @param \Magento\Catalog\Model\Product\Attribute\DefaultAttributes $defaultAttributes
+     * @param \Magento\Eav\Model\ResourceModel\ReadHandler\Attribute $attribute,
      * @param array $data
      *
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
@@ -104,6 +115,8 @@ class Product extends AbstractResource
         \Magento\Eav\Model\Entity\Attribute\SetFactory $setFactory,
         \Magento\Eav\Model\Entity\TypeFactory $typeFactory,
         \Magento\Catalog\Model\Product\Attribute\DefaultAttributes $defaultAttributes,
+        \Magento\Eav\Model\ResourceModel\ReadHandler\Attribute $attribute,
+        \Magento\Framework\EntityManager\TypeResolver $typeResolver,
         $data = []
     ) {
         $this->_categoryCollectionFactory = $categoryCollectionFactory;
@@ -112,6 +125,9 @@ class Product extends AbstractResource
         $this->setFactory = $setFactory;
         $this->typeFactory = $typeFactory;
         $this->defaultAttributes = $defaultAttributes;
+        $this->attribute = $attribute;
+        // TODO: remove Type Resolver
+        $this->typeResolver = $typeResolver;
         parent::__construct(
             $context,
             $storeManager,
@@ -570,6 +586,20 @@ class Product extends AbstractResource
         $this->loadAttributesMetadata($attributes);
         $this->getEntityManager()->load($object, $entityId);
         return $this;
+    }
+
+    /**
+     * @param $object
+     * @param $entityId
+     * @return array
+     * @throws \Exception
+     */
+    public function loadScopeData($object)
+    {
+        // TODO: Remove need for $entityType
+        $entityType = $this->typeResolver->resolve($object);
+        // TODO: Change getData to not require $object
+        return $this->attribute->getData($entityType, $object, $arguments = [], true);
     }
 
     /**
