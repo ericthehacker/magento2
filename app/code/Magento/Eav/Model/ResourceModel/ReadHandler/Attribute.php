@@ -8,6 +8,8 @@ namespace Magento\Eav\Model\ResourceModel\ReadHandler;
 use Magento\Framework\EntityManager\MetadataPool;
 use Magento\Framework\Model\Entity\ScopeInterface;
 use Magento\Framework\Model\Entity\ScopeResolver;
+use Magento\Framework\EntityManager\EntityMetadataInterface;
+use Magento\Framework\DB\Select;
 use Psr\Log\LoggerInterface;
 
 class Attribute
@@ -31,23 +33,31 @@ class Attribute
     private $config;
 
     /**
+     * @var \Magento\Framework\EntityManager\TypeResolver
+     */
+    protected $typeResolver;
+
+    /**
      * ReadHandler constructor.
      *
      * @param MetadataPool $metadataPool
      * @param ScopeResolver $scopeResolver
      * @param LoggerInterface $logger
      * @param \Magento\Eav\Model\Config $config
+     * @param \Magento\Framework\EntityManager\TypeResolver $typeResolver
      */
     public function __construct(
         MetadataPool $metadataPool,
         ScopeResolver $scopeResolver,
         LoggerInterface $logger,
-        \Magento\Eav\Model\Config $config
+        \Magento\Eav\Model\Config $config,
+        \Magento\Framework\EntityManager\TypeResolver $typeResolver
     ) {
         $this->metadataPool = $metadataPool;
         $this->scopeResolver = $scopeResolver;
         $this->logger = $logger;
         $this->config = $config;
+        $this->typeResolver = $typeResolver;
     }
 
     /**
@@ -76,6 +86,12 @@ class Attribute
             $data = array_merge($data, $this->getContextVariables($scope->getFallback()));
         }
         return $data;
+    }
+
+    public function getScopeData($entity)
+    {
+        $entityType = $this->typeResolver->resolve($entity);
+        return $this->getData($entityType, [], [], true);
     }
 
     /**
@@ -109,7 +125,6 @@ class Attribute
                 $attributesMap[$attribute->getAttributeId()] = $attribute->getAttributeCode();
             }
         }
-        $scopeData = [];
         if (count($attributeTables)) {
             $attributeTables = array_keys($attributeTables);
             foreach ($attributeTables as $attributeTable) {
@@ -123,15 +138,11 @@ class Attribute
                         $from
                     )
                     ->where($metadata->getLinkField() . ' = ?', $entityData[$metadata->getLinkField()]);
-                // TODO: Clean up this code
-                if (!$loadAllScopes) {
-                    foreach ($context as $scope) {
-                        //TODO: if (in table exists context field)
-                        $select->where(
-                            $metadata->getEntityConnection()->quoteIdentifier($scope->getIdentifier()) . ' IN (?)',
-                            $this->getContextVariables($scope)
-                        )->order('t.' . $scope->getIdentifier() . ' DESC');
-                    }
+
+                if ($loadAllScopes) {
+                    $this->addGroupForAllScopeData($select);
+                } else {
+                    $this->addScopeToSelect($select, $context, $metadata);
                 }
                 $selects[] = $select;
             }
@@ -140,25 +151,73 @@ class Attribute
                 \Magento\Framework\DB\Select::SQL_UNION_ALL
             );
 
-            foreach ($connection->fetchAll($unionSelect) as $attributeValue) {
-                if (isset($attributesMap[$attributeValue['attribute_id']])) {
-                    if ($loadAllScopes) {
-                        $scopeData[$attributesMap[$attributeValue['attribute_id']]][$attributeValue['store_id']] = $attributeValue['value'];
-                    } else {
-                        $entityData[$attributesMap[$attributeValue['attribute_id']]] = $attributeValue['value'];
-                    }
-                } else {
-                    $this->getLogger()->warning(
-                        "Attempt to load value of nonexistent EAV attribute '{$attributeValue['attribute_id']}'
-                        for entity type '$entityType'."
-                    );
-                }
-            }
+            $entityData = $this->populateData($connection, $unionSelect, $loadAllScopes, $entityType, $entityData);
         }
 
-        // TODO: Clean up this code
-        if ($loadAllScopes) {
-            return $scopeData;
+        return $entityData;
+    }
+
+    /**
+     * Add store ID scope to attribute select so that only data for that scope is loaded
+     *
+     * @param Select $select
+     * @param \Magento\Framework\Model\Entity\ScopeInterface[] $context
+     * @param EntityMetadataInterface $metadata
+     * @return $this
+     */
+    protected function addScopeToSelect(Select $select, array $context, EntityMetadataInterface $metadata)
+    {
+        foreach ($context as $scope) {
+            //TODO: if (in table exists context field)
+            $select->where(
+                $metadata->getEntityConnection()->quoteIdentifier($scope->getIdentifier()) . ' IN (?)',
+                $this->getContextVariables($scope)
+            )->order('t.' . $scope->getIdentifier() . ' DESC');
+        }
+        return $this;
+    }
+
+    /**
+     * Group by values so that data returned by select is unique, avoiding common data being returned by query
+     *
+     * @param Select $select
+     * @return $this
+     */
+    protected function addGroupForAllScopeData(Select $select)
+    {
+        $select->group('value')
+            ->group('attribute_id');
+        return $this;
+    }
+
+    /**
+     * @param \Magento\Framework\DB\Adapter\AdapterInterface $connection
+     * @param \Magento\Framework\DB\Sql\UnionExpression $unionSelect
+     * @param bool $loadAllScopes
+     * @param string $entityType
+     * @param array $entityData
+     * @return array
+     */
+    protected function populateData(
+        \Magento\Framework\DB\Adapter\AdapterInterface $connection,
+        \Magento\Framework\DB\Sql\UnionExpression $unionSelect,
+        bool $loadAllScopes,
+        string $entityType,
+        array $entityData
+    ) {
+        foreach ($connection->fetchAll($unionSelect) as $attributeValue) {
+            if (isset($attributesMap[$attributeValue['attribute_id']])) {
+                if ($loadAllScopes) {
+                    $entityData[$attributesMap[$attributeValue['attribute_id']]][$attributeValue['store_id']] = $attributeValue['value'];
+                } else {
+                    $entityData[$attributesMap[$attributeValue['attribute_id']]] = $attributeValue['value'];
+                }
+            } else {
+                $this->logger->warning(
+                    "Attempt to load value of nonexistent EAV attribute '{$attributeValue['attribute_id']}'
+                        for entity type '$entityType'."
+                );
+            }
         }
         return $entityData;
     }

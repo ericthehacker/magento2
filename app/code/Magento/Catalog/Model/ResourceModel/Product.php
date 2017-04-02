@@ -76,11 +76,6 @@ class Product extends AbstractResource
     protected $attribute;
 
     /**
-     * @var \Magento\Framework\EntityManager\TypeResolver
-     */
-    protected $typeResolver;
-
-    /**
      * @var array
      */
     protected $availableCategoryIdsCache = [];
@@ -116,7 +111,6 @@ class Product extends AbstractResource
         \Magento\Eav\Model\Entity\TypeFactory $typeFactory,
         \Magento\Catalog\Model\Product\Attribute\DefaultAttributes $defaultAttributes,
         \Magento\Eav\Model\ResourceModel\ReadHandler\Attribute $attribute,
-        \Magento\Framework\EntityManager\TypeResolver $typeResolver,
         $data = []
     ) {
         $this->_categoryCollectionFactory = $categoryCollectionFactory;
@@ -126,8 +120,6 @@ class Product extends AbstractResource
         $this->typeFactory = $typeFactory;
         $this->defaultAttributes = $defaultAttributes;
         $this->attribute = $attribute;
-        // TODO: remove Type Resolver
-        $this->typeResolver = $typeResolver;
         parent::__construct(
             $context,
             $storeManager,
@@ -589,17 +581,29 @@ class Product extends AbstractResource
     }
 
     /**
-     * @param $object
-     * @param $entityId
+     * Get product data for all scopes in array of following format
+     *
+     * ```php
+     * [
+     *     attribute_code_1 => [
+     *         store ID X => value of attribute_code_1 for store ID X,
+     *         store ID Y => value of attribute_code_1 for store ID Y,
+     *         ...
+     *     ],
+     *     attribute_code_2 => [
+     *         store ID X => value of attribute_code_2 for store ID X,
+     *         store ID Y => value of attribute_code_2 for store ID Y,
+     *         ...
+     *     ],
+     * ]
+     * ```
+     *
+     * @param \Magento\Catalog\Model\Product $product - Loaded product instance for which to load scoped data
      * @return array
-     * @throws \Exception
      */
-    public function loadScopeData($object)
+    public function loadScopeData(\Magento\Catalog\Model\Product $product)
     {
-        // TODO: Remove need for $entityType
-        $entityType = $this->typeResolver->resolve($object);
-        // TODO: Change getData to not require $object
-        return $this->attribute->getData($entityType, $object, $arguments = [], true);
+        return $this->attribute->getScopeData($product);
     }
 
     /**
