@@ -66,6 +66,11 @@ class Category extends AbstractResource
     protected $_categoryCollectionFactory;
 
     /**
+     * @var \Magento\Eav\Model\ResourceModel\ReadHandler\Attribute
+     */
+    protected $attribute;
+
+    /**
      * Category tree factory
      *
      * @var \Magento\Catalog\Model\ResourceModel\Category\TreeFactory
@@ -90,6 +95,7 @@ class Category extends AbstractResource
      * @param \Magento\Framework\Event\ManagerInterface $eventManager
      * @param Category\TreeFactory $categoryTreeFactory
      * @param Category\CollectionFactory $categoryCollectionFactory
+     * @param \Magento\Eav\Model\ResourceModel\ReadHandler\Attribute $attribute
      * @param array $data
      * @param \Magento\Framework\Serialize\Serializer\Json|null $serializer
      */
@@ -100,6 +106,7 @@ class Category extends AbstractResource
         \Magento\Framework\Event\ManagerInterface $eventManager,
         \Magento\Catalog\Model\ResourceModel\Category\TreeFactory $categoryTreeFactory,
         \Magento\Catalog\Model\ResourceModel\Category\CollectionFactory $categoryCollectionFactory,
+        \Magento\Eav\Model\ResourceModel\ReadHandler\Attribute $attribute,
         $data = [],
         \Magento\Framework\Serialize\Serializer\Json $serializer = null
     ) {
@@ -111,6 +118,7 @@ class Category extends AbstractResource
         );
         $this->_categoryTreeFactory = $categoryTreeFactory;
         $this->_categoryCollectionFactory = $categoryCollectionFactory;
+        $this->attribute = $attribute;
         $this->_eventManager = $eventManager;
         $this->connectionName  = 'catalog';
         $this->serializer = $serializer ?: \Magento\Framework\App\ObjectManager::getInstance()
@@ -1017,6 +1025,32 @@ class Category extends AbstractResource
             $object->isObjectNew(true);
         }
         return $this;
+    }
+
+    /**
+     * Get category data for all scopes in array of following format
+     *
+     * ```php
+     * [
+     *     attribute_code_1 => [
+     *         store ID X => value of attribute_code_1 for store ID X,
+     *         store ID Y => value of attribute_code_1 for store ID Y,
+     *         ...
+     *     ],
+     *     attribute_code_2 => [
+     *         store ID X => value of attribute_code_2 for store ID X,
+     *         store ID Y => value of attribute_code_2 for store ID Y,
+     *         ...
+     *     ],
+     * ]
+     * ```
+     *
+     * @param \Magento\Catalog\Model\Category $category - Loaded category instance for which to load scoped data
+     * @return array
+     */
+    public function loadScopeData(\Magento\Catalog\Model\Category $category)
+    {
+        return $this->attribute->getScopeData($category);
     }
 
     /**
