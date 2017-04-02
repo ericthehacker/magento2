@@ -97,6 +97,22 @@ class Generic implements LayoutInterface
         UiComponentInterface $component,
         $componentType
     ) {
+        //@hack: prototype scope hint
+        foreach($component->getChildComponents() as &$attributeGroupComponent) {
+            foreach($attributeGroupComponent->getChildComponents() as &$inputContainerComponent) {
+                foreach($inputContainerComponent->getChildComponents() as &$inputComponent) {
+                    if(!isset($inputComponent->getConfig()['code'])) {
+                        continue;
+                    }
+
+                    /** @var array $config */
+                    $config = $inputComponent->getConfig();
+                    $config['scopeHint'] = '<em>test scope hint for '. $config['code'] .'</em>';
+                    $inputComponent->setConfig($config);
+                }
+            }
+        }
+
         $childrenNode = [];
         $childComponents = $component->getChildComponents();
         if (!empty($childComponents)) {
