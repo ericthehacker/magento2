@@ -98,7 +98,9 @@ class DataLoader
     {
         $metadata = $this->metadataPool->getMetadata($entityType);
         $entityData[$metadata->getLinkField()] = $entityId;
-        return $this->getData($entityType, $entityData, [], true);
+        $data = $this->getData($entityType, $entityData, [], true);
+        unset($data[$metadata->getLinkField()]);
+        return $data;
     }
 
     /**
