@@ -33,5 +33,5 @@ interface CategoryScopeManagementInterface
      * @param int $categoryId
      * @return array
      */
-    public function getScopeData(int $categoryId) : array;
+    public function getAllScopeDataByAttribute($categoryId);
 }

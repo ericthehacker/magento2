@@ -3,7 +3,7 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Magento\Eav\Model\ResourceModel\ReadHandler;
+namespace Magento\Eav\Model\ResourceModel\Attribute;
 
 use Magento\Framework\EntityManager\MetadataPool;
 use Magento\Framework\Model\Entity\ScopeInterface;
@@ -12,7 +12,7 @@ use Magento\Framework\EntityManager\EntityMetadataInterface;
 use Magento\Framework\DB\Select;
 use Psr\Log\LoggerInterface;
 
-class Attribute
+class DataLoader
 {
     /**
      * @var MetadataPool
@@ -88,10 +88,17 @@ class Attribute
         return $data;
     }
 
-    public function getScopeData($entity)
+    /**
+     * @param $entityType
+     * @param $entityId
+     * @return array
+     * @throws \Exception
+     */
+    public function getAllScopeDataByAttribute($entityType, $entityId)
     {
-        $entityType = $this->typeResolver->resolve($entity);
-        return $this->getData($entityType, [], [], true);
+        $metadata = $this->metadataPool->getMetadata($entityType);
+        $entityData[$metadata->getLinkField()] = $entityId;
+        return $this->getData($entityType, $entityData, [], true);
     }
 
     /**
@@ -108,6 +115,7 @@ class Attribute
     public function getData($entityType, $entityData, $arguments = [], $loadAllScopes = false)
     {
         $metadata = $this->metadataPool->getMetadata($entityType);
+
         if (!$metadata->getEavEntityType()) {//todo hasCustomAttributes
             return $entityData;
         }
@@ -151,7 +159,14 @@ class Attribute
                 \Magento\Framework\DB\Select::SQL_UNION_ALL
             );
 
-            $entityData = $this->populateData($connection, $unionSelect, $loadAllScopes, $entityType, $entityData);
+            $entityData = $this->populateData(
+                $connection,
+                $unionSelect,
+                $attributesMap,
+                $loadAllScopes,
+                $entityType,
+                $entityData
+            );
         }
 
         return $entityData;
@@ -201,6 +216,7 @@ class Attribute
     protected function populateData(
         \Magento\Framework\DB\Adapter\AdapterInterface $connection,
         \Magento\Framework\DB\Sql\UnionExpression $unionSelect,
+        $attributesMap,
         bool $loadAllScopes,
         string $entityType,
         array $entityData
@@ -208,7 +224,7 @@ class Attribute
         foreach ($connection->fetchAll($unionSelect) as $attributeValue) {
             if (isset($attributesMap[$attributeValue['attribute_id']])) {
                 if ($loadAllScopes) {
-                    $entityData[$attributesMap[$attributeValue['attribute_id']]][$attributeValue['store_id']] = $attributeValue['value'];
+                    $entityData[$attributeValue['attribute_id']][$attributeValue['store_id']] = $attributeValue['value'];
                 } else {
                     $entityData[$attributesMap[$attributeValue['attribute_id']]] = $attributeValue['value'];
                 }

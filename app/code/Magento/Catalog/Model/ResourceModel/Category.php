@@ -66,9 +66,9 @@ class Category extends AbstractResource
     protected $_categoryCollectionFactory;
 
     /**
-     * @var \Magento\Eav\Model\ResourceModel\ReadHandler\Attribute
+     * @var \Magento\Eav\Model\ResourceModel\Attribute\DataLoader
      */
-    protected $attribute;
+    protected $attributeDataLoader;
 
     /**
      * Category tree factory
@@ -95,7 +95,7 @@ class Category extends AbstractResource
      * @param \Magento\Framework\Event\ManagerInterface $eventManager
      * @param Category\TreeFactory $categoryTreeFactory
      * @param Category\CollectionFactory $categoryCollectionFactory
-     * @param \Magento\Eav\Model\ResourceModel\ReadHandler\Attribute $attribute
+     * @param \Magento\Eav\Model\ResourceModel\Attribute\DataLoader $attributeDataLoader
      * @param array $data
      * @param \Magento\Framework\Serialize\Serializer\Json|null $serializer
      */
@@ -106,7 +106,7 @@ class Category extends AbstractResource
         \Magento\Framework\Event\ManagerInterface $eventManager,
         \Magento\Catalog\Model\ResourceModel\Category\TreeFactory $categoryTreeFactory,
         \Magento\Catalog\Model\ResourceModel\Category\CollectionFactory $categoryCollectionFactory,
-        \Magento\Eav\Model\ResourceModel\ReadHandler\Attribute $attribute,
+        \Magento\Eav\Model\ResourceModel\Attribute\DataLoader $attributeDataLoader,
         $data = [],
         \Magento\Framework\Serialize\Serializer\Json $serializer = null
     ) {
@@ -118,7 +118,7 @@ class Category extends AbstractResource
         );
         $this->_categoryTreeFactory = $categoryTreeFactory;
         $this->_categoryCollectionFactory = $categoryCollectionFactory;
-        $this->attribute = $attribute;
+        $this->attributeDataLoader = $attributeDataLoader;
         $this->_eventManager = $eventManager;
         $this->connectionName  = 'catalog';
         $this->serializer = $serializer ?: \Magento\Framework\App\ObjectManager::getInstance()
@@ -1045,12 +1045,16 @@ class Category extends AbstractResource
      * ]
      * ```
      *
-     * @param \Magento\Catalog\Model\Category $category - Loaded category instance for which to load scoped data
+     * @param int $categoryId - Category ID for which to load scoped data
      * @return array
      */
-    public function loadScopeData(\Magento\Catalog\Model\Category $category)
+    public function getAllScopeDataByAttribute($categoryId)
     {
-        return $this->attribute->getScopeData($category);
+        // TODO: Refactor this to send a fully loaded product model
+        return $this->attributeDataLoader->getAllScopeDataByAttribute(
+            \Magento\Catalog\Api\Data\CategoryInterface::class,
+            $categoryId
+        );
     }
 
     /**

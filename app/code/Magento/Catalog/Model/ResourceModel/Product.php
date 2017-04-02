@@ -71,9 +71,9 @@ class Product extends AbstractResource
     protected $defaultAttributes;
 
     /**
-     * @var \Magento\Eav\Model\ResourceModel\ReadHandler\Attribute
+     * @var \Magento\Eav\Model\ResourceModel\Attribute\DataLoader
      */
-    protected $attribute;
+    protected $attributeDataLoader;
 
     /**
      * @var array
@@ -95,7 +95,7 @@ class Product extends AbstractResource
      * @param \Magento\Eav\Model\Entity\Attribute\SetFactory $setFactory
      * @param \Magento\Eav\Model\Entity\TypeFactory $typeFactory
      * @param \Magento\Catalog\Model\Product\Attribute\DefaultAttributes $defaultAttributes
-     * @param \Magento\Eav\Model\ResourceModel\ReadHandler\Attribute $attribute,
+     * @param \Magento\Eav\Model\ResourceModel\Attribute\DataLoader $attributeDataLoader,
      * @param array $data
      *
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
@@ -110,7 +110,7 @@ class Product extends AbstractResource
         \Magento\Eav\Model\Entity\Attribute\SetFactory $setFactory,
         \Magento\Eav\Model\Entity\TypeFactory $typeFactory,
         \Magento\Catalog\Model\Product\Attribute\DefaultAttributes $defaultAttributes,
-        \Magento\Eav\Model\ResourceModel\ReadHandler\Attribute $attribute,
+        \Magento\Eav\Model\ResourceModel\Attribute\DataLoader $attributeDataLoader,
         $data = []
     ) {
         $this->_categoryCollectionFactory = $categoryCollectionFactory;
@@ -119,7 +119,7 @@ class Product extends AbstractResource
         $this->setFactory = $setFactory;
         $this->typeFactory = $typeFactory;
         $this->defaultAttributes = $defaultAttributes;
-        $this->attribute = $attribute;
+        $this->attributeDataLoader = $attributeDataLoader;
         parent::__construct(
             $context,
             $storeManager,
@@ -585,25 +585,29 @@ class Product extends AbstractResource
      *
      * ```php
      * [
-     *     attribute_code_1 => [
-     *         store ID X => value of attribute_code_1 for store ID X,
-     *         store ID Y => value of attribute_code_1 for store ID Y,
+     *     attribute_id_1 => [
+     *         store ID X => value of attribute_id_1 for store ID X,
+     *         store ID Y => value of attribute_id_1 for store ID Y,
      *         ...
      *     ],
-     *     attribute_code_2 => [
-     *         store ID X => value of attribute_code_2 for store ID X,
-     *         store ID Y => value of attribute_code_2 for store ID Y,
+     *     attribute_id_2 => [
+     *         store ID X => value of attribute_id_2 for store ID X,
+     *         store ID Y => value of attribute_id_2 for store ID Y,
      *         ...
      *     ],
      * ]
      * ```
      *
-     * @param \Magento\Catalog\Model\Product $product - Loaded product instance for which to load scoped data
+     * @param int $productId - Product ID for which to load scoped data
      * @return array
      */
-    public function loadScopeData(\Magento\Catalog\Model\Product $product)
+    public function getAllScopeDataByAttribute($productId)
     {
-        return $this->attribute->getScopeData($product);
+        // TODO: Refactor this to send a fully loaded product model
+        return $this->attributeDataLoader->getAllScopeDataByAttribute(
+            \Magento\Catalog\Api\Data\ProductInterface::class,
+            $productId
+        );
     }
 
     /**

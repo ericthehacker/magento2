@@ -14,19 +14,18 @@ use Psr\Log\LoggerInterface;
 class ReadHandler implements AttributeInterface
 {
     /**
-     * @var ReadHandler\Attribute
+     * @var Attribute\DataLoader
      */
-    protected $attribute;
+    protected $attributeDataLoader;
 
     /**
      * ReadHandler constructor
      *
-     * @param ReadHandler\Attribute $attribute
+     * @param Attribute\DataLoader $attributeDataLoader
      */
-    public function __construct(
-        \Magento\Eav\Model\ResourceModel\ReadHandler\Attribute $attribute
-    ) {
-        $this->attribute = $attribute;
+    public function __construct(Attribute\DataLoader $attributeDataLoader)
+    {
+        $this->attributeDataLoader = $attributeDataLoader;
     }
 
     /**
@@ -43,6 +42,6 @@ class ReadHandler implements AttributeInterface
      */
     public function execute($entityType, $entityData, $arguments = [])
     {
-        return $this->attribute->getData($entityType, $entityData, $arguments = []);
+        return $this->attributeDataLoader->getData($entityType, $entityData, $arguments = []);
     }
 }

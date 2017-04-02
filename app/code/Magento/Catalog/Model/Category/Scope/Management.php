@@ -7,39 +7,34 @@ namespace Magento\Catalog\Model\Category\Scope;
 
 class Management implements \Magento\Catalog\Api\CategoryScopeManagementInterface
 {
-    /** @var \Magento\Catalog\Model\ResourceModel\Category */
+    /** 
+     * @var \Magento\Catalog\Model\ResourceModel\Category 
+     */
     protected $categoryResourceModel;
-    /** @var \Magento\Catalog\Model\CategoryFactory */
-    protected $categoryFactory;
-    /** @var array  */
+    
+    /**
+     * @var array  
+     */
     protected $categoryScopeData = [];
 
     /**
      * Management constructor.
      * @param \Magento\Catalog\Model\ResourceModel\Category $categoryResourceModel
-     * @param \Magento\Catalog\Model\CategoryFactory $categoryFactory
      */
     public function __construct(
-        \Magento\Catalog\Model\ResourceModel\Category $categoryResourceModel,
-        \Magento\Catalog\Model\CategoryFactory $categoryFactory
-    )
-    {
+        \Magento\Catalog\Model\ResourceModel\Category $categoryResourceModel
+    ) {
         $this->categoryResourceModel = $categoryResourceModel;
-        $this->categoryFactory = $categoryFactory;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getScopeData(int $categoryId): array
+    public function getAllScopeDataByAttribute($categoryId)
     {
-        if(!isset($this->categoryScopeData[$categoryId])) {
-            /** @var \Magento\Catalog\Model\Category $category */
-            $category = $this->categoryFactory->create();
-            $this->categoryResourceModel->load($category, $categoryId);
-
+        if (!isset($this->categoryScopeData[$categoryId])) {
             /** @var array $scopeData */
-            $scopeData = $this->categoryResourceModel->loadScopeData($category);
+            $scopeData = $this->categoryResourceModel->getAllScopeDataByAttribute($categoryId);
 
             $this->categoryScopeData[$categoryId] = $scopeData;
         }

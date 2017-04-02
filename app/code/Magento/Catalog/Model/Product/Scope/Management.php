@@ -8,11 +8,14 @@ namespace Magento\Catalog\Model\Product\Scope;
 
 class Management implements \Magento\Catalog\Api\ProductScopeManagementInterface
 {
-    /** @var \Magento\Catalog\Model\ResourceModel\Product */
+    /**
+     * @var \Magento\Catalog\Model\ResourceModel\Product
+     */
     protected $productResourceModel;
-    /** @var \Magento\Catalog\Model\ProductFactory */
-    protected $productFactory;
-    /** @var array  */
+
+    /**
+     * @var array
+     */
     protected $productScopeData = [];
 
     /**
@@ -23,24 +26,18 @@ class Management implements \Magento\Catalog\Api\ProductScopeManagementInterface
     public function __construct(
         \Magento\Catalog\Model\ResourceModel\Product $productResourceModel,
         \Magento\Catalog\Model\ProductFactory $productFactory
-    )
-    {
+    ) {
         $this->productResourceModel = $productResourceModel;
-        $this->productFactory = $productFactory;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getScopeData(int $productId): array
+    public function getAllScopeDataByAttribute($productId)
     {
         if(!isset($this->productScopeData[$productId])) {
-            /** @var \Magento\Catalog\Model\Product $product */
-            $product = $this->productFactory->create();
-            $this->productResourceModel->load($product, $productId);
-
             /** @var array $scopeData */
-            $scopeData = $this->productResourceModel->loadScopeData($product);
+            $scopeData = $this->productResourceModel->getAllScopeDataByAttribute($productId);
 
             $this->productScopeData[$productId] = $scopeData;
         }

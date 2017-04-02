@@ -16,14 +16,14 @@ interface ProductScopeManagementInterface
      *
      * ```php
      * [
-     *     attribute_code_1 => [
-     *         store ID X => value of attribute_code_1 for store ID X,
-     *         store ID Y => value of attribute_code_1 for store ID Y,
+     *     attribute_id_1 => [
+     *         store ID X => value of attribute_id_1 for store ID X,
+     *         store ID Y => value of attribute_id_1 for store ID Y,
      *         ...
      *     ],
-     *     attribute_code_2 => [
-     *         store ID X => value of attribute_code_2 for store ID X,
-     *         store ID Y => value of attribute_code_2 for store ID Y,
+     *     attribute_id_2 => [
+     *         store ID X => value of attribute_id_2 for store ID X,
+     *         store ID Y => value of attribute_id_2 for store ID Y,
      *         ...
      *     ],
      * ]
@@ -33,5 +33,5 @@ interface ProductScopeManagementInterface
      * @param int $productId
      * @return array
      */
-    public function getScopeData(int $productId) : array;
+    public function getAllScopeDataByAttribute($productId);
 }
