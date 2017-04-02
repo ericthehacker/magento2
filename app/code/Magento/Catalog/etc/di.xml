@@ -24,6 +24,7 @@
     <preference for="Magento\Catalog\Api\Data\CategoryInterface" type="Magento\Catalog\Model\Category" />
     <preference for="Magento\Catalog\Api\CategoryManagementInterface" type="Magento\Catalog\Model\CategoryManagement" />
     <preference for="Magento\Catalog\Api\CategoryRepositoryInterface" type="Magento\Catalog\Model\CategoryRepository" />
+    <preference for="Magento\Catalog\Api\CategoryScopeManagementInterface" type="Magento\Catalog\Model\Category\Scope\Management" />
     <preference for="Magento\Catalog\Api\Data\CategoryTreeInterface" type="Magento\Catalog\Model\Category" />
     <preference for="Magento\Catalog\Api\ProductAttributeRepositoryInterface" type="Magento\Catalog\Model\Product\Attribute\Repository" />
     <preference for="Magento\Catalog\Api\Data\ProductAttributeInterface" type="Magento\Catalog\Model\ResourceModel\Eav\Attribute" />
