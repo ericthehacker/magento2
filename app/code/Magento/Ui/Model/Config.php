@@ -21,6 +21,11 @@ class Config
     const XML_PATH_KEY = 'dev/js/session_storage_key';
 
     /**
+     * Configuration path to scope override hints display setting
+     */
+    const XML_PATH_SCOPE_HINTS = 'admin/general/display_scope_hints';
+
+    /**
      * @var ScopeConfigInterface
      */
     protected $scopeConfig;
@@ -51,5 +56,15 @@ class Config
     public function getSessionStorageKey()
     {
         return $this->scopeConfig->getValue(self::XML_PATH_KEY);
+    }
+
+    /**
+     * Get is scope override hints enabled
+     *
+     * @return bool
+     */
+    public function isEnabledScopeHints()
+    {
+        return $this->scopeConfig->getValue(self::XML_PATH_SCOPE_HINTS);
     }
 }

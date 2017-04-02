@@ -7,6 +7,11 @@
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
     <default>
+        <admin>
+            <general>
+                <display_scope_hints>1</display_scope_hints>
+            </general>
+        </admin>
         <dev>
             <js>
                 <session_storage_logging>0</session_storage_logging>
