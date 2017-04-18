@@ -12,22 +12,9 @@ namespace Magento\Catalog\Api;
 interface ProductScopeManagementInterface
 {
     /**
-     * Get product data for all scopes in array of following format
+     * Get product data for all scopes
      *
-     * ```php
-     * [
-     *     attribute_id_1 => [
-     *         store ID X => value of attribute_id_1 for store ID X,
-     *         store ID Y => value of attribute_id_1 for store ID Y,
-     *         ...
-     *     ],
-     *     attribute_id_2 => [
-     *         store ID X => value of attribute_id_2 for store ID X,
-     *         store ID Y => value of attribute_id_2 for store ID Y,
-     *         ...
-     *     ],
-     * ]
-     * ```
+     * @see \Magento\Eav\Model\ResourceModel\Attribute\DataLoader::getAllScopeDataByAttribute for array pattern
      *
      * @api
      * @param int $productId

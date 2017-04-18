@@ -71,9 +71,9 @@ class Product extends AbstractResource
     protected $defaultAttributes;
 
     /**
-     * @var \Magento\Eav\Model\ResourceModel\Attribute\DataLoader
+     * @var \Magento\Eav\Model\ResourceModel\Attribute\ScopeDataLoader
      */
-    protected $attributeDataLoader;
+    protected $attributeScopeDataLoader;
 
     /**
      * @var array
@@ -95,7 +95,7 @@ class Product extends AbstractResource
      * @param \Magento\Eav\Model\Entity\Attribute\SetFactory $setFactory
      * @param \Magento\Eav\Model\Entity\TypeFactory $typeFactory
      * @param \Magento\Catalog\Model\Product\Attribute\DefaultAttributes $defaultAttributes
-     * @param \Magento\Eav\Model\ResourceModel\Attribute\DataLoader $attributeDataLoader,
+     * @param \Magento\Eav\Model\ResourceModel\Attribute\ScopeDataLoader $attributeDataLoader,
      * @param array $data
      *
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
@@ -110,7 +110,7 @@ class Product extends AbstractResource
         \Magento\Eav\Model\Entity\Attribute\SetFactory $setFactory,
         \Magento\Eav\Model\Entity\TypeFactory $typeFactory,
         \Magento\Catalog\Model\Product\Attribute\DefaultAttributes $defaultAttributes,
-        \Magento\Eav\Model\ResourceModel\Attribute\DataLoader $attributeDataLoader,
+        \Magento\Eav\Model\ResourceModel\Attribute\ScopeDataLoader $attributeDataLoader,
         $data = []
     ) {
         $this->_categoryCollectionFactory = $categoryCollectionFactory;
@@ -119,7 +119,7 @@ class Product extends AbstractResource
         $this->setFactory = $setFactory;
         $this->typeFactory = $typeFactory;
         $this->defaultAttributes = $defaultAttributes;
-        $this->attributeDataLoader = $attributeDataLoader;
+        $this->attributeScopeDataLoader = $attributeDataLoader;
         parent::__construct(
             $context,
             $storeManager,
@@ -581,31 +581,17 @@ class Product extends AbstractResource
     }
 
     /**
-     * Get product data for all scopes in array of following format
+     * Get product data for all scopes in array
      *
-     * ```php
-     * [
-     *     attribute_id_1 => [
-     *         store ID X => value of attribute_id_1 for store ID X,
-     *         store ID Y => value of attribute_id_1 for store ID Y,
-     *         ...
-     *     ],
-     *     attribute_id_2 => [
-     *         store ID X => value of attribute_id_2 for store ID X,
-     *         store ID Y => value of attribute_id_2 for store ID Y,
-     *         ...
-     *     ],
-     * ]
-     * ```
+     * @see \Magento\Eav\Model\ResourceModel\Attribute\DataLoader::getAllScopeDataByAttribute for array pattern
      *
      * @param int $productId - Product ID for which to load scoped data
      * @return array
      */
     public function getAllScopeDataByAttribute($productId)
     {
-        // TODO: Refactor this to send a fully loaded product model
-        return $this->attributeDataLoader->getAllScopeDataByAttribute(
-            \Magento\Catalog\Api\Data\ProductInterface::class,
+        return $this->attributeScopeDataLoader->getAllScopeDataByAttribute(
+            ProductInterface::class,
             $productId
         );
     }

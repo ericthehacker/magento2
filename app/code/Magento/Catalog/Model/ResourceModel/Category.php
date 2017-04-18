@@ -66,9 +66,9 @@ class Category extends AbstractResource
     protected $_categoryCollectionFactory;
 
     /**
-     * @var \Magento\Eav\Model\ResourceModel\Attribute\DataLoader
+     * @var \Magento\Eav\Model\ResourceModel\Attribute\ScopeDataLoader
      */
-    protected $attributeDataLoader;
+    protected $attributeScopeDataLoader;
 
     /**
      * Category tree factory
@@ -95,7 +95,7 @@ class Category extends AbstractResource
      * @param \Magento\Framework\Event\ManagerInterface $eventManager
      * @param Category\TreeFactory $categoryTreeFactory
      * @param Category\CollectionFactory $categoryCollectionFactory
-     * @param \Magento\Eav\Model\ResourceModel\Attribute\DataLoader $attributeDataLoader
+     * @param \Magento\Eav\Model\ResourceModel\Attribute\ScopeDataLoader $attributeDataLoader
      * @param array $data
      * @param \Magento\Framework\Serialize\Serializer\Json|null $serializer
      */
@@ -106,7 +106,7 @@ class Category extends AbstractResource
         \Magento\Framework\Event\ManagerInterface $eventManager,
         \Magento\Catalog\Model\ResourceModel\Category\TreeFactory $categoryTreeFactory,
         \Magento\Catalog\Model\ResourceModel\Category\CollectionFactory $categoryCollectionFactory,
-        \Magento\Eav\Model\ResourceModel\Attribute\DataLoader $attributeDataLoader,
+        \Magento\Eav\Model\ResourceModel\Attribute\ScopeDataLoader $attributeDataLoader,
         $data = [],
         \Magento\Framework\Serialize\Serializer\Json $serializer = null
     ) {
@@ -118,7 +118,7 @@ class Category extends AbstractResource
         );
         $this->_categoryTreeFactory = $categoryTreeFactory;
         $this->_categoryCollectionFactory = $categoryCollectionFactory;
-        $this->attributeDataLoader = $attributeDataLoader;
+        $this->attributeScopeDataLoader = $attributeDataLoader;
         $this->_eventManager = $eventManager;
         $this->connectionName  = 'catalog';
         $this->serializer = $serializer ?: \Magento\Framework\App\ObjectManager::getInstance()
@@ -1028,30 +1028,16 @@ class Category extends AbstractResource
     }
 
     /**
-     * Get category data for all scopes in array of following format
+     * Get category data for all scopes in array
      *
-     * ```php
-     * [
-     *     attribute_code_1 => [
-     *         store ID X => value of attribute_code_1 for store ID X,
-     *         store ID Y => value of attribute_code_1 for store ID Y,
-     *         ...
-     *     ],
-     *     attribute_code_2 => [
-     *         store ID X => value of attribute_code_2 for store ID X,
-     *         store ID Y => value of attribute_code_2 for store ID Y,
-     *         ...
-     *     ],
-     * ]
-     * ```
+     * @see \Magento\Eav\Model\ResourceModel\Attribute\DataLoader::getAllScopeDataByAttribute for array pattern
      *
      * @param int $categoryId - Category ID for which to load scoped data
      * @return array
      */
     public function getAllScopeDataByAttribute($categoryId)
     {
-        // TODO: Refactor this to send a fully loaded product model
-        return $this->attributeDataLoader->getAllScopeDataByAttribute(
+        return $this->attributeScopeDataLoader->getAllScopeDataByAttribute(
             \Magento\Catalog\Api\Data\CategoryInterface::class,
             $categoryId
         );
