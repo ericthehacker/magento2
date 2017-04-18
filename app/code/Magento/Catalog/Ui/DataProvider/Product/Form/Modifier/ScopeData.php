@@ -6,7 +6,6 @@
 namespace Magento\Catalog\Ui\DataProvider\Product\Form\Modifier;
 
 use Magento\Catalog\Api\ProductScopeManagementInterface;
-use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\UrlInterface;
 use Magento\Catalog\Model\Locator\LocatorInterface;
 use Magento\Store\Api\StoreRepositoryInterface;
@@ -43,24 +42,32 @@ class ScopeData extends AbstractModifier
     private $productAttributeManagement;
 
     /**
+     * @var \Magento\Ui\Model\Config
+     */
+    private $uiConfig;
+
+    /**
      * @param LocatorInterface $locator
      * @param UrlInterface $url
      * @param ProductScopeManagementInterface $productScopeManagement
      * @param StoreRepositoryInterface $storeRepository
      * @param ProductAttributeManagementInterface $productAttributeManagement
+     * @param \Magento\Ui\Model\Config $uiConfig
      */
     public function __construct(
         LocatorInterface $locator,
         UrlInterface $url,
         ProductScopeManagementInterface $productScopeManagement,
         StoreRepositoryInterface $storeRepository,
-        ProductAttributeManagementInterface $productAttributeManagement
+        ProductAttributeManagementInterface $productAttributeManagement,
+        \Magento\Ui\Model\Config $uiConfig
     ) {
         $this->locator = $locator;
         $this->url = $url;
         $this->productScopeManagement = $productScopeManagement;
         $this->storeRepository = $storeRepository;
         $this->productAttributeManagement = $productAttributeManagement;
+        $this->uiConfig = $uiConfig;
     }
 
     /**
@@ -76,30 +83,47 @@ class ScopeData extends AbstractModifier
      */
     public function modifyMeta(array $meta)
     {
-        $overrideScopes = [];
+        if (!$this->uiConfig->isEnabledScopeHints()) {
+            return $meta;
+        }
+
         $scopeData = $this->productScopeManagement->getAllScopeDataByAttribute($this->locator->getProduct()->getId());
-//         [
-//              attribute_code_1 => [
-//                  store ID X => value of attribute_code_1 for store ID X,
-//                  store ID Y => value of attribute_code_1 for store ID Y,
-//                  ...
-//              ],
-//              attribute_code_2 => [
-//                  store ID X => value of attribute_code_2 for store ID X,
-//                  store ID Y => value of attribute_code_2 for store ID Y,
-//                  ...
-//              ],
-//          ]
 
-        $productAttributeList = $this->productAttributeManagement->getAttributes($this->locator->getProduct()->getAttributeSetId());
-
-
-
-        // This is technically unnecesary but because getList loads the entire list of stores at once
+        // This is technically unnecessary but because getList loads the entire list of stores at once
         // Adding this will prevent separate loads with no overhead if the list has already been cached
         $this->storeRepository->getList();
 
+        $overrideScopes = $this->getOverrideScopes($scopeData);
 
+        foreach ($meta['all-attribute-types']['children'] as $attributeGroupName => $attributeGroup) {
+            foreach ($attributeGroup['children'] as $attributeCode => $attributeData) {
+                if (array_key_exists($attributeCode, $overrideScopes)) {
+                    $meta['all-attribute-types']['children'][$attributeGroupName]['children'][$attributeCode]['arguments']['data']['config']['scopeHint'] = [
+//                        'component' => 'Magento_Ui/js/form/components/button',
+//                        'displayAsLink' => true,
+//                        'formElement' => 'container',
+//                        'componentType' => 'container',
+//                        'template' => 'ui/form/components/button/container',
+                        'template' => 'ui/form/element/helper/scope-hint',
+                        'overrideScopes' => $overrideScopes[$attributeCode]
+                    ];
+                }
+            }
+        }
+
+        return $meta;
+    }
+
+    /**
+     * Get scope values that are overridden and structure data ƒor use
+     *
+     * @param $scopeData
+     * @return array
+     */
+    protected function getOverrideScopes($scopeData)
+    {
+        $overrideScopes = [];
+        $productAttributeList = $this->productAttributeManagement->getAttributes($this->locator->getProduct()->getAttributeSetId());
 
         foreach ($scopeData as $attributeId => $attributeOverrides) {
             foreach ($attributeOverrides as $storeId => $scopeValue) {
@@ -122,58 +146,6 @@ class ScopeData extends AbstractModifier
                 ];
             }
         }
-
-        foreach ($meta['all-attribute-types']['children'] as $attributeGroupName => $attributeGroup) {
-            foreach ($attributeGroup['children'] as $attributeCode => $attributeData) {
-                if (array_key_exists($attributeCode, $overrideScopes)) {
-                    $meta['all-attribute-types']['children'][$attributeGroupName]['children'][$attributeCode]['arguments']['data']['config']['scopeHint'] = [
-                        'template' => 'ui/form/element/helper/scope-hint',
-                        'overrideScopes' => $overrideScopes[$attributeCode]
-                    ];
-                }
-            }
-        }
-
-////        $advancedPricingButton['arguments']['data']['config'] = [
-////            'displayAsLink' => true,
-////            'formElement' => Container::NAME,
-////            'componentType' => Container::NAME,
-////            'component' => 'Magento_Ui/js/form/components/button',
-////            'template' => 'ui/form/components/button/container',
-////            'actions' => [
-////                [
-////                    'targetName' => $this->scopeName . '.advanced_pricing_modal',
-////                    'actionName' => 'toggleModal',
-////                ]
-////            ],
-////            'title' => __('Advanced Pricing'),
-////            'additionalForGroup' => true,
-////            'provider' => false,
-////            'source' => 'product_details',
-////            'sortOrder' =>
-////                $this->arrayManager->get($pricePath . '/arguments/data/config/sortOrder', $this->meta) + 1,
-////        ];
-//
-//        $meta['scopeHint']['arguments']['data']['config'] = [
-//            'componentType' => 'field',
-////                        'displayAsLink' => true,
-//            'formElement' => \Magento\Ui\Component\Container::NAME,
-////            'component' => 'Magento_Ui/js/form/components/field',
-//            'template' => 'ui/form/element/helper/scope-hint',
-////            'actions' => [
-////                [
-////                    'targetName' => $this->scopeName . '.advanced_pricing_modal',
-////                    'actionName' => 'toggleModal',
-////                ]
-////            ],
-////            'title' => __('Advanced Pricing'),
-////            'additionalForGroup' => true,
-////            'provider' => false,
-////            'source' => 'product_details',
-////            'sortOrder' =>
-////                $this->arrayManager->get($pricePath . '/arguments/data/config/sortOrder', $this->meta) + 1,
-//        ];
-
-        return $meta;
+        return $overrideScopes;
     }
 }
