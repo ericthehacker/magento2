@@ -130,9 +130,10 @@ class ScopeData extends AbstractModifier
                 if ($storeId == 0) {
                     continue;
                 }
-                $overrideValue = $productAttributeList[$attributeId]->getSource()->getOptionText($scopeValue);
-                if (empty($overrideValue)) {
+                if (!$productAttributeList[$attributeId]->getSourceModel()) {
                     $overrideValue = $scopeValue;
+                } else {
+                    $overrideValue = $productAttributeList[$attributeId]->getSource()->getOptionText($scopeValue);
                 }
                 $overrideScopes[$productAttributeList[$attributeId]->getAttributeCode()][] = [
                     'scopeLabel' => $this->storeRepository->getById($storeId)->getName(),

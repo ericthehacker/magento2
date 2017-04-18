@@ -24,6 +24,10 @@ use Magento\Store\Model\Store;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Ui\Component\Form\Field;
 use Magento\Ui\DataProvider\EavValidationRules;
+use Magento\Catalog\Api\CategoryScopeManagementInterface;
+use Magento\Framework\UrlInterface;
+use Magento\Store\Api\StoreRepositoryInterface;
+use Magento\Eav\Api\AttributeManagementInterface;
 
 /**
  * Class DataProvider
@@ -134,6 +138,30 @@ class DataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
     private $fileInfo;
 
     /**
+     * @var UrlInterface
+     */
+    protected $url;
+
+    /**
+     * @var CategoryScopeManagementInterface
+     */
+    protected $categoryScopeManagement;
+
+    /**
+     * @var StoreRepositoryInterface
+     */
+    protected $storeRepository;
+
+    /**
+     * @var \Magento\Ui\Model\Config
+     */
+    protected $uiConfig;
+    /**
+     * @var AttributeManagementInterface
+     */
+    protected $eavAttributeManagement;
+
+    /**
      * DataProvider constructor
      *
      * @param string $name
@@ -146,8 +174,15 @@ class DataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
      * @param Config $eavConfig
      * @param \Magento\Framework\App\RequestInterface $request
      * @param CategoryFactory $categoryFactory
+     * @param UrlInterface $url
+     * @param CategoryScopeManagementInterface $categoryScopeManagement
+     * @param StoreRepositoryInterface $storeRepository
+     * @param AttributeManagementInterface $eavAttributeManagement
+     * @param \Magento\Ui\Model\Config $uiConfig
      * @param array $meta
      * @param array $data
+     * @internal param array $meta
+     * @internal param array $data
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -161,6 +196,11 @@ class DataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
         Config $eavConfig,
         \Magento\Framework\App\RequestInterface $request,
         CategoryFactory $categoryFactory,
+        UrlInterface $url,
+        CategoryScopeManagementInterface $categoryScopeManagement,
+        StoreRepositoryInterface $storeRepository,
+        AttributeManagementInterface $eavAttributeManagement,
+        \Magento\Ui\Model\Config $uiConfig,
         array $meta = [],
         array $data = []
     ) {
@@ -172,6 +212,11 @@ class DataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
         $this->storeManager = $storeManager;
         $this->request = $request;
         $this->categoryFactory = $categoryFactory;
+        $this->url = $url;
+        $this->categoryScopeManagement = $categoryScopeManagement;
+        $this->storeRepository = $storeRepository;
+        $this->eavAttributeManagement = $eavAttributeManagement;
+        $this->uiConfig = $uiConfig;
 
         parent::__construct($name, $primaryFieldName, $requestFieldName, $meta, $data);
     }
@@ -189,9 +234,84 @@ class DataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
         if ($category) {
             $meta = $this->addUseDefaultValueCheckbox($category, $meta);
             $meta = $this->resolveParentInheritance($category, $meta);
+            if ($this->uiConfig->isEnabledScopeHints()) {
+                $meta = $this->addScopeData($category, $meta);
+            }
         }
 
         return $meta;
+    }
+
+    /**
+     * Adds scope data to the metadata section for use on the category page
+     *
+     * @param Category $category
+     * @param array $meta
+     * @return array
+     */
+    protected function addScopeData(Category $category, array $meta) {
+        $scopeData = $this->categoryScopeManagement->getAllScopeDataByAttribute($category->getId());
+
+        // This is technically unnecessary but because getList loads the entire list of stores at once
+        // Adding this will prevent separate loads with no overhead if the list has already been cached
+        $this->storeRepository->getList();
+
+        $overrideScopes = $this->getOverrideScopes($scopeData, $category);
+
+//        foreach ($meta['all-attribute-types']['children'] as $attributeGroupName => $attributeGroup) {
+//            foreach ($attributeGroup['children'] as $attributeCode => $attributeData) {
+//                if (array_key_exists($attributeCode, $overrideScopes)) {
+//                    $meta['all-attribute-types']['children'][$attributeGroupName]['children'][$attributeCode]['arguments']['data']['config']['scopeHint'] = [
+//                        'template' => 'ui/form/element/helper/scope-hint',
+//                        'overrideScopes' => $overrideScopes[$attributeCode]
+//                    ];
+//                }
+//            }
+//        }
+
+        return $meta;
+    }
+
+    /**
+     * Get scope values that are overridden and structure data ƒor use
+     *
+     * @param $scopeData
+     * @param $category
+     * @return array
+     */
+    protected function getOverrideScopes($scopeData, $category)
+    {
+        $overrideScopes = [];
+
+        $categoryAttributeList = $this->eavAttributeManagement->getAttributes(
+            \Magento\Catalog\Api\Data\CategoryAttributeInterface::ENTITY_TYPE_CODE,
+            $category->getAttributeSetId()
+        );
+
+        foreach ($scopeData as $attributeId => $attributeOverrides) {
+            foreach ($attributeOverrides as $storeId => $scopeValue) {
+                if ($storeId == 0) {
+                    continue;
+                }
+                if (!$categoryAttributeList[$attributeId]->getSourceModel()) {
+                    $overrideValue = $scopeValue;
+                } else {
+                    $overrideValue = $categoryAttributeList[$attributeId]->getSource()->getOptionText($scopeValue);
+                }
+                $overrideScopes[$categoryAttributeList[$attributeId]->getAttributeCode()][] = [
+                    'scopeLabel' => $this->storeRepository->getById($storeId)->getName(),
+                    'overrideValue' => $overrideValue,
+                    'scopeUrl' => $this->url->getUrl('*/*/*',
+                        [
+                            '_current' => true,
+                            'store' => $storeId
+                        ]
+                    )
+                ];
+            }
+        }
+
+        return $overrideScopes;
     }
 
     /**
