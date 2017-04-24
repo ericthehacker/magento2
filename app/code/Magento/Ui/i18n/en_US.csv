@@ -109,4 +109,4 @@ Ok,Ok
 Action,Action
 CSV,CSV
 "Excel XML","Excel XML",
-"This value is overridden at the following scope(s):","This value is overridden at the following scope(s):"
+"%1 storeview(s) have a different value","%1 storeview(s) have a different value"
